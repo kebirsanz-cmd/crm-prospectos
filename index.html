@@ -89,7 +89,12 @@
                             <h2 id="detail-name" class="text-2xl font-bold text-slate-900"></h2>
                             <span id="detail-city" class="bg-indigo-100 text-indigo-800 text-[10px] uppercase font-bold px-2 py-0.5 rounded-md"></span>
                         </div>
-                        <span id="detail-niche" class="inline-block bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-medium mt-1.5"></span>
+                        <div class="flex items-center gap-2 mt-1.5">
+                            <span id="detail-niche" class="inline-block bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-medium"></span>
+                            <button onclick="openEditProspectModal()" class="text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-semibold flex items-center gap-0.5">
+                                ✏️ Editar Datos
+                            </button>
+                        </div>
                     </div>
                     <select id="detail-status" onchange="updateProspectStatus(this.value)" class="bg-indigo-50 border border-indigo-200 text-indigo-700 text-sm font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                         <option value="Nuevo">Nuevo</option>
@@ -148,14 +153,15 @@
         </section>
     </main>
 
-    <!-- MODAL PARA AGREGAR PROSPECTO -->
+    <!-- MODAL PARA AGREGAR / EDITAR PROSPECTO -->
     <div id="add-prospect-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Agregar Nuevo Prospecto</h3>
+                <h3 id="modal-title" class="font-bold text-slate-800">Agregar Nuevo Prospecto</h3>
                 <button onclick="closeAddProspectModal()" class="text-slate-400 hover:text-slate-600 text-lg">×</button>
             </div>
             <div class="p-6 space-y-4">
+                <input type="hidden" id="modal-id">
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre del Negocio / Cliente</label>
                     <input type="text" id="modal-name" placeholder="Ej. Coach Juan o Sabor al carbón" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
@@ -389,7 +395,9 @@
             }).join('');
         }
 
+        // Guardar o Editar Prospecto (Integrado)
         async function saveProspect() {
+            const id = document.getElementById('modal-id').value;
             const nombre = document.getElementById('modal-name').value.trim();
             const nicho = document.getElementById('modal-niche').value;
             const ciudad = document.getElementById('modal-city').value;
@@ -402,22 +410,40 @@
                 return;
             }
 
-            const nuevo = {
+            const payload = {
                 nombre,
                 nicho,
                 ciudad,
                 metodo_contacto,
                 contacto,
-                estado: "Nuevo",
                 proximo_seguimiento
             };
 
             if (dbClient) {
-                const { data, error } = await dbClient.from('prospectos').insert([nuevo]).select();
-                if (!error && data) {
-                    localProspects.unshift(data[0]);
+                if (id) {
+                    // Acción: Editar
+                    const { data, error } = await dbClient.from('prospectos').update(payload).eq('id', id).select();
+                    if (!error && data) {
+                        const idx = localProspects.findIndex(p => p.id === id);
+                        if (idx !== -1) {
+                            localProspects[idx] = { ...localProspects[idx], ...data[0] };
+                        }
+                        // Actualizar UI del detalle activo si es el que se editó
+                        if (selectedProspectId === id) {
+                            selectProspect(id);
+                        }
+                    } else {
+                        alert("Error editando en Supabase.");
+                    }
                 } else {
-                    alert("Error guardando en Supabase.");
+                    // Acción: Crear nuevo
+                    payload.estado = "Nuevo";
+                    const { data, error } = await dbClient.from('prospectos').insert([payload]).select();
+                    if (!error && data) {
+                        localProspects.unshift(data[0]);
+                    } else {
+                        alert("Error guardando en Supabase.");
+                    }
                 }
             } else {
                 alert("La base de datos no está configurada.");
@@ -511,14 +537,35 @@
 
         // Modales
         function openAddProspectModal() {
+            document.getElementById('modal-title').innerText = "Agregar Nuevo Prospecto";
+            document.getElementById('modal-id').value = "";
+            document.getElementById('modal-name').value = "";
+            document.getElementById('modal-niche').value = "Restaurante";
+            document.getElementById('modal-city').value = "Guayaquil";
+            document.getElementById('modal-contact-method').value = "WhatsApp";
+            document.getElementById('modal-contact').value = "";
+            document.getElementById('modal-date').value = "";
+            document.getElementById('add-prospect-modal').classList.remove('hidden');
+        }
+
+        function openEditProspectModal() {
+            if (!selectedProspectId) return;
+            const p = localProspects.find(item => item.id === selectedProspectId);
+            if (!p) return;
+
+            document.getElementById('modal-title').innerText = "Editar Datos del Prospecto";
+            document.getElementById('modal-id').value = p.id;
+            document.getElementById('modal-name').value = p.nombre;
+            document.getElementById('modal-niche').value = p.nicho;
+            document.getElementById('modal-city').value = p.ciudad || "Guayaquil";
+            document.getElementById('modal-contact-method').value = p.metodo_contacto || "WhatsApp";
+            document.getElementById('modal-contact').value = p.contacto;
+            document.getElementById('modal-date').value = p.proximo_seguimiento || "";
             document.getElementById('add-prospect-modal').classList.remove('hidden');
         }
 
         function closeAddProspectModal() {
             document.getElementById('add-prospect-modal').classList.add('hidden');
-            document.getElementById('modal-name').value = '';
-            document.getElementById('modal-contact').value = '';
-            document.getElementById('modal-date').value = '';
         }
 
         function getStatusClass(status) {
