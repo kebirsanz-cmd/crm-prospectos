@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prospectos — Desarrollo Web</title>
+    <!-- Tailwind CSS para el diseño premium -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SDK de Supabase primero -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            950: '#0f172a',
+                        },
+                        indigo: {
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen">
+
+    <!-- HEADER -->
+    <header class="bg-white border-b border-slate-200 px-8 py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Prospectos — Desarrollo Web</h1>
+            <p id="connection-status" class="text-sm text-amber-600 font-medium mt-1">⚠️ Sin conectar: Configura Supabase para guardar en la nube.</p>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="toggleSettings()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-medium text-sm transition-colors">
+                ⚙️ Configurar API
+            </button>
+            <button onclick="openAddProspectModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium text-sm transition-colors shadow-sm">
+                + Agregar Prospecto
+            </button>
+        </div>
+    </header>
+
+    <!-- PANEL DE CONFIGURACIÓN (COLLAPSIBLE) -->
+    <div id="settings-panel" class="hidden bg-white border-b border-slate-200 p-6 transition-all">
+        <div class="max-w-4xl mx-auto">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">Configuración de Base de Datos (Supabase)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Project URL</label>
+                    <input type="text" id="supabase-url" placeholder="https://your-project.supabase.co" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Anon API Key</label>
+                    <input type="password" id="supabase-key" placeholder="sb_publishable_..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+            </div>
+            <div class="mt-4 flex justify-end gap-2">
+                <button onclick="toggleSettings()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50">Cancelar</button>
+                <button onclick="saveSupabaseConfig()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm">Guardar Conexión</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- COLUMNA IZQUIERDA: LISTA DE PROSPECTOS -->
+        <section class="lg:col-span-5 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Prospectos</h2>
+                <span id="prospects-count" class="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded-full font-semibold">0 prospectos</span>
+            </div>
+            <div id="prospects-list" class="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+                <div class="p-8 text-center text-slate-400">Cargando prospectos...</div>
+            </div>
+        </section>
+
+        <!-- COLUMNA DERECHA: DETALLES Y SERVICIOS -->
+        <section id="details-section" class="lg:col-span-7 bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col justify-between min-h-[500px]">
+            <div id="active-prospect-details" class="hidden">
+                <!-- Header del cliente activo -->
+                <div class="flex justify-between items-start gap-4 mb-6">
+                    <div>
+                        <h2 id="detail-name" class="text-2xl font-bold text-slate-900"></h2>
+                        <span id="detail-niche" class="inline-block bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-medium mt-1"></span>
+                    </div>
+                    <select id="detail-status" onchange="updateProspectStatus(this.value)" class="bg-indigo-50 border border-indigo-200 text-indigo-700 text-sm font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <option value="Nuevo">Nuevo</option>
+                        <option value="Contacto Inicial">Contacto Inicial</option>
+                        <option value="Demo Enviada">Demo Enviada</option>
+                        <option value="Cliente Activo">Cliente Activo</option>
+                        <option value="Perdido">Perdido</option>
+                    </select>
+                </div>
+
+                <!-- Lista de servicios actuales -->
+                <div class="mb-8">
+                    <h3 class="text-sm font-bold text-slate-700 mb-4">Servicios Contratados / Cotizados</h3>
+                    <div id="services-list" class="space-y-3">
+                        <!-- Se renderizan dinámicamente -->
+                    </div>
+                </div>
+
+                <!-- Formulario de asociación de servicios -->
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-5">
+                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Asociar Nuevo Servicio</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Servicio</label>
+                            <select id="new-service-name" onchange="suggestPrice(this.value)" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
+                                <option value="Landing Page de Reservas">Landing Page de Reservas ($250)</option>
+                                <option value="Página Web Multi-página">Página Web Multi-página ($450)</option>
+                                <option value="Menú / Catálogo Digital">Menú / Catálogo Digital ($150)</option>
+                                <option value="Mantenimiento Mensual">Mantenimiento Mensual ($50)</option>
+                                <option value="Otro">Otro servicio personalizado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Precio ($)</label>
+                            <input type="number" id="new-service-price" value="250" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Enlace Demo / Hosting (opcional)</label>
+                        <input type="url" id="new-service-url" placeholder="https://..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
+                    </div>
+                    <button onclick="addService()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm py-2 px-4 rounded-lg transition-colors">
+                        Agregar Servicio
+                    </button>
+                </div>
+            </div>
+
+            <!-- Estado vacío -->
+            <div id="empty-state" class="flex flex-col items-center justify-center py-16 text-center h-full">
+                <div class="text-slate-300 text-5xl mb-4">📂</div>
+                <h3 class="text-base font-bold text-slate-700 mb-1">Ningún prospecto seleccionado</h3>
+                <p class="text-sm text-slate-400">Selecciona un prospecto de la izquierda para ver y gestionar sus servicios contratados.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL PARA AGREGAR PROSPECTO -->
+    <div id="add-prospect-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Agregar Nuevo Prospecto</h3>
+                <button onclick="closeAddProspectModal()" class="text-slate-400 hover:text-slate-600 text-lg">×</button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre del Negocio</label>
+                    <input type="text" id="modal-name" placeholder="Ej. Picantería El Megalodón" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nicho</label>
+                    <select id="modal-niche" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                        <option value="Restaurante">Restaurante</option>
+                        <option value="Gimnasio">Gimnasio</option>
+                        <option value="Estética">Estética</option>
+                        <option value="Barbería">Barbería</option>
+                        <option value="Clínica">Clínica</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Contacto (WhatsApp o @handle)</label>
+                    <input type="text" id="modal-contact" placeholder="Ej. 0991234567 o @fuerzatotal" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Fecha Próximo Seguimiento (Opcional)</label>
+                    <input type="date" id="modal-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
+                <button onclick="closeAddProspectModal()" class="px-4 py-2 text-slate-600 text-sm font-medium hover:bg-slate-100 rounded-lg">Cancelar</button>
+                <button onclick="saveProspect()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm">Guardar Prospecto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIC SCRIPT -->
+    <script>
+        let dbClient = null;
+        let localProspects = [];
+        let localServices = [];
+        let selectedProspectId = null;
+
+        // Iniciar App
+        window.addEventListener('DOMContentLoaded', () => {
+            initDatabase();
+        });
+
+        // Inicializar conexión
+        function initDatabase() {
+            const url = localStorage.getItem('supabase_url');
+            const key = localStorage.getItem('supabase_key');
+            
+            if (url && key && window.supabase) {
+                try {
+                    document.getElementById('supabase-url').value = url;
+                    document.getElementById('supabase-key').value = key;
+                    dbClient = window.supabase.createClient(url, key);
+                    document.getElementById('connection-status').innerText = "🟢 Conectado a Supabase (Datos sincronizados en la nube)";
+                    document.getElementById('connection-status').className = "text-sm text-emerald-600 font-medium mt-1";
+                } catch (e) {
+                    console.error("Error al instanciar Supabase:", e);
+                }
+            }
+            loadInitialData();
+        }
+
+        // Cargar datos
+        async function loadInitialData() {
+            if (dbClient) {
+                try {
+                    const { data: prospects, error: err1 } = await dbClient.from('prospectos').select('*').order('created_at', { ascending: false });
+                    const { data: services, error: err2 } = await dbClient.from('servicios').select('*');
+                    
+                    if (!err1 && !err2) {
+                        localProspects = prospects || [];
+                        localServices = services || [];
+                        renderProspects();
+                        return;
+                    }
+                } catch (e) {
+                    console.error("No se pudo conectar a Supabase, cargando datos locales...", e);
+                }
+            }
+
+            // Datos de prueba locales si no está configurada la API
+            const storedP = localStorage.getItem('mock_prospects');
+            const storedS = localStorage.getItem('mock_services');
+
+            if (storedP && storedS) {
+                localProspects = JSON.parse(storedP);
+                localServices = JSON.parse(storedS);
+            } else {
+                localProspects = [
+                    { id: "1", nombre: "Picantería El Megalodón", nicho: "Restaurante", contacto: "0991234567", estado: "Cliente Activo", proximo_seguimiento: "" },
+                    { id: "2", nombre: "Gym Fuerza Total", nicho: "Gimnasio", contacto: "@fuerzatotal.gye", estado: "Demo Enviada", proximo_seguimiento: "2026-07-20" },
+                    { id: "3", nombre: "Estética Bella Piel", nicho: "Estética", contacto: "0987654321", estado: "Contacto Inicial", proximo_seguimiento: "2026-07-18" },
+                    { id: "4", nombre: "Barbería Clásica", nicho: "Barbería", contacto: "@barberia.clasica", estado: "Nuevo", proximo_seguimiento: "" }
+                ];
+                localServices = [
+                    { id: "101", prospecto_id: "1", servicio: "Landing Page de Reservas", precio: 250, estado: "Entregado", enlace_demo: "https://elmegalodon.example.com" },
+                    { id: "102", prospecto_id: "1", servicio: "Mantenimiento Mensual", precio: 50, estado: "En Progreso", enlace_demo: "" }
+                ];
+                saveToMockStorage();
+            }
+            renderProspects();
+        }
+
+        function saveToMockStorage() {
+            localStorage.setItem('mock_prospects', JSON.stringify(localProspects));
+            localStorage.setItem('mock_services', JSON.stringify(localServices));
+        }
+
+        // Renderizadores
+        function renderProspects() {
+            const listContainer = document.getElementById('prospects-list');
+            document.getElementById('prospects-count').innerText = `${localProspects.length} prospectos`;
+
+            if (localProspects.length === 0) {
+                listContainer.innerHTML = '<div class="p-8 text-center text-slate-400">No hay prospectos agregados.</div>';
+                return;
+            }
+
+            listContainer.innerHTML = localProspects.map(p => {
+                const isActive = p.id === selectedProspectId;
+                const contactDisplay = p.contacto.startsWith('@') 
+                    ? `<a href="https://instagram.com/${p.contacto.substring(1)}" target="_blank" class="text-indigo-600 hover:underline font-medium">${p.contacto}</a>`
+                    : `<a href="https://wa.me/${p.contacto}" target="_blank" class="text-indigo-600 hover:underline font-medium">WhatsApp: ${p.contacto}</a>`;
+
+                const dateDisplay = p.proximo_seguimiento 
+                    ? `<span class="text-xs text-slate-400 block mt-1">Seguimiento: ${formatDate(p.proximo_seguimiento)}</span>`
+                    : '<span class="text-xs text-slate-300 block mt-1">Sin fecha de seguimiento</span>';
+
+                return `
+                    <div onclick="selectProspect('${p.id}')" class="p-4 cursor-pointer hover:bg-slate-50 transition-colors ${isActive ? 'bg-indigo-50/50 border-l-4 border-indigo-600' : ''}">
+                        <div class="flex justify-between items-start gap-2">
+                            <div>
+                                <h4 class="font-bold text-slate-800 text-sm md:text-base">${p.nombre}</h4>
+                                <div class="text-xs mt-1 space-y-0.5">
+                                    <p class="text-slate-500">${contactDisplay}</p>
+                                    ${dateDisplay}
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-end gap-1">
+                                <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-medium">${p.nicho}</span>
+                                <span class="${getStatusClass(p.estado)} text-[10px] px-2 py-0.5 rounded-full font-semibold">${p.estado}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectProspect(id) {
+            selectedProspectId = id;
+            renderProspects();
+
+            const p = localProspects.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('active-prospect-details').classList.remove('hidden');
+
+            document.getElementById('detail-name').innerText = p.nombre;
+            document.getElementById('detail-niche').innerText = p.nicho;
+            document.getElementById('detail-status').value = p.estado;
+
+            renderServices(id);
+        }
+
+        function renderServices(prospectId) {
+            const container = document.getElementById('services-list');
+            const services = localServices.filter(s => s.prospecto_id === prospectId);
+
+            if (services.length === 0) {
+                container.innerHTML = `
+                    <div class="border border-dashed border-slate-200 rounded-lg p-6 text-center text-slate-400 text-sm">
+                        ⚠️ Aún no hay servicios asociados. Agrega el primero abajo.
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = services.map(s => {
+                const linkDisplay = s.enlace_demo 
+                    ? `<a href="${s.enlace_demo}" target="_blank" class="inline-flex items-center text-xs text-indigo-500 hover:underline mt-1">🔗 Ver Demo / Hosting</a>` 
+                    : '';
+
+                return `
+                    <div class="border border-slate-200 rounded-lg p-4 flex justify-between items-center bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-bold text-slate-800 text-sm">${s.servicio}</h4>
+                                <span class="text-sm font-semibold text-indigo-600">$${s.precio}</span>
+                            </div>
+                            ${linkDisplay}
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded px-2 py-1 focus:outline-none">
+                                <option value="Cotizado" ${s.estado === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
+                                <option value="En Progreso" ${s.estado === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
+                                <option value="Entregado" ${s.estado === 'Entregado' ? 'selected' : ''}>Entregado</option>
+                            </select>
+                            <button onclick="deleteService('${s.id}')" class="text-xs text-red-500 hover:text-red-700 hover:underline font-medium">Eliminar</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Cambios de Precios Automáticos
+        function suggestPrice(val) {
+            const priceInput = document.getElementById('new-service-price');
+            if (val === "Landing Page de Reservas") priceInput.value = 250;
+            else if (val === "Página Web Multi-página") priceInput.value = 450;
+            else if (val === "Menú / Catálogo Digital") priceInput.value = 150;
+            else if (val === "Mantenimiento Mensual") priceInput.value = 50;
+            else priceInput.value = "";
+        }
+
+        // Acciones: CRUD Prospectos
+        async function saveProspect() {
+            const nombre = document.getElementById('modal-name').value.trim();
+            const nicho = document.getElementById('modal-niche').value;
+            const contacto = document.getElementById('modal-contact').value.trim();
+            const proximo_seguimiento = document.getElementById('modal-date').value || null;
+
+            if (!nombre || !contacto) {
+                alert("Por favor llena el nombre del negocio y su contacto.");
+                return;
+            }
+
+            const nuevo = {
+                nombre,
+                nicho,
+                contacto,
+                estado: "Nuevo",
+                proximo_seguimiento
+            };
+
+            if (dbClient) {
+                const { data, error } = await dbClient.from('prospectos').insert([nuevo]).select();
+                if (!error && data) {
+                    localProspects.unshift(data[0]);
+                } else {
+                    alert("Error guardando en Supabase, reintentando de forma local");
+                }
+            } else {
+                nuevo.id = Date.now().toString();
+                localProspects.unshift(nuevo);
+                saveToMockStorage();
+            }
+
+            renderProspects();
+            closeAddProspectModal();
+        }
+
+        async function updateProspectStatus(nuevoEstado) {
+            if (!selectedProspectId) return;
+            const idx = localProspects.findIndex(p => p.id === selectedProspectId);
+            if (idx === -1) return;
+
+            localProspects[idx].estado = nuevoEstado;
+
+            if (dbClient) {
+                await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId);
+            } else {
+                saveToMockStorage();
+            }
+            renderProspects();
+        }
+
+        // Acciones: CRUD Servicios
+        async function addService() {
+            if (!selectedProspectId) return;
+
+            const dropdown = document.getElementById('new-service-name');
+            const servicio = dropdown.value === "Otro" ? "Servicio Personalizado" : dropdown.value;
+            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
+            const enlace_demo = document.getElementById('new-service-url').value.trim();
+
+            const nuevo = {
+                prospecto_id: selectedProspectId,
+                servicio,
+                precio,
+                estado: "Cotizado",
+                enlace_demo
+            };
+
+            if (dbClient) {
+                const { data, error } = await dbClient.from('servicios').insert([nuevo]).select();
+                if (!error && data) {
+                    localServices.push(data[0]);
+                }
+            } else {
+                nuevo.id = Date.now().toString();
+                localServices.push(nuevo);
+                saveToMockStorage();
+            }
+
+            renderServices(selectedProspectId);
+            document.getElementById('new-service-url').value = '';
+        }
+
+        async function updateServiceStatus(serviceId, nuevoEstado) {
+            const idx = localServices.findIndex(s => s.id === serviceId);
+            if (idx === -1) return;
+
+            localServices[idx].estado = nuevoEstado;
+
+            if (dbClient) {
+                await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId);
+            } else {
+                saveToMockStorage();
+            }
+        }
+
+        async function deleteService(serviceId) {
+            if (!confirm("¿Seguro que deseas eliminar este servicio?")) return;
+
+            localServices = localServices.filter(s => s.id !== serviceId);
+
+            if (dbClient) {
+                await dbClient.from('servicios').delete().eq('id', serviceId);
+            } else {
+                saveToMockStorage();
+            }
+            renderServices(selectedProspectId);
+        }
+
+        // Guardar configuración manual de Supabase
+        function saveSupabaseConfig() {
+            const url = document.getElementById('supabase-url').value.trim();
+            const key = document.getElementById('supabase-key').value.trim();
+
+            if (url && key) {
+                localStorage.setItem('supabase_url', url);
+                localStorage.setItem('supabase_key', key);
+                initDatabase();
+                toggleSettings();
+            } else {
+                alert("Por favor ingresa tanto la URL como la Key.");
+            }
+        }
+
+        // Helpers Visuales
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            panel.classList.toggle('hidden');
+        }
+
+        function openAddProspectModal() {
+            document.getElementById('add-prospect-modal').classList.remove('hidden');
+        }
+
+        function closeAddProspectModal() {
+            document.getElementById('add-prospect-modal').classList.add('hidden');
+            document.getElementById('modal-name').value = '';
+            document.getElementById('modal-contact').value = '';
+            document.getElementById('modal-date').value = '';
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Nuevo': return 'bg-slate-100 text-slate-700';
+                case 'Contacto Inicial': return 'bg-blue-100 text-blue-700';
+                case 'Demo Enviada': return 'bg-amber-100 text-amber-700';
+                case 'Cliente Activo': return 'bg-emerald-100 text-emerald-700';
+                case 'Perdido': return 'bg-red-100 text-red-700';
+                default: return 'bg-slate-100 text-slate-700';
+            }
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+    </script>
+</body>
+</html>
