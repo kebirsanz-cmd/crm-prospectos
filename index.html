@@ -187,9 +187,21 @@
                         </select>
                     </div>
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Contacto (WhatsApp o @handle)</label>
-                    <input type="text" id="modal-contact" placeholder="Ej. 0991234567 o @coach.juan" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="col-span-1">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Medio</label>
+                        <select id="modal-contact-method" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                            <option value="WhatsApp">WhatsApp</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="Facebook">Facebook</option>
+                            <option value="Llamada">Llamada</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Contacto (Número o Enlace / Handle)</label>
+                        <input type="text" id="modal-contact" placeholder="Ej. 0991234567 o @vitalgym" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Fecha Próximo Seguimiento (Opcional)</label>
@@ -269,9 +281,26 @@
 
             listContainer.innerHTML = localProspects.map(p => {
                 const isActive = p.id === selectedProspectId;
-                const contactDisplay = p.contacto.startsWith('@') 
-                    ? `<a href="https://instagram.com/${p.contacto.substring(1)}" target="_blank" class="text-indigo-600 hover:underline font-medium">${p.contacto}</a>`
-                    : `<a href="https://wa.me/${p.contacto}" target="_blank" class="text-indigo-600 hover:underline font-medium">WhatsApp: ${p.contacto}</a>`;
+                const medio = p.metodo_contacto || 'WhatsApp';
+                
+                let contactDisplay = '';
+                
+                if (medio === 'Instagram') {
+                    const cleanHandle = p.contacto.startsWith('@') ? p.contacto.substring(1) : p.contacto;
+                    const isUrl = p.contacto.startsWith('http');
+                    const link = isUrl ? p.contacto : `https://instagram.com/${cleanHandle}`;
+                    contactDisplay = `Instagram: <a href="${link}" target="_blank" class="text-indigo-600 hover:underline font-medium">${isUrl ? 'Ver Perfil' : p.contacto}</a>`;
+                } else if (medio === 'Facebook') {
+                    const isUrl = p.contacto.startsWith('http');
+                    const link = isUrl ? p.contacto : `https://facebook.com/${p.contacto}`;
+                    contactDisplay = `Facebook: <a href="${link}" target="_blank" class="text-indigo-600 hover:underline font-medium">${isUrl ? 'Ver Perfil' : p.contacto}</a>`;
+                } else if (medio === 'WhatsApp') {
+                    const cleanNum = p.contacto.replace(/\s+/g, '').replace('+', '');
+                    const link = p.contacto.startsWith('http') ? p.contacto : `https://wa.me/${cleanNum}`;
+                    contactDisplay = `WhatsApp: <a href="${link}" target="_blank" class="text-indigo-600 hover:underline font-medium">${p.contacto}</a>`;
+                } else {
+                    contactDisplay = `${medio}: <span class="text-slate-600 font-medium">${p.contacto}</span>`;
+                }
 
                 const dateDisplay = p.proximo_seguimiento 
                     ? `<span class="text-xs text-slate-400 block mt-1">Seguimiento: ${formatDate(p.proximo_seguimiento)}</span>`
@@ -283,7 +312,7 @@
                     <div onclick="selectProspect('${p.id}')" class="p-4 cursor-pointer hover:bg-slate-50 transition-colors ${isActive ? 'bg-indigo-50/50 border-l-4 border-indigo-600' : ''}">
                         <div class="flex justify-between items-start gap-2">
                             <div>
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2 flex-wrap">
                                     <h4 class="font-bold text-slate-800 text-sm md:text-base">${p.nombre}</h4>
                                     ${cityLabel}
                                 </div>
@@ -364,6 +393,7 @@
             const nombre = document.getElementById('modal-name').value.trim();
             const nicho = document.getElementById('modal-niche').value;
             const ciudad = document.getElementById('modal-city').value;
+            const metodo_contacto = document.getElementById('modal-contact-method').value;
             const contacto = document.getElementById('modal-contact').value.trim();
             const proximo_seguimiento = document.getElementById('modal-date').value || null;
 
@@ -376,6 +406,7 @@
                 nombre,
                 nicho,
                 ciudad,
+                metodo_contacto,
                 contacto,
                 estado: "Nuevo",
                 proximo_seguimiento
