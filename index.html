@@ -25,29 +25,39 @@
             }
         }
     </script>
+    <style>
+        /* Estilos para ocultar scrollbars estéticamente */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans min-h-screen">
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col">
 
     <!-- HEADER -->
-    <header class="bg-white border-b border-slate-200 px-8 py-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <header class="bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Prospectos — Desarrollo Web</h1>
-            <p id="connection-status" class="text-sm text-amber-600 font-medium mt-1">⚠️ Sin conectar: Configura Supabase para guardar en la nube.</p>
+            <h1 class="text-xl md:text-2xl font-bold text-slate-900">Prospectos — Desarrollo Web</h1>
+            <p id="connection-status" class="text-xs md:text-sm text-amber-600 font-medium mt-1">⚠️ Sin conectar: Configura Supabase.</p>
         </div>
-        <div class="flex gap-2">
-            <button onclick="toggleSettings()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-medium text-sm transition-colors">
-                ⚙️ Configurar API
+        <div class="flex gap-2 w-full md:w-auto">
+            <button onclick="toggleSettings()" class="flex-1 md:flex-none px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-medium text-xs md:text-sm transition-colors">
+                ⚙️ Configurar
             </button>
-            <button onclick="openAddProspectModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium text-sm transition-colors shadow-sm">
+            <button onclick="openAddProspectModal()" class="flex-1 md:flex-none px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium text-xs md:text-sm transition-colors shadow-sm">
                 + Agregar Prospecto
             </button>
         </div>
     </header>
 
     <!-- PANEL DE CONFIGURACIÓN (COLLAPSIBLE) -->
-    <div id="settings-panel" class="hidden bg-white border-b border-slate-200 p-6 transition-all">
+    <div id="settings-panel" class="hidden bg-white border-b border-slate-200 p-4 md:p-6 transition-all shrink-0">
         <div class="max-w-4xl mx-auto">
-            <h3 class="text-lg font-bold text-slate-800 mb-4">Configuración de Base de Datos (Supabase)</h3>
+            <h3 class="text-base md:text-lg font-bold text-slate-800 mb-4">Configuración de Base de Datos (Supabase)</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Project URL</label>
@@ -59,44 +69,49 @@
                 </div>
             </div>
             <div class="mt-4 flex justify-end gap-2">
-                <button onclick="toggleSettings()" class="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50">Cancelar</button>
-                <button onclick="saveSupabaseConfig()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 shadow-sm">Guardar Conexión</button>
+                <button onclick="toggleSettings()" class="px-3 py-2 border border-slate-200 text-slate-600 rounded-lg text-xs md:text-sm font-medium hover:bg-slate-50">Cancelar</button>
+                <button onclick="saveSupabaseConfig()" class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-xs md:text-sm font-medium hover:bg-indigo-700 shadow-sm">Guardar Conexión</button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- MAIN CONTAINER (CUPULA FLEXIBLE) -->
+    <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 overflow-hidden">
         
         <!-- COLUMNA IZQUIERDA: LISTA DE PROSPECTOS -->
-        <section class="lg:col-span-5 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+        <section id="list-section" class="lg:col-span-5 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col h-[calc(100vh-140px)] lg:h-[700px]">
+            <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
                 <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Prospectos</h2>
-                <span id="prospects-count" class="text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded-full font-semibold">0 prospectos</span>
+                <span id="prospects-count" class="text-[10px] md:text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded-full font-semibold">0 prospectos</span>
             </div>
-            <div id="prospects-list" class="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+            <div id="prospects-list" class="divide-y divide-slate-100 overflow-y-auto flex-1 no-scrollbar">
                 <div class="p-8 text-center text-slate-400">Cargando prospectos...</div>
             </div>
         </section>
 
         <!-- COLUMNA DERECHA: DETALLES Y SERVICIOS -->
-        <section id="details-section" class="lg:col-span-7 bg-white border border-slate-200 rounded-xl shadow-sm p-6 flex flex-col justify-between min-h-[500px]">
-            <div id="active-prospect-details" class="hidden">
+        <section id="details-section" class="hidden lg:flex lg:col-span-7 bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-6 flex-col justify-between h-[calc(100vh-140px)] lg:h-[700px]">
+            
+            <div id="active-prospect-details" class="hidden flex-col h-full overflow-y-auto no-scrollbar">
                 <!-- Header del cliente activo -->
-                <div class="flex justify-between items-start gap-4 mb-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4 mb-4 shrink-0">
                     <div>
-                        <div class="flex items-center gap-2">
-                            <h2 id="detail-name" class="text-2xl font-bold text-slate-900"></h2>
-                            <span id="detail-city" class="bg-indigo-100 text-indigo-800 text-[10px] uppercase font-bold px-2 py-0.5 rounded-md"></span>
+                        <!-- Botón para volver en Móvil -->
+                        <button onclick="backToList()" class="lg:hidden mb-2 text-xs font-semibold text-indigo-600 flex items-center gap-1">
+                            ← Volver a la lista
+                        </button>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h2 id="detail-name" class="text-xl md:text-2xl font-bold text-slate-900"></h2>
+                            <span id="detail-city" class="bg-indigo-100 text-indigo-800 text-[9px] uppercase font-bold px-2 py-0.5 rounded-md"></span>
                         </div>
-                        <div class="flex items-center gap-2 mt-1.5">
-                            <span id="detail-niche" class="inline-block bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-medium"></span>
-                            <button onclick="openEditProspectModal()" class="text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-semibold flex items-center gap-0.5">
+                        <div class="flex items-center gap-2 mt-1">
+                            <span id="detail-niche" class="inline-block bg-slate-100 text-slate-600 text-[10px] md:text-xs px-2.5 py-1 rounded-full font-medium"></span>
+                            <button onclick="openEditProspectModal()" class="text-[10px] md:text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-semibold flex items-center gap-0.5">
                                 ✏️ Editar Datos
                             </button>
                         </div>
                     </div>
-                    <select id="detail-status" onchange="updateProspectStatus(this.value)" class="bg-indigo-50 border border-indigo-200 text-indigo-700 text-sm font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                    <select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full md:w-auto bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs md:text-sm font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                         <option value="Nuevo">Nuevo</option>
                         <option value="Contacto Inicial">Contacto Inicial</option>
                         <option value="Demo Enviada">Demo Enviada</option>
@@ -106,20 +121,20 @@
                 </div>
 
                 <!-- Lista de servicios actuales -->
-                <div class="mb-8">
-                    <h3 class="text-sm font-bold text-slate-700 mb-4">Servicios Contratados / Cotizados</h3>
-                    <div id="services-list" class="space-y-3">
+                <div class="flex-1 mb-6 overflow-y-auto no-scrollbar min-h-[150px]">
+                    <h3 class="text-xs md:text-sm font-bold text-slate-700 mb-3">Servicios Contratados / Cotizados</h3>
+                    <div id="services-list" class="space-y-2">
                         <!-- Se renderizan dinámicamente -->
                     </div>
                 </div>
 
                 <!-- Formulario de asociación de servicios -->
-                <div class="bg-slate-50 border border-slate-100 rounded-xl p-5">
-                    <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Asociar Nuevo Servicio</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 shrink-0">
+                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Asociar Nuevo Servicio</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 mb-1">Servicio</label>
-                            <select id="new-service-name" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
+                            <label class="block text-[10px] font-semibold text-slate-500 mb-1">Servicio</label>
+                            <select id="new-service-name" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none">
                                 <option value="Landing Page de Ventas / Conversión">Landing Page de Ventas</option>
                                 <option value="Web Multi-página Profesional">Web Multi-página Profesional</option>
                                 <option value="Sistema de Reservas / Citas">Sistema de Reservas / Citas</option>
@@ -130,15 +145,15 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 mb-1">Precio acordado ($)</label>
-                            <input type="number" id="new-service-price" placeholder="Escribe el valor" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
+                            <label class="block text-[10px] font-semibold text-slate-500 mb-1">Precio acordado ($)</label>
+                            <input type="number" id="new-service-price" placeholder="Escribe el valor" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none">
                         </div>
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Enlace Demo / Hosting (opcional)</label>
-                        <input type="url" id="new-service-url" placeholder="https://..." class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
+                    <div class="mb-3">
+                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Enlace Demo / Hosting (opcional)</label>
+                        <input type="url" id="new-service-url" placeholder="https://..." class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none">
                     </div>
-                    <button onclick="addService()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm py-2 px-4 rounded-lg transition-colors">
+                    <button onclick="addService()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs md:text-sm py-2 px-4 rounded-lg transition-colors">
                         Agregar Servicio
                     </button>
                 </div>
@@ -147,8 +162,8 @@
             <!-- Estado vacío -->
             <div id="empty-state" class="flex flex-col items-center justify-center py-16 text-center h-full">
                 <div class="text-slate-300 text-5xl mb-4">📂</div>
-                <h3 class="text-base font-bold text-slate-700 mb-1">Ningún prospecto seleccionado</h3>
-                <p class="text-sm text-slate-400">Selecciona un prospecto de la izquierda para ver y gestionar sus servicios contratados.</p>
+                <h3 class="text-sm md:text-base font-bold text-slate-700 mb-1">Ningún prospecto seleccionado</h3>
+                <p class="text-xs text-slate-400">Selecciona un prospecto de la izquierda para ver y gestionar sus servicios.</p>
             </div>
         </section>
     </main>
@@ -243,8 +258,8 @@
                     document.getElementById('supabase-url').value = url;
                     document.getElementById('supabase-key').value = key;
                     dbClient = window.supabase.createClient(url, key);
-                    document.getElementById('connection-status').innerText = "🟢 Conectado a Supabase (Datos sincronizados en la nube)";
-                    document.getElementById('connection-status').className = "text-sm text-emerald-600 font-medium mt-1";
+                    document.getElementById('connection-status').innerText = "🟢 Conectado";
+                    document.getElementById('connection-status').className = "text-xs md:text-sm text-emerald-600 font-medium mt-1";
                 } catch (e) {
                     console.error("Error al instanciar Supabase:", e);
                 }
@@ -344,7 +359,15 @@
             const p = localProspects.find(item => item.id === id);
             if (!p) return;
 
+            // Transición a vista de detalles en móvil
+            const isMobile = window.innerWidth < 1024;
+            if (isMobile) {
+                document.getElementById('list-section').classList.add('hidden');
+                document.getElementById('details-section').classList.remove('hidden');
+            }
+
             document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('active-prospect-details').classList.add('flex');
             document.getElementById('active-prospect-details').classList.remove('hidden');
 
             document.getElementById('detail-name').innerText = p.nombre;
@@ -353,6 +376,11 @@
             document.getElementById('detail-status').value = p.estado;
 
             renderServices(id);
+        }
+
+        function backToList() {
+            document.getElementById('details-section').classList.add('hidden');
+            document.getElementById('list-section').classList.remove('hidden');
         }
 
         function renderServices(prospectId) {
@@ -377,8 +405,8 @@
                     <div class="border border-slate-200 rounded-lg p-4 flex justify-between items-center bg-white shadow-sm hover:shadow-md transition-shadow">
                         <div>
                             <div class="flex items-center gap-2">
-                                <h4 class="font-bold text-slate-800 text-sm">${s.servicio}</h4>
-                                <span class="text-sm font-semibold text-indigo-600">$${s.precio}</span>
+                                <h4 class="font-bold text-slate-800 text-xs md:text-sm">${s.servicio}</h4>
+                                <span class="text-xs md:text-sm font-semibold text-indigo-600">$${s.precio}</span>
                             </div>
                             ${linkDisplay}
                         </div>
@@ -584,6 +612,24 @@
             const parts = dateStr.split('-');
             return `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
+
+        // Escuchar cambios de tamaño para ajustar vistas automáticamente
+        window.addEventListener('resize', () => {
+            const isMobile = window.innerWidth < 1024;
+            if (!isMobile) {
+                document.getElementById('list-section').classList.remove('hidden');
+                document.getElementById('details-section').classList.remove('hidden');
+                document.getElementById('details-section').classList.add('flex');
+            } else {
+                if (selectedProspectId) {
+                    document.getElementById('list-section').classList.add('hidden');
+                    document.getElementById('details-section').classList.remove('hidden');
+                } else {
+                    document.getElementById('list-section').classList.remove('hidden');
+                    document.getElementById('details-section').classList.add('hidden');
+                }
+            }
+        });
     </script>
 </body>
 </html>
