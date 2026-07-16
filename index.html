@@ -85,8 +85,11 @@
                 <!-- Header del cliente activo -->
                 <div class="flex justify-between items-start gap-4 mb-6">
                     <div>
-                        <h2 id="detail-name" class="text-2xl font-bold text-slate-900"></h2>
-                        <span id="detail-niche" class="inline-block bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-medium mt-1"></span>
+                        <div class="flex items-center gap-2">
+                            <h2 id="detail-name" class="text-2xl font-bold text-slate-900"></h2>
+                            <span id="detail-city" class="bg-indigo-100 text-indigo-800 text-[10px] uppercase font-bold px-2 py-0.5 rounded-md"></span>
+                        </div>
+                        <span id="detail-niche" class="inline-block bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-full font-medium mt-1.5"></span>
                     </div>
                     <select id="detail-status" onchange="updateProspectStatus(this.value)" class="bg-indigo-50 border border-indigo-200 text-indigo-700 text-sm font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
                         <option value="Nuevo">Nuevo</option>
@@ -111,16 +114,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-500 mb-1">Servicio</label>
-                            <select id="new-service-name" onchange="suggestPrice(this.value)" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
-                                <option value="Landing Page de Reservas">Landing Page de Reservas</option>
-                                <option value="Página Web Multi-página">Página Web Multi-página</option>
-                                <option value="Menú / Catálogo Digital">Menú / Catálogo Digital</option>
-                                <option value="Mantenimiento Mensual">Mantenimiento Mensual</option>
-                                <option value="Otro">Otro servicio personalizado</option>
+                            <select id="new-service-name" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
+                                <option value="Landing Page de Ventas / Conversión">Landing Page de Ventas</option>
+                                <option value="Web Multi-página Profesional">Web Multi-página Profesional</option>
+                                <option value="Sistema de Reservas / Citas">Sistema de Reservas / Citas</option>
+                                <option value="Catálogo Digital de Productos">Catálogo Digital de Productos</option>
+                                <option value="Tienda Online Completa (E-commerce)">Tienda Online Completa</option>
+                                <option value="Mantenimiento Mensual y Hosting">Mantenimiento Mensual</option>
+                                <option value="Otro servicio personalizado">Otro servicio personalizado</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-500 mb-1">Precio ($)</label>
+                            <label class="block text-xs font-semibold text-slate-500 mb-1">Precio acordado ($)</label>
                             <input type="number" id="new-service-price" placeholder="Escribe el valor" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none">
                         </div>
                     </div>
@@ -152,23 +157,38 @@
             </div>
             <div class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre del Negocio</label>
-                    <input type="text" id="modal-name" placeholder="Ej. Picantería El Megalodón" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre del Negocio / Cliente</label>
+                    <input type="text" id="modal-name" placeholder="Ej. Coach Juan o Sabor al carbón" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nicho</label>
-                    <select id="modal-niche" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
-                        <option value="Restaurante">Restaurante</option>
-                        <option value="Gimnasio">Gimnasio</option>
-                        <option value="Estética">Estética</option>
-                        <option value="Barbería">Barbería</option>
-                        <option value="Clínica">Clínica</option>
-                        <option value="Otro">Otro</option>
-                    </select>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Nicho / Categoría</label>
+                        <select id="modal-niche" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                            <option value="Restaurante">Restaurante / Comida</option>
+                            <option value="Entrenador Personal">Entrenador / Fitness</option>
+                            <option value="Fármacos / Suplementación">Fármacos / Suple</option>
+                            <option value="Estética / Belleza">Estética / Belleza</option>
+                            <option value="Barbería / Peluquería">Barbería / Pelu</option>
+                            <option value="Clínica / Profesional">Clínica / Consultor</option>
+                            <option value="E-commerce / Tienda">E-commerce / Tienda</option>
+                            <option value="Otro">Otro sector</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Ciudad</label>
+                        <select id="modal-city" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                            <option value="Guayaquil">Guayaquil</option>
+                            <option value="Quito">Quito</option>
+                            <option value="Cuenca">Cuenca</option>
+                            <option value="Manta">Manta</option>
+                            <option value="Machala">Machala</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Contacto (WhatsApp o @handle)</label>
-                    <input type="text" id="modal-contact" placeholder="Ej. 0991234567 o @fuerzatotal" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                    <input type="text" id="modal-contact" placeholder="Ej. 0991234567 o @coach.juan" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-500 mb-1">Fecha Próximo Seguimiento (Opcional)</label>
@@ -256,11 +276,16 @@
                     ? `<span class="text-xs text-slate-400 block mt-1">Seguimiento: ${formatDate(p.proximo_seguimiento)}</span>`
                     : '<span class="text-xs text-slate-300 block mt-1">Sin fecha de seguimiento</span>';
 
+                const cityLabel = p.ciudad ? `<span class="bg-indigo-50 text-indigo-600 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">${p.ciudad}</span>` : '';
+
                 return `
                     <div onclick="selectProspect('${p.id}')" class="p-4 cursor-pointer hover:bg-slate-50 transition-colors ${isActive ? 'bg-indigo-50/50 border-l-4 border-indigo-600' : ''}">
                         <div class="flex justify-between items-start gap-2">
                             <div>
-                                <h4 class="font-bold text-slate-800 text-sm md:text-base">${p.nombre}</h4>
+                                <div class="flex items-center gap-2">
+                                    <h4 class="font-bold text-slate-800 text-sm md:text-base">${p.nombre}</h4>
+                                    ${cityLabel}
+                                </div>
                                 <div class="text-xs mt-1 space-y-0.5">
                                     <p class="text-slate-500">${contactDisplay}</p>
                                     ${dateDisplay}
@@ -287,6 +312,7 @@
             document.getElementById('active-prospect-details').classList.remove('hidden');
 
             document.getElementById('detail-name').innerText = p.nombre;
+            document.getElementById('detail-city').innerText = p.ciudad || 'No especificada';
             document.getElementById('detail-niche').innerText = p.nicho;
             document.getElementById('detail-status').value = p.estado;
 
@@ -333,14 +359,10 @@
             }).join('');
         }
 
-        function suggestPrice(val) {
-            const priceInput = document.getElementById('new-service-price');
-            priceInput.value = ""; // No auto-completa precios para dar flexibilidad
-        }
-
         async function saveProspect() {
             const nombre = document.getElementById('modal-name').value.trim();
             const nicho = document.getElementById('modal-niche').value;
+            const ciudad = document.getElementById('modal-city').value;
             const contacto = document.getElementById('modal-contact').value.trim();
             const proximo_seguimiento = document.getElementById('modal-date').value || null;
 
@@ -352,6 +374,7 @@
             const nuevo = {
                 nombre,
                 nicho,
+                ciudad,
                 contacto,
                 estado: "Nuevo",
                 proximo_seguimiento
@@ -389,7 +412,7 @@
             if (!selectedProspectId) return;
 
             const dropdown = document.getElementById('new-service-name');
-            const servicio = dropdown.value === "Otro" ? "Servicio Personalizado" : dropdown.value;
+            const servicio = dropdown.value;
             const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
             const enlace_demo = document.getElementById('new-service-url').value.trim();
 
@@ -409,6 +432,7 @@
             }
 
             renderServices(selectedProspectId);
+            document.getElementById('new-service-price').value = '';
             document.getElementById('new-service-url').value = '';
         }
 
