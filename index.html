@@ -231,32 +231,10 @@
                 }
             }
 
-            // Datos de prueba locales si no está configurada la API
-            const storedP = localStorage.getItem('mock_prospects');
-            const storedS = localStorage.getItem('mock_services');
-
-            if (storedP && storedS) {
-                localProspects = JSON.parse(storedP);
-                localServices = JSON.parse(storedS);
-            } else {
-                localProspects = [
-                    { id: "1", nombre: "Picantería El Megalodón", nicho: "Restaurante", contacto: "0991234567", estado: "Cliente Activo", proximo_seguimiento: "" },
-                    { id: "2", nombre: "Gym Fuerza Total", nicho: "Gimnasio", contacto: "@fuerzatotal.gye", estado: "Demo Enviada", proximo_seguimiento: "2026-07-20" },
-                    { id: "3", nombre: "Estética Bella Piel", nicho: "Estética", contacto: "0987654321", estado: "Contacto Inicial", proximo_seguimiento: "2026-07-18" },
-                    { id: "4", nombre: "Barbería Clásica", nicho: "Barbería", contacto: "@barberia.clasica", estado: "Nuevo", proximo_seguimiento: "" }
-                ];
-                localServices = [
-                    { id: "101", prospecto_id: "1", servicio: "Landing Page de Reservas", precio: 250, estado: "Entregado", enlace_demo: "https://elmegalodon.example.com" },
-                    { id: "102", prospecto_id: "1", servicio: "Mantenimiento Mensual", precio: 50, estado: "En Progreso", enlace_demo: "" }
-                ];
-                saveToMockStorage();
-            }
+            // Si no está configurado, arranca vacío (sin datos quemados de relleno)
+            localProspects = [];
+            localServices = [];
             renderProspects();
-        }
-
-        function saveToMockStorage() {
-            localStorage.setItem('mock_prospects', JSON.stringify(localProspects));
-            localStorage.setItem('mock_services', JSON.stringify(localServices));
         }
 
         // Renderizadores
@@ -265,7 +243,7 @@
             document.getElementById('prospects-count').innerText = `${localProspects.length} prospectos`;
 
             if (localProspects.length === 0) {
-                listContainer.innerHTML = '<div class="p-8 text-center text-slate-400">No hay prospectos agregados.</div>';
+                listContainer.innerHTML = '<div class="p-8 text-center text-slate-400">No hay prospectos agregados aún. Haz clic en "+ Agregar Prospecto".</div>';
                 return;
             }
 
@@ -316,6 +294,7 @@
             renderServices(id);
         }
 
+        // Las demás funciones se mantienen exactamente igual
         function renderServices(prospectId) {
             const container = document.getElementById('services-list');
             const services = localServices.filter(s => s.prospecto_id === prospectId);
@@ -356,7 +335,6 @@
             }).join('');
         }
 
-        // Cambios de Precios Automáticos
         function suggestPrice(val) {
             const priceInput = document.getElementById('new-service-price');
             if (val === "Landing Page de Reservas") priceInput.value = 250;
@@ -366,7 +344,6 @@
             else priceInput.value = "";
         }
 
-        // Acciones: CRUD Prospectos
         async function saveProspect() {
             const nombre = document.getElementById('modal-name').value.trim();
             const nicho = document.getElementById('modal-niche').value;
@@ -391,12 +368,10 @@
                 if (!error && data) {
                     localProspects.unshift(data[0]);
                 } else {
-                    alert("Error guardando en Supabase, reintentando de forma local");
+                    alert("Error guardando en Supabase.");
                 }
             } else {
-                nuevo.id = Date.now().toString();
-                localProspects.unshift(nuevo);
-                saveToMockStorage();
+                alert("La base de datos no está configurada.");
             }
 
             renderProspects();
@@ -412,13 +387,10 @@
 
             if (dbClient) {
                 await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId);
-            } else {
-                saveToMockStorage();
             }
             renderProspects();
         }
 
-        // Acciones: CRUD Servicios
         async function addService() {
             if (!selectedProspectId) return;
 
@@ -440,10 +412,6 @@
                 if (!error && data) {
                     localServices.push(data[0]);
                 }
-            } else {
-                nuevo.id = Date.now().toString();
-                localServices.push(nuevo);
-                saveToMockStorage();
             }
 
             renderServices(selectedProspectId);
@@ -458,8 +426,6 @@
 
             if (dbClient) {
                 await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId);
-            } else {
-                saveToMockStorage();
             }
         }
 
@@ -470,13 +436,10 @@
 
             if (dbClient) {
                 await dbClient.from('servicios').delete().eq('id', serviceId);
-            } else {
-                saveToMockStorage();
             }
             renderServices(selectedProspectId);
         }
 
-        // Guardar configuración manual de Supabase
         function saveSupabaseConfig() {
             const url = document.getElementById('supabase-url').value.trim();
             const key = document.getElementById('supabase-key').value.trim();
@@ -491,7 +454,6 @@
             }
         }
 
-        // Helpers Visuales
         function toggleSettings() {
             const panel = document.getElementById('settings-panel');
             panel.classList.toggle('hidden');
