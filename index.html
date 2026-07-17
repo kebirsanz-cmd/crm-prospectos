@@ -3,188 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prospectos — Desarrollo Web</title>
-    <!-- Tailwind CSS para el diseño premium -->
+    <title>Vertex CRM — Clientes • Servicios • Seguimiento</title>
+    <!-- Favicon Oficial Vertex Web -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- SDK de Supabase primero -->
+    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        slate: {
-                            950: '#0f172a',
-                        },
-                        indigo: {
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                        }
+                        vertexDark: '#0B0F19',
+                        vertexCard: '#161D30',
+                        vertexBlue: '#00D2FF',
+                        vertexTurquoise: '#00F5D4'
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Estilos para ocultar scrollbars estéticamente */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col">
+<body class="bg-vertexDark text-slate-50 font-sans min-h-screen flex flex-col">
 
-    <!-- HEADER -->
-    <header class="bg-white border-b border-slate-200 px-4 md:px-8 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shrink-0">
-        <div>
-            <h1 class="text-xl md:text-2xl font-bold text-slate-900">Prospectos — Desarrollo Web</h1>
-            <p id="connection-status" class="text-xs md:text-sm text-amber-600 font-medium mt-1">⚠️ Sin conectar: Configura Supabase.</p>
+    <!-- HEADER PREMIUM -->
+    <header class="bg-vertexCard/50 border-b border-slate-800/80 px-4 md:px-8 py-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shrink-0 backdrop-blur-md">
+        <div class="flex items-center justify-between w-full lg:w-auto">
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold tracking-tight text-slate-50 flex items-center gap-2">
+                    <span class="text-vertexBlue">⚡</span> Vertex CRM
+                </h1>
+                <p class="text-xs text-slate-400 mt-0.5">Clientes • Servicios • Seguimiento</p>
+            </div>
+            <button onclick="toggleSettings()" class="lg:hidden p-2 text-slate-400 hover:text-vertexBlue transition-colors" title="Configurar Conexión">
+                ⚙️
+            </button>
         </div>
-        <div class="flex gap-2 w-full md:w-auto">
-            <button onclick="toggleSettings()" class="flex-1 md:flex-none px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-medium text-xs md:text-sm transition-colors">
-                ⚙️ Configurar
-            </button>
-            <button onclick="openAddProspectModal()" class="flex-1 md:flex-none px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium text-xs md:text-sm transition-colors shadow-sm">
-                + Agregar Prospecto
-            </button>
+
+        <!-- Barra de búsqueda integrada y acciones -->
+        <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto items-stretch sm:items-center flex-1 lg:justify-end max-w-3xl">
+            <div class="relative flex-1 max-w-md">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">🔍</span>
+                <input type="text" id="search-bar" oninput="filterProspects()" placeholder="Buscar por negocio, ciudad o nicho..." class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
+            </div>
+            
+            <div class="flex gap-2 shrink-0">
+                <button onclick="toggleSettings()" class="hidden lg:flex p-2.5 bg-slate-800/50 border border-slate-800 hover:border-vertexBlue text-slate-300 rounded-xl transition-all" title="Configurar Conexión">
+                    ⚙️
+                </button>
+                <button onclick="openAddProspectModal()" class="flex-1 sm:flex-none px-4 py-2 bg-vertexBlue text-slate-950 font-bold rounded-xl text-sm hover:bg-[#00B8E0] hover:shadow-[0_0_15px_rgba(0,210,255,0.4)] transition-all duration-200 shadow-sm">
+                    + Cliente
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- PANEL DE CONFIGURACIÓN (COLLAPSIBLE) -->
-    <div id="settings-panel" class="hidden bg-white border-b border-slate-200 p-4 md:p-6 transition-all shrink-0">
+    <!-- ESTADO DE CONEXIÓN SUBHEADER -->
+    <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium text-slate-500 flex justify-between items-center shrink-0">
+        <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar: Configura los parámetros de Supabase.</span>
+        <span id="live-date" class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.1</span>
+    </div>
+
+    <!-- PANEL DE CONFIGURACIÓN DE CREDENCIALES (COLLAPSIBLE) -->
+    <div id="settings-panel" class="hidden bg-vertexCard border-b border-slate-800 p-4 md:p-6 transition-all shrink-0">
         <div class="max-w-4xl mx-auto">
-            <h3 class="text-base md:text-lg font-bold text-slate-800 mb-4">Configuración de Base de Datos (Supabase)</h3>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Configuración de Base de Datos (Supabase)</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Project URL</label>
-                    <input type="text" id="supabase-url" placeholder="https://your-project.supabase.co" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Project URL</label>
+                    <input type="text" id="supabase-url" placeholder="https://your-project.supabase.co" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Anon API Key</label>
-                    <input type="password" id="supabase-key" placeholder="sb_publishable_..." class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label>
+                    <input type="password" id="supabase-key" placeholder="sb_publishable_..." class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
                 </div>
             </div>
             <div class="mt-4 flex justify-end gap-2">
-                <button onclick="toggleSettings()" class="px-3 py-2 border border-slate-200 text-slate-600 rounded-lg text-xs md:text-sm font-medium hover:bg-slate-50">Cancelar</button>
-                <button onclick="saveSupabaseConfig()" class="px-3 py-2 bg-indigo-600 text-white rounded-lg text-xs md:text-sm font-medium hover:bg-indigo-700 shadow-sm">Guardar Conexión</button>
+                <button onclick="toggleSettings()" class="px-4 py-2 border border-slate-800 text-slate-400 rounded-lg text-xs font-medium hover:bg-slate-900">Cancelar</button>
+                <button onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0] shadow-sm">Guardar Conexión</button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN CONTAINER (CUPULA FLEXIBLE) -->
-    <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8 overflow-hidden">
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
         
-        <!-- COLUMNA IZQUIERDA: LISTA DE PROSPECTOS -->
-        <section id="list-section" class="lg:col-span-5 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden flex flex-col h-[calc(100vh-140px)] lg:h-[700px]">
-            <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
-                <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Prospectos</h2>
-                <span id="prospects-count" class="text-[10px] md:text-xs bg-slate-200 text-slate-700 px-2 py-1 rounded-full font-semibold">0 prospectos</span>
+        <!-- SECCIÓN IZQUIERDA: LISTA DE CLIENTES COMPACTA -->
+        <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl overflow-hidden flex flex-col h-[calc(100vh-165px)] lg:h-[680px]">
+            <div class="px-4 py-3 border-b border-slate-800/60 flex justify-between items-center bg-vertexCard/50 shrink-0">
+                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Prospectos en Pipeline</h2>
+                <span id="prospects-count" class="text-[10px] md:text-xs bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full font-semibold">0</span>
             </div>
-            <div id="prospects-list" class="divide-y divide-slate-100 overflow-y-auto flex-1 no-scrollbar">
-                <div class="p-8 text-center text-slate-400">Cargando prospectos...</div>
+            <div id="prospects-list" class="divide-y divide-slate-800/40 overflow-y-auto flex-1 no-scrollbar p-2 space-y-2">
+                <div class="p-8 text-center text-slate-500 text-sm">Cargando base de datos...</div>
             </div>
         </section>
 
-        <!-- COLUMNA DERECHA: DETALLES Y SERVICIOS -->
-        <section id="details-section" class="hidden lg:flex lg:col-span-7 bg-white border border-slate-200 rounded-xl shadow-sm p-4 md:p-6 flex-col justify-between h-[calc(100vh-140px)] lg:h-[700px]">
+        <!-- SECCIÓN DERECHA: PANTALLA DE DETALLES Y ACCIONES PREMIUM -->
+        <section id="details-section" class="hidden lg:flex lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px]">
             
             <div id="active-prospect-details" class="hidden flex-col h-full overflow-y-auto no-scrollbar">
-                <!-- Header del cliente activo -->
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 pb-4 mb-4 shrink-0">
-                    <div>
-                        <!-- Botón para volver en Móvil -->
-                        <button onclick="backToList()" class="lg:hidden mb-2 text-xs font-semibold text-indigo-600 flex items-center gap-1">
-                            ← Volver a la lista
-                        </button>
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <h2 id="detail-name" class="text-xl md:text-2xl font-bold text-slate-900"></h2>
-                            <span id="detail-city" class="bg-indigo-100 text-indigo-800 text-[9px] uppercase font-bold px-2 py-0.5 rounded-md"></span>
-                        </div>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span id="detail-niche" class="inline-block bg-slate-100 text-slate-600 text-[10px] md:text-xs px-2.5 py-1 rounded-full font-medium"></span>
-                            <button onclick="openEditProspectModal()" class="text-[10px] md:text-xs text-indigo-600 hover:text-indigo-800 hover:underline font-semibold flex items-center gap-0.5">
-                                ✏️ Editar Datos
+                
+                <!-- SUPER TARJETA DE RESUMEN DEL CLIENTE (DASHBOARD PERSONAL) -->
+                <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 mb-6 shrink-0 shadow-lg relative overflow-hidden">
+                    <div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-vertexBlue to-vertexTurquoise"></div>
+                    
+                    <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-slate-800/60">
+                        <div>
+                            <button onclick="backToList()" class="lg:hidden mb-2.5 text-xs font-bold text-vertexBlue flex items-center gap-1">
+                                🎒 Volver a la lista
                             </button>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h2 id="detail-name" class="text-xl md:text-2xl font-bold tracking-tight text-slate-50"></h2>
+                                <span id="detail-city" class="bg-vertexBlue/10 text-vertexBlue border border-vertexBlue/20 text-[9px] uppercase font-black px-2 py-0.5 rounded-md"></span>
+                            </div>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span id="detail-niche" class="bg-slate-800/80 text-slate-300 text-[10px] md:text-xs px-2.5 py-0.5 rounded-full font-medium border border-slate-700/50"></span>
+                            </div>
+                        </div>
+                        <div class="w-full sm:w-auto shrink-0">
+                            <select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2 focus:outline-none focus:border-vertexBlue transition-all">
+                                <option value="Nuevo">Nuevo</option>
+                                <option value="Contacto Inicial">Contacto Inicial</option>
+                                <option value="Demo Enviada">Demo Enviada</option>
+                                <option value="Cliente Activo">Cliente Activo</option>
+                                <option value="Perdido">Perdido</option>
+                            </select>
                         </div>
                     </div>
-                    <select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full md:w-auto bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs md:text-sm font-semibold rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                        <option value="Nuevo">Nuevo</option>
-                        <option value="Contacto Inicial">Contacto Inicial</option>
-                        <option value="Demo Enviada">Demo Enviada</option>
-                        <option value="Cliente Activo">Cliente Activo</option>
-                        <option value="Perdido">Perdido</option>
-                    </select>
+
+                    <!-- REJILLA DE DATOS RESUMEN -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center">
+                        <div class="border-r border-slate-800/60 last:border-none">
+                            <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Valor Cuenta</span>
+                            <span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span>
+                        </div>
+                        <div class="sm:border-r border-slate-800/60 last:border-none">
+                            <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Servicios</span>
+                            <span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span>
+                        </div>
+                        <div class="border-r border-slate-800/60 last:border-none">
+                            <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Seguimiento</span>
+                            <span id="summary-next-date" class="text-xs font-semibold text-slate-300 mt-1 block">-</span>
+                        </div>
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Acciones</span>
+                            <div class="flex gap-2 justify-center mt-1">
+                                <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue hover:underline font-bold" title="Editar Ficha">✏️ Editar</button>
+                                <span class="text-slate-700">|</span>
+                                <button onclick="deleteProspect(selectedProspectId)" class="text-xs text-rose-500 hover:underline font-bold" title="Eliminar Cliente">🗑️ Borrar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Lista de servicios actuales -->
-                <div class="flex-1 mb-6 overflow-y-auto no-scrollbar min-h-[150px]">
-                    <h3 class="text-xs md:text-sm font-bold text-slate-700 mb-3">Servicios Contratados / Cotizados</h3>
+                <!-- SECCIÓN DE ACCIONES RÁPIDAS (BOTONES DE UN SOLO TOQUE) -->
+                <div class="mb-6 shrink-0">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">Canales de Comunicación Rápida</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-2" id="quick-actions-container">
+                        <!-- Renderizado dinámico según el número/enlace -->
+                    </div>
+                </div>
+
+                <!-- SECCIÓN: LISTA DE SERVICIOS -->
+                <div class="flex-1 mb-6 overflow-y-auto no-scrollbar min-h-[160px]">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Portafolio de Servicios Cotizados</h3>
+                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue hover:text-[#00B8E0] font-bold flex items-center gap-1 bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue transition-all">
+                            + Agregar Servicio
+                        </button>
+                    </div>
                     <div id="services-list" class="space-y-2">
                         <!-- Se renderizan dinámicamente -->
                     </div>
                 </div>
-
-                <!-- Formulario de asociación de servicios -->
-                <div class="bg-slate-50 border border-slate-100 rounded-xl p-4 shrink-0">
-                    <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-3">Asociar Nuevo Servicio</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-                        <div>
-                            <label class="block text-[10px] font-semibold text-slate-500 mb-1">Servicio</label>
-                            <select id="new-service-name" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none">
-                                <option value="Landing Page de Ventas / Conversión">Landing Page de Ventas</option>
-                                <option value="Web Multi-página Profesional">Web Multi-página Profesional</option>
-                                <option value="Sistema de Reservas / Citas">Sistema de Reservas / Citas</option>
-                                <option value="Catálogo Digital de Productos">Catálogo Digital de Productos</option>
-                                <option value="Tienda Online Completa (E-commerce)">Tienda Online Completa</option>
-                                <option value="Mantenimiento Mensual y Hosting">Mantenimiento Mensual</option>
-                                <option value="Otro servicio personalizado">Otro servicio personalizado</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-semibold text-slate-500 mb-1">Precio acordado ($)</label>
-                            <input type="number" id="new-service-price" placeholder="Escribe el valor" class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none">
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="block text-[10px] font-semibold text-slate-500 mb-1">Enlace Demo / Hosting (opcional)</label>
-                        <input type="url" id="new-service-url" placeholder="https://..." class="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs md:text-sm focus:outline-none">
-                    </div>
-                    <button onclick="addService()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs md:text-sm py-2 px-4 rounded-lg transition-colors">
-                        Agregar Servicio
-                    </button>
-                </div>
             </div>
 
-            <!-- Estado vacío -->
+            <!-- ESTADO VACÍO POR DEFECTO -->
             <div id="empty-state" class="flex flex-col items-center justify-center py-16 text-center h-full">
-                <div class="text-slate-300 text-5xl mb-4">📂</div>
-                <h3 class="text-sm md:text-base font-bold text-slate-700 mb-1">Ningún prospecto seleccionado</h3>
-                <p class="text-xs text-slate-400">Selecciona un prospecto de la izquierda para ver y gestionar sus servicios.</p>
+                <div class="w-16 h-16 bg-slate-900/60 rounded-2xl flex items-center justify-center border border-slate-800 text-2xl text-slate-500 mb-4 shadow-inner">📂</div>
+                <h3 class="text-sm font-bold text-slate-300 mb-1">Ningún cliente seleccionado</h3>
+                <p class="text-xs text-slate-500 max-w-xs mx-auto">Selecciona un prospecto de la columna izquierda para ver la súper tarjeta de control y sus servicios activos.</p>
             </div>
         </section>
     </main>
 
-    <!-- MODAL PARA AGREGAR / EDITAR PROSPECTO -->
-    <div id="add-prospect-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
-                <h3 id="modal-title" class="font-bold text-slate-800">Agregar Nuevo Prospecto</h3>
-                <button onclick="closeAddProspectModal()" class="text-slate-400 hover:text-slate-600 text-lg">×</button>
+    <!-- MODAL 1: REGISTRAR / EDITAR PROSPECTO -->
+    <div id="add-prospect-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-vertexCard border border-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transition-all transform scale-100">
+            <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
+                <h3 id="modal-title" class="font-bold tracking-tight text-slate-100">Agregar Nuevo Prospecto</h3>
+                <button onclick="closeAddProspectModal()" class="text-slate-400 hover:text-slate-200 text-xl font-bold px-2">×</button>
             </div>
             <div class="p-6 space-y-4">
                 <input type="hidden" id="modal-id">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre del Negocio / Cliente</label>
-                    <input type="text" id="modal-name" placeholder="Ej. Coach Juan o Sabor al carbón" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-indigo-500">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Negocio / Cliente</label>
+                    <input type="text" id="modal-name" placeholder="Ej. Vital gym o Sabor al carbón" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Nicho / Categoría</label>
-                        <select id="modal-niche" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Categoría</label>
+                        <select id="modal-niche" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
                             <option value="Restaurante">Restaurante / Comida</option>
                             <option value="Gimnasio">Gimnasio / Box</option>
                             <option value="Entrenador Personal">Entrenador Personal</option>
@@ -197,8 +222,8 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Ciudad</label>
-                        <select id="modal-city" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Ciudad</label>
+                        <select id="modal-city" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
                             <option value="Guayaquil">Guayaquil</option>
                             <option value="Quito">Quito</option>
                             <option value="Cuenca">Cuenca</option>
@@ -208,10 +233,10 @@
                         </select>
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-3 gap-3">
                     <div class="col-span-1">
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Medio</label>
-                        <select id="modal-contact-method" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Medio</label>
+                        <select id="modal-contact-method" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
                             <option value="WhatsApp">WhatsApp</option>
                             <option value="Instagram">Instagram</option>
                             <option value="Facebook">Facebook</option>
@@ -220,35 +245,70 @@
                         </select>
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-xs font-semibold text-slate-500 mb-1">Contacto (Número o Enlace / Handle)</label>
-                        <input type="text" id="modal-contact" placeholder="Ej. 0991234567 o @vitalgym" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Contacto (Número o ID de Red Social)</label>
+                        <input type="text" id="modal-contact" placeholder="Ej. 0991234567 o @vitalgym" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 mb-1">Fecha Próximo Seguimiento (Opcional)</label>
-                    <input type="date" id="modal-date" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Fecha Próximo Seguimiento (Opcional)</label>
+                    <input type="date" id="modal-date" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
                 </div>
             </div>
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2">
-                <button onclick="closeAddProspectModal()" class="px-4 py-2 text-slate-600 text-sm font-medium hover:bg-slate-100 rounded-lg">Cancelar</button>
-                <button onclick="saveProspect()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-sm">Guardar Prospecto</button>
+            <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
+                <button onclick="closeAddProspectModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold hover:bg-slate-900 rounded-xl transition-all">Cancelar</button>
+                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl shadow-sm hover:bg-[#00B8E0] transition-all">Guardar Datos</button>
             </div>
         </div>
     </div>
 
-    <!-- LOGIC SCRIPT -->
+    <!-- MODAL 2: ASOCIAR NUEVO SERVICIO (NUEVO REQUERIMIENTO V1.1) -->
+    <div id="add-service-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-vertexCard border border-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
+                <h3 class="font-bold tracking-tight text-slate-100">Asociar Nuevo Servicio</h3>
+                <button onclick="closeAddServiceModal()" class="text-slate-400 hover:text-slate-200 text-xl font-bold px-2">×</button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Tipo de Servicio</label>
+                    <select id="new-service-name" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                        <option value="Landing Page de Ventas / Conversión">Landing Page de Ventas</option>
+                        <option value="Web Multi-página Profesional">Web Multi-página Profesional</option>
+                        <option value="Sistema de Reservas / Citas">Sistema de Reservas / Citas</option>
+                        <option value="Catálogo Digital de Productos">Catálogo Digital de Productos</option>
+                        <option value="Tienda Online Completa (E-commerce)">Tienda Online Completa</option>
+                        <option value="Mantenimiento Mensual y Hosting">Mantenimiento Mensual</option>
+                        <option value="Otro servicio personalizado">Otro servicio personalizado</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Acordado ($)</label>
+                    <input type="number" id="new-service-price" placeholder="Monto acordado" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Enlace Demo / Hosting (Opcional)</label>
+                    <input type="url" id="new-service-url" placeholder="https://..." class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                </div>
+            </div>
+            <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
+                <button onclick="closeAddServiceModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold hover:bg-slate-900 rounded-xl transition-all">Cancelar</button>
+                <button onclick="addService()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl hover:bg-[#00B8E0] transition-all">Agregar Portafolio</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE LÓGICA E INTEGRACIÓN -->
     <script>
         let dbClient = null;
         let localProspects = [];
         let localServices = [];
+        let filteredProspectsList = [];
         let selectedProspectId = null;
 
-        // Iniciar App
         window.addEventListener('DOMContentLoaded', () => {
             initDatabase();
         });
 
-        // Inicializar conexión
         function initDatabase() {
             const url = localStorage.getItem('supabase_url');
             const key = localStorage.getItem('supabase_key');
@@ -258,16 +318,15 @@
                     document.getElementById('supabase-url').value = url;
                     document.getElementById('supabase-key').value = key;
                     dbClient = window.supabase.createClient(url, key);
-                    document.getElementById('connection-status').innerText = "🟢 Conectado";
-                    document.getElementById('connection-status').className = "text-xs md:text-sm text-emerald-600 font-medium mt-1";
+                    document.getElementById('connection-status').innerText = "🟢 Conectado de forma segura a Supabase Cloud";
+                    document.getElementById('connection-status').className = "text-vertexTurquoise font-semibold";
                 } catch (e) {
-                    console.error("Error al instanciar Supabase:", e);
+                    console.error("Fallo de inicialización en Supabase:", e);
                 }
             }
             loadInitialData();
         }
 
-        // Cargar datos
         async function loadInitialData() {
             if (dbClient) {
                 try {
@@ -277,74 +336,97 @@
                     if (!err1 && !err2) {
                         localProspects = prospects || [];
                         localServices = services || [];
+                        filteredProspectsList = [...localProspects];
                         renderProspects();
+                        checkTodayFollowUps();
                         return;
                     }
                 } catch (e) {
-                    console.error("No se pudo conectar a Supabase, cargando datos locales...", e);
+                    console.error("Cargando entorno aislado local...", e);
                 }
             }
-
             localProspects = [];
             localServices = [];
+            filteredProspectsList = [];
             renderProspects();
         }
 
-        // Renderizadores
+        function checkTodayFollowUps() {
+            const todayStr = getTodayString();
+            const pendings = localProspects.filter(p => {
+                return p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && p.estado !== 'Cliente Activo' && p.estado !== 'Perdido';
+            });
+            
+            const banner = document.getElementById('followup-banner');
+            const bannerText = document.getElementById('followup-banner-text');
+            
+            if (pendings.length > 0) {
+                banner.classList.remove('hidden');
+                banner.classList.add('flex');
+                const nombres = pendings.map(p => p.nombre).join(', ');
+                bannerText.innerHTML = `<strong>⚠️ SEGUIMIENTO PENDIENTE:</strong> Tienes alertas de contacto pendientes para: <span class="underline font-bold text-slate-50">${nombres}</span>.`;
+            } else {
+                banner.classList.add('hidden');
+                banner.classList.remove('flex');
+            }
+        }
+
+        function closeFollowupBanner() {
+            document.getElementById('followup-banner').classList.add('hidden');
+            document.getElementById('followup-banner').classList.remove('flex');
+        }
+
+        // CONTROLADOR DE BÚSQUEDA INTEGRADA EN TIEMPO REAL
+        function filterProspects() {
+            const query = document.getElementById('search-bar').value.toLowerCase().trim();
+            if (!query) {
+                filteredProspectsList = [...localProspects];
+            } else {
+                filteredProspectsList = localProspects.filter(p => {
+                    return p.nombre.toLowerCase().includes(query) || 
+                           (p.ciudad && p.ciudad.toLowerCase().includes(query)) ||
+                           p.nicho.toLowerCase().includes(query);
+                });
+            }
+            renderProspects();
+        }
+
         function renderProspects() {
             const listContainer = document.getElementById('prospects-list');
-            document.getElementById('prospects-count').innerText = `${localProspects.length} prospectos`;
+            document.getElementById('prospects-count').innerText = filteredProspectsList.length;
 
-            if (localProspects.length === 0) {
-                listContainer.innerHTML = '<div class="p-8 text-center text-slate-400">No hay prospectos agregados aún. Haz clic en "+ Agregar Prospecto".</div>';
+            if (filteredProspectsList.length === 0) {
+                listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Ningún registro coincide con los parámetros de búsqueda.</div>';
                 return;
             }
 
-            listContainer.innerHTML = localProspects.map(p => {
+            const todayStr = getTodayString();
+
+            listContainer.innerHTML = filteredProspectsList.map(p => {
                 const isActive = p.id === selectedProspectId;
-                const medio = p.metodo_contacto || 'WhatsApp';
+                const totalServicios = localServices.filter(s => s.prospecto_id === p.id).length;
+                const valorEstimado = localServices.filter(s => s.prospecto_id === p.id).reduce((sum, s) => sum + (s.precio || 0), 0);
                 
-                let contactDisplay = '';
-                
-                if (medio === 'Instagram') {
-                    const cleanHandle = p.contacto.startsWith('@') ? p.contacto.substring(1) : p.contacto;
-                    const isUrl = p.contacto.startsWith('http');
-                    const link = isUrl ? p.contacto : `https://instagram.com/${cleanHandle}`;
-                    contactDisplay = `Instagram: <a href="${link}" target="_blank" class="text-indigo-600 hover:underline font-medium">${isUrl ? 'Ver Perfil' : p.contacto}</a>`;
-                } else if (medio === 'Facebook') {
-                    const isUrl = p.contacto.startsWith('http');
-                    const link = isUrl ? p.contacto : `https://facebook.com/${p.contacto}`;
-                    contactDisplay = `Facebook: <a href="${link}" target="_blank" class="text-indigo-600 hover:underline font-medium">${isUrl ? 'Ver Perfil' : p.contacto}</a>`;
-                } else if (medio === 'WhatsApp') {
-                    const cleanNum = p.contacto.replace(/\s+/g, '').replace('+', '');
-                    const link = p.contacto.startsWith('http') ? p.contacto : `https://wa.me/${cleanNum}`;
-                    contactDisplay = `WhatsApp: <a href="${link}" target="_blank" class="text-indigo-600 hover:underline font-medium">${p.contacto}</a>`;
-                } else {
-                    contactDisplay = `${medio}: <span class="text-slate-600 font-medium">${p.contacto}</span>`;
-                }
-
-                const dateDisplay = p.proximo_seguimiento 
-                    ? `<span class="text-xs text-slate-400 block mt-1">Seguimiento: ${formatDate(p.proximo_seguimiento)}</span>`
-                    : '<span class="text-xs text-slate-300 block mt-1">Sin fecha de seguimiento</span>';
-
-                const cityLabel = p.ciudad ? `<span class="bg-indigo-50 text-indigo-600 text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-wider">${p.ciudad}</span>` : '';
+                const isPendingFollowUp = p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && p.estado !== 'Cliente Activo' && p.estado !== 'Perdido';
 
                 return `
-                    <div onclick="selectProspect('${p.id}')" class="p-4 cursor-pointer hover:bg-slate-50 transition-colors ${isActive ? 'bg-indigo-50/50 border-l-4 border-indigo-600' : ''}">
+                    <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 hover:border-vertexBlue/50 transition-all cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md ring-1 ring-vertexBlue/20' : ''}">
                         <div class="flex justify-between items-start gap-2">
-                            <div>
+                            <div class="space-y-1 flex-1 min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <h4 class="font-bold text-slate-800 text-sm md:text-base">${p.nombre}</h4>
-                                    ${cityLabel}
+                                    <h4 class="font-bold text-slate-100 text-sm md:text-base truncate">${p.nombre}</h4>
+                                    <span class="bg-slate-800 text-slate-400 text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded">${p.ciudad || 'GYE'}</span>
+                                    ${isPendingFollowUp ? '<span class="bg-amber-500 text-slate-950 text-[8px] font-black tracking-wider uppercase px-1 rounded animate-pulse">⚠️ ALERTA</span>' : ''}
                                 </div>
-                                <div class="text-xs mt-1 space-y-0.5">
-                                    <p class="text-slate-500">${contactDisplay}</p>
-                                    ${dateDisplay}
+                                <div class="flex items-center gap-3 text-xs text-slate-400">
+                                    <span>🌐 ${totalServicios} ${totalServicios === 1 ? 'servicio' : 'servicios'}</span>
+                                    <span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span>
                                 </div>
+                                ${p.proximo_seguimiento ? `<span class="text-[10px] text-slate-500 block">📅 Próx: ${formatDate(p.proximo_seguimiento)}</span>` : ''}
                             </div>
-                            <div class="flex flex-col items-end gap-1">
-                                <span class="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-medium">${p.nicho}</span>
-                                <span class="${getStatusClass(p.estado)} text-[10px] px-2 py-0.5 rounded-full font-semibold">${p.estado}</span>
+                            <div class="flex flex-col items-end gap-1.5 shrink-0">
+                                <span class="bg-slate-800/60 text-slate-300 text-[9px] px-2 py-0.5 rounded-full border border-slate-700/30">${p.nicho}</span>
+                                <span class="${getStatusClass(p.estado)} text-[9px] px-2 py-0.5 rounded-full font-bold tracking-wide">${p.estado}</span>
                             </div>
                         </div>
                     </div>
@@ -359,7 +441,6 @@
             const p = localProspects.find(item => item.id === id);
             if (!p) return;
 
-            // Transición a vista de detalles en móvil
             const isMobile = window.innerWidth < 1024;
             if (isMobile) {
                 document.getElementById('list-section').classList.add('hidden');
@@ -371,11 +452,52 @@
             document.getElementById('active-prospect-details').classList.remove('hidden');
 
             document.getElementById('detail-name').innerText = p.nombre;
-            document.getElementById('detail-city').innerText = p.ciudad || 'No especificada';
+            document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
             document.getElementById('detail-niche').innerText = p.nicho;
             document.getElementById('detail-status').value = p.estado;
 
+            // Calcular y renderizar súper tarjeta de métricas
+            const clientServices = localServices.filter(s => s.prospecto_id === id);
+            const totalValue = clientServices.reduce((sum, s) => sum + (s.precio || 0), 0);
+            
+            document.getElementById('summary-value').innerText = `$${totalValue.toFixed(2)}`;
+            document.getElementById('summary-services-count').innerText = clientServices.length;
+            document.getElementById('summary-next-date').innerText = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin programar';
+
+            // Renderizar acciones rápidas avanzadas
+            renderQuickActions(p);
+            // Renderizar portafolio de servicios
             renderServices(id);
+        }
+
+        function renderQuickActions(p) {
+            const container = document.getElementById('quick-actions-container');
+            const cleanContact = p.contacto.trim();
+            const cleanNum = cleanContact.replace(/\s+/g, '').replace('+', '');
+            const cleanHandle = cleanContact.startsWith('@') ? cleanContact.substring(1) : cleanContact;
+
+            // Estructura de mapeo dinámico de botones comerciales
+            let actionsHTML = '';
+
+            // WhatsApp Button
+            const waLink = p.contacto.startsWith('http') ? cleanContact : `https://wa.me/${cleanNum.startsWith('0') ? '593' + cleanNum.substring(1) : cleanNum}`;
+            actionsHTML += `<a href="${waLink}" target="_blank" class="bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-emerald-600 hover:text-white transition-all flex items-center justify-center gap-1">💬 WhatsApp</a>`;
+
+            // Instagram Button
+            const igLink = p.contacto.startsWith('http') ? cleanContact : `https://instagram.com/${cleanHandle}`;
+            actionsHTML += `<a href="${igLink}" target="_blank" class="bg-purple-600/10 border border-purple-500/30 text-purple-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-purple-600 hover:text-white transition-all flex items-center justify-center gap-1">📸 Instagram</a>`;
+
+            // Facebook Button
+            const fbLink = p.contacto.startsWith('http') ? cleanContact : `https://facebook.com/${cleanHandle}`;
+            actionsHTML += `<a href="${fbLink}" target="_blank" class="bg-blue-600/10 border border-blue-500/30 text-blue-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center gap-1">👥 Facebook</a>`;
+
+            // Call Button
+            actionsHTML += `<a href="tel:${cleanNum}" class="bg-cyan-600/10 border border-cyan-500/30 text-cyan-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-cyan-600 hover:text-white transition-all flex items-center justify-center gap-1">📞 Llamar</a>`;
+
+            // Mail Button
+            actionsHTML += `<a href="mailto:info@vertexweb.systems" class="bg-slate-700/30 border border-slate-600/30 text-slate-300 font-bold p-2 rounded-xl text-center text-xs hover:bg-slate-600 hover:text-white transition-all flex items-center justify-center gap-1">✉️ Correo</a>`;
+
+            container.innerHTML = actionsHTML;
         }
 
         function backToList() {
@@ -389,8 +511,8 @@
 
             if (services.length === 0) {
                 container.innerHTML = `
-                    <div class="border border-dashed border-slate-200 rounded-lg p-6 text-center text-slate-400 text-sm">
-                        ⚠️ Aún no hay servicios asociados. Agrega el primero abajo.
+                    <div class="border border-dashed border-slate-800 rounded-xl p-6 text-center text-slate-500 text-xs">
+                        ⚠️ No se han asociado cotizaciones ni productos a este perfil comercial aún.
                     </div>
                 `;
                 return;
@@ -398,32 +520,31 @@
 
             container.innerHTML = services.map(s => {
                 const linkDisplay = s.enlace_demo 
-                    ? `<a href="${s.enlace_demo}" target="_blank" class="inline-flex items-center text-xs text-indigo-500 hover:underline mt-1">🔗 Ver Demo / Hosting</a>` 
+                    ? `<a href="${s.enlace_demo}" target="_blank" class="inline-flex items-center text-[11px] text-vertexBlue hover:underline mt-1">🔗 Abrir Demo / Sandbox</a>` 
                     : '';
 
                 return `
-                    <div class="border border-slate-200 rounded-lg p-4 flex justify-between items-center bg-white shadow-sm hover:shadow-md transition-shadow">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h4 class="font-bold text-slate-800 text-xs md:text-sm">${s.servicio}</h4>
-                                <span class="text-xs md:text-sm font-semibold text-indigo-600">$${s.precio}</span>
+                    <div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3.5 flex justify-between items-center shadow-inner hover:border-slate-700 transition-all">
+                        <div class="min-w-0 flex-1 pr-2">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <h4 class="font-bold text-slate-200 text-xs md:text-sm truncate">${s.servicio}</h4>
+                                <span class="text-xs font-black text-vertexTurquoise">$${s.precio || '0.00'}</span>
                             </div>
                             ${linkDisplay}
                         </div>
-                        <div class="flex items-center gap-3">
-                            <select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-50 border border-slate-200 text-slate-700 text-xs rounded px-2 py-1 focus:outline-none">
+                        <div class="flex items-center gap-2 shrink-0">
+                            <select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 text-[11px] rounded px-2 py-1 focus:outline-none">
                                 <option value="Cotizado" ${s.estado === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
                                 <option value="En Progreso" ${s.estado === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
                                 <option value="Entregado" ${s.estado === 'Entregado' ? 'selected' : ''}>Entregado</option>
                             </select>
-                            <button onclick="deleteService('${s.id}')" class="text-xs text-red-500 hover:text-red-700 hover:underline font-medium">Eliminar</button>
+                            <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 hover:text-rose-400 font-bold px-1">✕</button>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        // Guardar o Editar Prospecto (Integrado)
         async function saveProspect() {
             const id = document.getElementById('modal-id').value;
             const nombre = document.getElementById('modal-name').value.trim();
@@ -434,50 +555,29 @@
             const proximo_seguimiento = document.getElementById('modal-date').value || null;
 
             if (!nombre || !contacto) {
-                alert("Por favor llena el nombre del negocio y su contacto.");
+                alert("Los campos críticos 'Nombre' y 'Contacto' son obligatorios.");
                 return;
             }
 
-            const payload = {
-                nombre,
-                nicho,
-                ciudad,
-                metodo_contacto,
-                contacto,
-                proximo_seguimiento
-            };
+            const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
 
             if (dbClient) {
                 if (id) {
-                    // Acción: Editar
                     const { data, error } = await dbClient.from('prospectos').update(payload).eq('id', id).select();
                     if (!error && data) {
                         const idx = localProspects.findIndex(p => p.id === id);
-                        if (idx !== -1) {
-                            localProspects[idx] = { ...localProspects[idx], ...data[0] };
-                        }
-                        // Actualizar UI del detalle activo si es el que se editó
-                        if (selectedProspectId === id) {
-                            selectProspect(id);
-                        }
-                    } else {
-                        alert("Error editando en Supabase.");
+                        if (idx !== -1) localProspects[idx] = { ...localProspects[idx], ...data[0] };
+                        if (selectedProspectId === id) selectProspect(id);
                     }
                 } else {
-                    // Acción: Crear nuevo
                     payload.estado = "Nuevo";
                     const { data, error } = await dbClient.from('prospectos').insert([payload]).select();
-                    if (!error && data) {
-                        localProspects.unshift(data[0]);
-                    } else {
-                        alert("Error guardando en Supabase.");
-                    }
+                    if (!error && data) localProspects.unshift(data[0]);
                 }
-            } else {
-                alert("La base de datos no está configurada.");
             }
 
-            renderProspects();
+            filterProspects();
+            checkTodayFollowUps();
             closeAddProspectModal();
         }
 
@@ -491,7 +591,8 @@
             if (dbClient) {
                 await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId);
             }
-            renderProspects();
+            filterProspects();
+            checkTodayFollowUps();
         }
 
         async function addService() {
@@ -502,24 +603,15 @@
             const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
             const enlace_demo = document.getElementById('new-service-url').value.trim();
 
-            const nuevo = {
-                prospecto_id: selectedProspectId,
-                servicio,
-                precio,
-                estado: "Cotizado",
-                enlace_demo
-            };
+            const nuevo = { prospecto_id: selectedProspectId, servicio, precio, estado: "Cotizado", enlace_demo };
 
             if (dbClient) {
                 const { data, error } = await dbClient.from('servicios').insert([nuevo]).select();
-                if (!error && data) {
-                    localServices.push(data[0]);
-                }
+                if (!error && data) localServices.push(data[0]);
             }
 
-            renderServices(selectedProspectId);
-            document.getElementById('new-service-price').value = '';
-            document.getElementById('new-service-url').value = '';
+            selectProspect(selectedProspectId);
+            closeAddServiceModal();
         }
 
         async function updateServiceStatus(serviceId, nuevoEstado) {
@@ -531,17 +623,39 @@
             if (dbClient) {
                 await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId);
             }
+            if (selectedProspectId) selectProspect(selectedProspectId);
         }
 
         async function deleteService(serviceId) {
-            if (!confirm("¿Seguro que deseas eliminar este servicio?")) return;
-
+            if (!confirm("¿Deseas dar de baja este servicio de la cuenta del cliente?")) return;
             localServices = localServices.filter(s => s.id !== serviceId);
 
             if (dbClient) {
                 await dbClient.from('servicios').delete().eq('id', serviceId);
             }
-            renderServices(selectedProspectId);
+            if (selectedProspectId) selectProspect(selectedProspectId);
+        }
+
+        async function deleteProspect(id) {
+            if (!id || !confirm("¿Confirmas la eliminación permanente del cliente y todo su portafolio? Esta acción es irreversible.")) return;
+
+            if (dbClient) {
+                await dbClient.from('servicios').delete().eq('prospecto_id', id);
+                await dbClient.from('prospectos').delete().eq('id', id);
+            }
+
+            localProspects = localProspects.filter(p => p.id !== id);
+            localServices = localServices.filter(s => s.prospecto_id !== id);
+            selectedProspectId = null;
+
+            if (window.innerWidth < 1024) backToList();
+            else {
+                document.getElementById('active-prospect-details').classList.add('hidden');
+                document.getElementById('empty-state').classList.remove('hidden');
+            }
+
+            filterProspects();
+            checkTodayFollowUps();
         }
 
         function saveSupabaseConfig() {
@@ -553,24 +667,17 @@
                 localStorage.setItem('supabase_key', key);
                 initDatabase();
                 toggleSettings();
-            } else {
-                alert("Por favor ingresa tanto la URL como la Key.");
             }
         }
 
         function toggleSettings() {
-            const panel = document.getElementById('settings-panel');
-            panel.classList.toggle('hidden');
+            document.getElementById('settings-panel').classList.toggle('hidden');
         }
 
-        // Modales
         function openAddProspectModal() {
             document.getElementById('modal-title').innerText = "Agregar Nuevo Prospecto";
             document.getElementById('modal-id').value = "";
             document.getElementById('modal-name').value = "";
-            document.getElementById('modal-niche').value = "Restaurante";
-            document.getElementById('modal-city').value = "Guayaquil";
-            document.getElementById('modal-contact-method').value = "WhatsApp";
             document.getElementById('modal-contact').value = "";
             document.getElementById('modal-date').value = "";
             document.getElementById('add-prospect-modal').classList.remove('hidden');
@@ -581,7 +688,7 @@
             const p = localProspects.find(item => item.id === selectedProspectId);
             if (!p) return;
 
-            document.getElementById('modal-title').innerText = "Editar Datos del Prospecto";
+            document.getElementById('modal-title').innerText = "Editar Ficha de Control";
             document.getElementById('modal-id').value = p.id;
             document.getElementById('modal-name').value = p.nombre;
             document.getElementById('modal-niche').value = p.nicho;
@@ -596,15 +703,30 @@
             document.getElementById('add-prospect-modal').classList.add('hidden');
         }
 
+        function openAddServiceModal() {
+            document.getElementById('new-service-price').value = '';
+            document.getElementById('new-service-url').value = '';
+            document.getElementById('add-service-modal').classList.remove('hidden');
+        }
+
+        function closeAddServiceModal() {
+            document.getElementById('add-service-modal').classList.add('hidden');
+        }
+
         function getStatusClass(status) {
             switch(status) {
-                case 'Nuevo': return 'bg-slate-100 text-slate-700';
-                case 'Contacto Inicial': return 'bg-blue-100 text-blue-700';
-                case 'Demo Enviada': return 'bg-amber-100 text-amber-700';
-                case 'Cliente Activo': return 'bg-emerald-100 text-emerald-700';
-                case 'Perdido': return 'bg-red-100 text-red-700';
-                default: return 'bg-slate-100 text-slate-700';
+                case 'Nuevo': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20';
+                case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+                case 'Demo Enviada': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+                case 'Cliente Activo': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20';
+                case 'Perdido': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+                default: return 'bg-slate-500/10 text-slate-400';
             }
+        }
+
+        function getTodayString() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         }
 
         function formatDate(dateStr) {
@@ -613,7 +735,6 @@
             return `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
 
-        // Escuchar cambios de tamaño para ajustar vistas automáticamente
         window.addEventListener('resize', () => {
             const isMobile = window.innerWidth < 1024;
             if (!isMobile) {
