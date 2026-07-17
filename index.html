@@ -43,7 +43,7 @@
         <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto items-stretch sm:items-center flex-1 lg:justify-end max-w-3xl">
             <div class="relative flex-1 max-w-md">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">🔍</span>
-                <input type="text" id="search-bar" oninput="filterProspects()" placeholder="Buscar por negocio, ciudad o nicho..." class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
+                <input type="text" id="search-bar" oninput="filterProspects()" placeholder="Buscar por nombre, ciudad, nicho o tipo..." class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
             </div>
             
             <div class="flex gap-2 shrink-0">
@@ -53,38 +53,29 @@
         </div>
     </header>
 
-    <!-- ESTADO DE CONEXIÓN SUBHEADER -->
+    <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
-        <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar: Configura los parámetros de Supabase.</span>
+        <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
         <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2</span>
     </div>
 
-    <!-- BANNER DE NOTIFICACIONES DE SEGUIMIENTO -->
+    <!-- BANNER DE NOTIFICACIONES -->
     <div id="followup-banner" class="hidden bg-amber-500/10 border-b border-amber-500/20 px-4 md:px-8 py-3 text-xs md:text-sm text-amber-400 justify-between items-center shrink-0">
-        <div class="flex items-center gap-2">
-            <span>🔔</span>
-            <span id="followup-banner-text">Tienes seguimientos pendientes hoy.</span>
-        </div>
-        <button onclick="closeFollowupBanner()" class="text-amber-500 hover:text-amber-400 font-bold text-lg px-2">×</button>
+        <div class="flex items-center gap-2"><span>🔔</span><span id="followup-banner-text">Tienes seguimientos hoy.</span></div>
+        <button onclick="closeFollowupBanner()" class="text-amber-500 font-bold text-lg px-2">×</button>
     </div>
 
-    <!-- PANEL DE CONFIGURACIÓN DE CREDENCIALES (COLLAPSIBLE) -->
+    <!-- PANEL CONFIGURACIÓN -->
     <div id="settings-panel" class="hidden bg-vertexCard border-b border-slate-800 p-4 md:p-6 shrink-0">
         <div class="max-w-4xl mx-auto">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Configuración de Base de Datos (Supabase)</h3>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Configuración Supabase</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Project URL</label>
-                    <input type="text" id="supabase-url" placeholder="https://your-project.supabase.co" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label>
-                    <input type="password" id="supabase-key" placeholder="sb_publishable_..." class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
-                </div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Project URL</label><input type="text" id="supabase-url" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label><input type="password" id="supabase-key" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
             </div>
             <div class="mt-4 flex justify-end gap-2">
-                <button onclick="toggleSettings()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold hover:bg-slate-900 rounded-xl">Cancelar</button>
-                <button onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0] shadow-sm">Guardar Conexión</button>
+                <button onclick="toggleSettings()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
+                <button onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0]">Guardar</button>
             </div>
         </div>
     </div>
@@ -96,26 +87,23 @@
         <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl overflow-hidden flex flex-col h-[calc(100vh-165px)] lg:h-[680px]">
             <div class="px-4 py-3 border-b border-slate-800/60 flex justify-between items-center bg-vertexCard/50 shrink-0">
                 <div class="flex items-center gap-2">
-                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Prospectos</h2>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Pipeline General</h2>
                     <span id="prospects-count" class="text-[10px] md:text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-semibold">0</span>
                 </div>
                 <button onclick="showDashboardView()" class="text-xs text-vertexBlue font-bold hover:underline flex items-center gap-1">📊 Ver Dashboard</button>
             </div>
-            <div id="prospects-list" class="divide-y divide-slate-800/40 overflow-y-auto flex-1 no-scrollbar p-2 space-y-2">
-                <div class="p-8 text-center text-slate-500 text-sm">Cargando base de datos...</div>
-            </div>
+            <div id="prospects-list" class="divide-y divide-slate-800/40 overflow-y-auto flex-1 no-scrollbar p-2 space-y-2"></div>
         </section>
 
         <!-- SECCIÓN DERECHA -->
         <section id="details-section" class="lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
             
-            <!-- CONTENEDOR 1: DASHBOARD GENERAL -->
+            <!-- VIEW 1: DASHBOARD GENERAL -->
             <div id="dashboard-view" class="flex flex-col gap-6 h-full w-full">
                 <div>
                     <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
-                    <p class="text-xs text-slate-400">Rendimiento comercial de tus asesorías y sistemas web</p>
+                    <p class="text-xs text-slate-400">Rendimiento integral de tus asesorías fitness y desarrollo de software</p>
                 </div>
-
                 <div class="grid grid-cols-2 gap-4 shrink-0">
                     <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl">
                         <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">💰 Ingresos Activos</span>
@@ -126,21 +114,19 @@
                         <span id="dash-pending-money" class="text-xl sm:text-2xl font-black text-vertexBlue mt-1 block">$0.00</span>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
                     <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Contactos</span><span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
                     <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cierres Activos</span><span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span></div>
                     <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Suscripciones</span><span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
                     <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center border-amber-500/20 bg-amber-500/5"><span class="block text-[9px] font-bold text-amber-400 uppercase tracking-wider">Alertas Hoy</span><span id="dash-count-alerts" class="text-lg font-extrabold text-amber-500 mt-0.5 block animate-pulse">0</span></div>
                 </div>
-
                 <div class="flex-1 flex flex-col min-h-[200px]">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">🎯 Seguimientos Prioritarios</h3>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">🎯 Alertas Prioritarias de Hoy</h3>
                     <div id="dash-followups-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1 bg-slate-950/20 border border-slate-900 rounded-xl p-3"></div>
                 </div>
             </div>
 
-            <!-- CONTENEDOR 2: DETALLES DEL CLIENTE -->
+            <!-- VIEW 2: DETALLES DEL CLIENTE / ATLETA -->
             <div id="active-prospect-details" class="hidden flex-col h-full">
                 <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 mb-6 shrink-0 relative overflow-hidden">
                     <div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-vertexBlue to-vertexTurquoise"></div>
@@ -165,7 +151,7 @@
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center">
                         <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Valor Cuenta</span><span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span></div>
-                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Servicios</span><span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Servicios / Planes</span><span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span></div>
                         <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Seguimiento</span><span id="summary-next-date" class="text-xs font-semibold text-slate-300 mt-1 block">-</span></div>
                         <div>
                             <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Acciones</span>
@@ -178,14 +164,12 @@
                     </div>
                 </div>
                 
-                <div class="mb-6 shrink-0">
-                    <div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div>
-                </div>
+                <div class="mb-6 shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
 
                 <div class="flex-1 mb-6 overflow-y-auto no-scrollbar min-h-[160px]">
                     <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Suscripciones y Servicios</h3>
-                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue transition-all">+ Agregar Servicio</button>
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Portafolio Asignado</h3>
+                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue transition-all">+ Vincular Servicio</button>
                     </div>
                     <div id="services-list" class="space-y-2"></div>
                 </div>
@@ -193,72 +177,102 @@
         </section>
     </main>
 
-    <!-- MODAL 1: PROSPECTO -->
+    <!-- MODAL 1: REGISTRO HÍBRIDO AVANZADO (COMERCIAL VS ATLETA FITNESS) -->
     <div id="add-prospect-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden">
+        <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
-                <h3 id="modal-title" class="font-bold tracking-tight text-slate-100">Agregar Nuevo Prospecto</h3>
+                <h3 id="modal-title" class="font-bold tracking-tight text-slate-100">Registrar en Vertex CRM</h3>
                 <button onclick="closeAddProspectModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
             </div>
-            <div class="p-6 space-y-4">
+            
+            <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
                 <input type="hidden" id="modal-id">
+                
+                <!-- SELECTOR CRÍTICO DE ARQUITECTURA -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Negocio / Cliente</label>
-                    <input type="text" id="modal-name" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-vertexBlue mb-1.5">🎯 Tipo de Perfil Comercial</label>
+                    <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:border-vertexBlue focus:outline-none">
+                        <option value="Comercial">🏢 Local Comercial / Cliente de Software Web</option>
+                        <option value="Atleta">🏋️ Atleta / Cliente de Asesoramiento Fitness</option>
+                    </select>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Categoría</label>
-                        <select id="modal-niche" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
-                            <option value="Gimnasio">Gimnasio / Box</option>
-                            <option value="Entrenador Personal">Entrenador Personal</option>
-                            <option value="Restaurante">Restaurante / Comida</option>
-                            <option value="Fármacos / Suplementación">Fármacos / Suple</option>
-                            <option value="Otro">Otro sector</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Ciudad</label>
-                        <input type="text" id="modal-city" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+
+                <!-- CAMPO COMÚN: NOMBRE -->
+                <div>
+                    <label id="label-modal-name" class="block text-xs font-semibold text-slate-400 mb-1">Nombre de la Empresa / Negocio</label>
+                    <input type="text" id="modal-name" placeholder="Ej. Cairo Gym o Juan Pérez" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                </div>
+
+                <!-- SECCIÓN DINÁMICA A: CAMPOS DE NEGOCIO -->
+                <div id="modal-section-comercial" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Categoría</label>
+                            <select id="modal-niche" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                                <option value="Gimnasio">Gimnasio / Box</option>
+                                <option value="Restaurante">Restaurante / Comida</option>
+                                <option value="Entrenador Personal">Entrenador Personal</option>
+                                <option value="Fármacos / Suplementación">Fármacos / Suple</option>
+                                <option value="Otro">Otro sector</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-1">Ciudad</label>
+                            <input type="text" id="modal-city" placeholder="Ej. Guayaquil" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                        </div>
                     </div>
                 </div>
+
+                <!-- SECCIÓN DINÁMICA B: CAMPOS FITNESS INMEDIATOS -->
+                <div id="modal-section-fitness" class="space-y-4 hidden border-t border-slate-800/80 pt-3">
+                    <h4 class="text-[11px] font-bold uppercase text-vertexTurquoise tracking-widest">Ficha Antropométrica e Ingreso</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Peso Inicial (kg)</label><input type="number" step="0.1" id="modal-fit-peso" placeholder="75.5" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Objetivo Deportivo</label><input type="text" id="modal-fit-objetivo" placeholder="Ej. Recomposición" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    </div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Plan de Entrenamiento / Rutina</label><input type="text" id="modal-fit-plan" placeholder="Ej. Torso/Pierna 4 días" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Guía de Nutrición Inicial</label><input type="text" id="modal-fit-nutricion" placeholder="Ej. 2500 kcal - Hiperproteico" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio de Mensualidad / Asesoría ($)</label><input type="number" id="modal-fit-precio" placeholder="60" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexTurquoise focus:outline-none"></div>
+                </div>
+
+                <!-- CANAL DE CONTACTO COMÚN -->
                 <div class="grid grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Medio</label>
-                        <select id="modal-contact-method" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                        <select id="modal-contact-method" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                             <option value="WhatsApp">WhatsApp</option>
                             <option value="Instagram">Instagram</option>
                             <option value="Llamada">Llamada</option>
                         </select>
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Contacto</label>
-                        <input type="text" id="modal-contact" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Contacto Directo</label>
+                        <input type="text" id="modal-contact" placeholder="Número celular o @handle" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Fecha Próximo Seguimiento</label>
-                    <input type="date" id="modal-date" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Fecha Próximo Seguimiento / Control</label>
+                    <input type="date" id="modal-date" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
                 <button onclick="closeAddProspectModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold hover:bg-slate-900 rounded-xl">Cancelar</button>
-                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl hover:bg-[#00B8E0]">Guardar Datos</button>
+                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl hover:bg-[#00B8E0]">Registrar Cuenta</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: ASOCIAR SERVICIO INTELIGENTE DINÁMICO (V1.2 / V1.7) -->
+    <!-- MODAL 2: VINCULAR SERVICIO -->
     <div id="add-service-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-vertexCard border border-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
-                <h3 class="font-bold tracking-tight text-slate-100">Asociar Servicio Inteligente</h3>
+                <h3 class="font-bold tracking-tight text-slate-100">Asociar Servicio</h3>
                 <button onclick="closeAddServiceModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
             </div>
             <div class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Tipo de Servicio</label>
-                    <select id="new-service-name" onchange="toggleDynamicServiceFields(this.value)" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                    <select id="new-service-name" onchange="toggleDynamicServiceFields(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                         <option value="Página Web / Landing">🌐 Desarrollo de Página Web o Landing</option>
                         <option value="Asesoramiento Fitness Emprendedor">🏋️ Asesoramiento Fitness / Coaching</option>
                         <option value="Desarrollo de App / SaaS">📱 Desarrollo de Aplicaciones Móviles</option>
@@ -266,52 +280,43 @@
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Acordado ($)</label>
-                    <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                    <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
-
-                <!-- SUBFORMULARIO DINÁMICO 1: WEB -->
+                <!-- SUBFORMULARIOS REUTILIZADOS -->
                 <div id="fields-web" class="space-y-3">
                     <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[11px] text-slate-400 font-medium">Dominio</label><input type="text" id="web-dominio" placeholder="Ej. mofit.com" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
-                        <div><label class="block text-[11px] text-slate-400 font-medium">Hosting Provider</label><input type="text" id="web-hosting" placeholder="Ej. Hostinger" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                        <div><label class="block text-[11px] text-slate-400">Dominio</label><input type="text" id="web-dominio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                        <div><label class="block text-[11px] text-slate-400">Hosting</label><input type="text" id="web-hosting" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     </div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Fecha de Entrega Pactada</label><input type="date" id="web-entrega" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">URL de Producción / Proyecto</label><input type="url" id="web-url" placeholder="https://..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400">Fecha de Entrega</label><input type="date" id="web-entrega" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400">URL</label><input type="url" id="web-url" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
-
-                <!-- SUBFORMULARIO DINÁMICO 2: FITNESS -->
                 <div id="fields-fitness" class="space-y-3 hidden">
                     <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[11px] text-slate-400 font-medium">Peso Inicial (kg)</label><input type="number" step="0.1" id="fit-peso" placeholder="Ej. 78.4" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
-                        <div><label class="block text-[11px] text-slate-400 font-medium">Objetivo Principal</label><input type="text" id="fit-objetivo" placeholder="Ej. Definición / Fuerza" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                        <div><label class="block text-[11px] text-slate-400">Peso Inicial (kg)</label><input type="number" step="0.1" id="fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                        <div><label class="block text-[11px] text-slate-400">Objetivo</label><input type="text" id="fit-objetivo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     </div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Plan de Entrenamiento / Rutina</label><input type="text" id="fit-plan" placeholder="Ej. Push/Pull/Legs 4 días" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Estructura Nutricional / Macrocálculo</label><input type="text" id="fit-nutricion" placeholder="Ej. Deficit 2100 kcal / 160g P" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400">Rutina</label><input type="text" id="fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400">Nutrición</label><input type="text" id="fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
-
-                <!-- SUBFORMULARIO DINÁMICO 3: APP -->
                 <div id="fields-app" class="space-y-3 hidden">
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Repositorio GitHub / GitLab</label><input type="text" id="app-repo" placeholder="github.com/usuario/repo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400">Repo GitHub</label><input type="text" id="app-repo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[11px] text-slate-400 font-medium">Versión de Build</label><input type="text" id="app-version" placeholder="Ej. v1.0.0" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
-                        <div><label class="block text-[11px] text-slate-400 font-medium">Estado General API</label><input type="text" id="app-estado" placeholder="Ej. Stable / En pruebas" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                        <div><label class="block text-[11px] text-slate-400">Versión</label><input type="text" id="app-version" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                        <div><label class="block text-[11px] text-slate-400">Estado API</label><input type="text" id="app-estado" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     </div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Enlace de Demo Pública / TestFlight</label><input type="url" id="app-demo" placeholder="https://..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400">Demo Link</label><input type="url" id="app-demo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
-                <button onclick="closeAddServiceModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold hover:bg-slate-900 rounded-xl">Cancelar</button>
-                <button onclick="addService()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl hover:bg-[#00B8E0]">Vincular Servicio</button>
+                <button onclick="closeAddServiceModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
+                <button onclick="addService()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl">Vincular</button>
             </div>
         </div>
     </div>
 
     <script>
-        let dbClient = null;
-        let localProspects = [];
-        let localServices = [];
-        let filteredProspectsList = [];
-        let selectedProspectId = null;
+        let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
 
         window.addEventListener('DOMContentLoaded', () => { initDatabase(); });
 
@@ -320,13 +325,10 @@
         function initDatabase() {
             const rawUrl = localStorage.getItem('supabase_url');
             const key = localStorage.getItem('supabase_key') ? localStorage.getItem('supabase_key').trim() : null;
-            const url = cleanUrl(rawUrl);
-            const supabaseLib = window.supabase?.supabase || window.supabase;
-
+            const url = cleanUrl(rawUrl); const supabaseLib = window.supabase?.supabase || window.supabase;
             if (url && key && supabaseLib) {
                 try {
-                    document.getElementById('supabase-url').value = url;
-                    document.getElementById('supabase-key').value = key;
+                    document.getElementById('supabase-url').value = url; document.getElementById('supabase-key').value = key;
                     dbClient = supabaseLib.createClient(url, key);
                     document.getElementById('connection-status').innerText = "🟢 Conectado de forma segura a Supabase Cloud";
                     document.getElementById('connection-status').className = "text-vertexTurquoise font-semibold";
@@ -344,21 +346,35 @@
                 const { data: prospects, error: err1 } = await dbClient.from('prospectos').select('*');
                 const { data: services, error: err2 } = await dbClient.from('servicios').select('*');
                 if (!err1) {
-                    localProspects = prospects || [];
-                    localServices = services || [];
+                    localProspects = prospects || []; localServices = services || [];
                     localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
                     filteredProspectsList = [...localProspects];
-                    renderProspects();
-                    calculateDashboardMetrics();
+                    renderProspects(); calculateDashboardMetrics();
                 }
             } catch (e) { console.error(e); }
+        }
+
+        // CAMBIO DE INTERFAZ EN EL MODAL DE INGRESO
+        function toggleModalProfileLayout(type) {
+            const lblName = document.getElementById('label-modal-name');
+            const secComercial = document.getElementById('modal-section-comercial');
+            const secFitness = document.getElementById('modal-section-fitness');
+
+            if (type === 'Atleta') {
+                lblName.innerText = "Nombre Completo del Atleta / Cliente";
+                secComercial.classList.add('hidden');
+                secFitness.classList.remove('hidden');
+            } else {
+                lblName.innerText = "Nombre de la Empresa / Negocio";
+                secComercial.classList.remove('hidden');
+                secFitness.classList.add('hidden');
+            }
         }
 
         function toggleDynamicServiceFields(nicho) {
             document.getElementById('fields-web').classList.add('hidden');
             document.getElementById('fields-fitness').classList.add('hidden');
             document.getElementById('fields-app').classList.add('hidden');
-
             if (nicho.includes('Web')) document.getElementById('fields-web').classList.remove('hidden');
             else if (nicho.includes('Fitness')) document.getElementById('fields-fitness').classList.remove('hidden');
             else if (nicho.includes('App')) document.getElementById('fields-app').classList.remove('hidden');
@@ -385,8 +401,7 @@
             const container = document.getElementById('dash-followups-list');
             if (pendings.length === 0) {
                 container.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8">✨ Ningún seguimiento pendiente hoy.</div>';
-                document.getElementById('followup-banner').classList.add('hidden');
-                return;
+                document.getElementById('followup-banner').classList.add('hidden'); return;
             }
             document.getElementById('followup-banner').classList.remove('hidden');
             container.innerHTML = pendings.map(p => {
@@ -395,7 +410,7 @@
                     <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
                         <div>
                             <h4 class="font-bold text-slate-100 text-xs sm:text-sm">${p.nombre}</h4>
-                            <p class="text-[10px] text-amber-400 mt-0.5">Vence: ${formatDate(p.proximo_seguimiento)} • ${p.estado}</p>
+                            <p class="text-[10px] text-amber-400 mt-0.5">Control: ${formatDate(p.proximo_seguimiento)} • ${p.nicho || 'Fitness'}</p>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg font-bold">Ficha</button>
@@ -406,13 +421,64 @@
             }).join('');
         }
 
+        async function saveProspect() {
+            const id = document.getElementById('modal-id').value;
+            const profileType = document.getElementById('modal-profile-type').value;
+            const nombre = document.getElementById('modal-name').value.trim();
+            const contacto = document.getElementById('modal-contact').value.trim();
+            const metodo_contacto = document.getElementById('modal-contact-method').value;
+            const proximo_seguimiento = document.getElementById('modal-date').value || null;
+
+            if (!nombre || !contacto) { alert("Nombre y Contacto son obligatorios."); return; }
+
+            let nicho = document.getElementById('modal-niche').value;
+            let ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
+
+            if (profileType === 'Atleta') {
+                nicho = 'Asesoría Fitness';
+                ciudad = 'Guayaquil';
+            }
+
+            const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
+
+            if (dbClient) {
+                if (id) {
+                    await dbClient.from('prospectos').update(payload).eq('id', id);
+                } else {
+                    payload.estado = "Nuevo";
+                    const { data: newProspect, error } = await dbClient.from('prospectos').insert([payload]).select();
+                    
+                    // SI ES ATLETA, CREA EL SERVICIO DE FORMA AUTOMÁTICA
+                    if (!error && newProspect && profileType === 'Atleta') {
+                        const pid = newProspect[0].id;
+                        const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
+                        const fitDetails = {
+                            peso: document.getElementById('modal-fit-peso').value,
+                            objetivo: document.getElementById('modal-fit-objetivo').value.trim(),
+                            plan: document.getElementById('modal-fit-plan').value.trim(),
+                            nutricion: document.getElementById('modal-fit-nutricion').value.trim()
+                        };
+
+                        await dbClient.from('servicios').insert([{
+                            prospecto_id: pid,
+                            servicio: "Asesoramiento Fitness Emprendedor",
+                            precio: fitPrecio,
+                            estado: "En Progreso",
+                            detalles_inteligentes: fitDetails
+                        }]);
+                    }
+                }
+            }
+            loadInitialData();
+            closeAddProspectModal();
+        }
+
         async function addService() {
             if (!selectedProspectId || !dbClient) return;
             const servicio = document.getElementById('new-service-name').value;
             const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
             const enlace_demo = document.getElementById('new-service-url').value.trim();
 
-            // CAPTURA DINÁMICA DE CAMPOS SEGÚN EL NICHO SELECCIONADO
             let detalles = {};
             if (servicio.includes('Web')) {
                 detalles = {
@@ -424,7 +490,7 @@
             } else if (servicio.includes('Fitness')) {
                 detalles = {
                     peso: document.getElementById('fit-peso').value,
-                    objetivo: document.getElementById('fit-objetivo').value.trim(),
+                    objetivo: document.getElementById('fit-objective') ? document.getElementById('fit-objective').value.trim() : document.getElementById('fit-objetivo').value.trim(),
                     plan: document.getElementById('fit-plan').value.trim(),
                     nutricion: document.getElementById('fit-nutricion').value.trim()
                 };
@@ -437,42 +503,29 @@
                 };
             }
 
-            // Guardamos en Supabase incluyendo el payload estructurado JSONB
-            await dbClient.from('servicios').insert([{ 
-                prospecto_id: selectedProspectId, 
-                servicio, 
-                precio, 
-                estado: "Cotizado", 
-                enlace_demo,
-                detalles_inteligentes: detalles 
-            }]);
-
-            loadInitialData();
-            closeAddServiceModal();
+            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: "Cotizado", enlace_demo, detalles_inteligentes: detalles }]);
+            loadInitialData(); closeAddServiceModal();
             setTimeout(() => { selectProspect(selectedProspectId); }, 400);
         }
 
         function renderServices(prospectId) {
             const container = document.getElementById('services-list');
             const services = localServices.filter(s => s.prospecto_id === prospectId);
-
-            if (services.length === 0) {
-                container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios asociados.</div>`;
-                return;
-            }
+            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios asociados.</div>`; return; }
 
             container.innerHTML = services.map(s => {
                 const extra = s.detalles_inteligentes || {};
                 let infoExtraHTML = '';
-
-                // Renderizador condicional según el Nicho guardado en el JSONB
                 if (s.servicio.includes('Web') && extra.dominio) {
                     infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🌐 Dom: <span class="text-vertexBlue">${extra.dominio}</span> • Host: ${extra.hosting || '-'} • Entrega: ${extra.entrega ? formatDate(extra.entrega) : '-'}</p>`;
                 } else if (s.servicio.includes('Fitness') && extra.peso) {
-                    infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🏋️ Peso: <span class="text-vertexTurquoise">${extra.peso} kg</span> • Obj: ${extra.objetivo || '-'} • Plan: ${extra.plan || '-'}</p>
-                                     <p class="text-[9px] text-slate-500 font-mono">Nutrition: ${extra.nutricion || '-'}</p>`;
+                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5">
+                                        <p class="text-slate-300">🏋️ <strong>Peso Inicial:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p>
+                                        <p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p>
+                                        <p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p>
+                                     </div>`;
                 } else if (s.servicio.includes('App') && extra.repositorio) {
-                    infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">📱 Repo: <span class="text-purple-400">${extra.repositorio}</span> • Build: ${extra.version || '-'} • API: ${extra.estado_api || '-'}</p>`;
+                    infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">📱 Repo: <span class="text-purple-400">${extra.repositorio}</span> • Build: ${extra.version || '-'}</p>`;
                 }
 
                 return `
@@ -500,8 +553,7 @@
         function showDashboardView() {
             selectedProspectId = null; renderProspects();
             document.getElementById('active-prospect-details').classList.add('hidden');
-            document.getElementById('dashboard-view').classList.remove('hidden');
-            document.getElementById('dashboard-view').classList.add('flex');
+            document.getElementById('dashboard-view').classList.remove('hidden'); document.getElementById('dashboard-view').classList.add('flex');
             if (window.innerWidth < 1024) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
             calculateDashboardMetrics();
         }
@@ -525,8 +577,7 @@
         }
 
         function renderProspects() {
-            const listContainer = document.getElementById('prospects-list');
-            document.getElementById('prospects-count').innerText = filteredProspectsList.length;
+            const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
             if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Pipeline vacío.</div>'; return; }
             const todayStr = getTodayString();
             listContainer.innerHTML = filteredProspectsList.map(p => {
@@ -535,15 +586,15 @@
                 const valorEstimado = matchServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
                 const isPendingFollowUp = p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && p.estado !== 'Cliente Activo' && p.estado !== 'Perdido';
                 return `
-                    <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md ring-1 ring-vertexBlue/20' : ''}">
+                    <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md' : ''}">
                         <div class="flex justify-between items-start gap-2">
                             <div class="space-y-1 flex-1 min-w-0">
                                 <div class="flex items-center gap-2 flex-wrap">
-                                    <h4 class="font-bold text-slate-100 text-sm md:text-base truncate">${p.nombre}</h4>
+                                    <h4 class="font-bold text-slate-100 text-sm truncate">${p.nombre}</h4>
                                     <span class="bg-slate-800 text-slate-400 text-[8px] font-bold px-1.5 py-0.5 rounded">${p.ciudad || 'GYE'}</span>
-                                    ${isPendingFollowUp ? '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>' : ''}
+                                    ${isPendingFollowUp ? '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ CONTROL</span>' : ''}
                                 </div>
-                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>🌐 ${matchServices.length} serv.</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
+                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>🌐 ${matchServices.length} serv/plan</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
                             </div>
                             <span class="${getStatusClass(p.estado || 'Nuevo')} text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${p.estado || 'Nuevo'}</span>
                         </div>
@@ -562,21 +613,7 @@
             `;
         }
 
-        async function saveProspect() {
-            const id = document.getElementById('modal-id').value;
-            const nombre = document.getElementById('modal-name').value.trim();
-            const nicho = document.getElementById('modal-niche').value;
-            const ciudad = document.getElementById('modal-city').value.trim();
-            const metodo_contacto = document.getElementById('modal-contact-method').value;
-            const contacto = document.getElementById('modal-contact').value.trim();
-            const proximo_seguimiento = document.getElementById('modal-date').value || null;
-            if (!nombre || !contacto) return;
-            const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
-            if (dbClient) { if (id) await dbClient.from('prospectos').update(payload).eq('id', id); else { payload.estado = "Nuevo"; await dbClient.from('prospectos').insert([payload]); } }
-            loadInitialData(); closeAddProspectModal();
-        }
-
-        async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
+        async function deleteProspect(id) { if (!id || !confirm("¿Eliminar permanentemente?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
         async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
         async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); setTimeout(() => { if (selectedProspectId) selectProspect(selectedProspectId); }, 300); }
         async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); setTimeout(() => { if (selectedProspectId) selectProspect(selectedProspectId); }, 300); }
@@ -584,15 +621,27 @@
         function filterProspects() { const query = document.getElementById('search-bar').value.toLowerCase().trim(); filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects]; renderProspects(); }
         function backToList() { document.getElementById('details-section').classList.add('hidden'); document.getElementById('list-section').classList.remove('hidden'); }
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
-        function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; }
+        function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; document.getElementById('modal-profile-type').value = "Comercial"; toggleModalProfileLayout("Comercial"); }
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
         function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
         function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
         function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
         function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
         function closeFollowupBanner() { document.getElementById('followup-banner').classList.add('hidden'); }
-        function openEditProspectModal() { if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return; document.getElementById('modal-title').innerText = "Editar Ficha de Control"; document.getElementById('modal-id').value = p.id; document.getElementById('modal-name').value = p.nombre || ''; document.getElementById('modal-niche').value = p.nicho || 'Gimnasio'; document.getElementById('modal-city').value = p.ciudad || ''; document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp'; document.getElementById('modal-contact').value = p.contacto || ''; document.getElementById('modal-date').value = p.proximo_seguimiento || ''; document.getElementById('add-prospect-modal').classList.remove('hidden'); }
         function getStatusClass(status) { switch(status) { case 'Nuevo': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20'; case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20'; case 'Demo Enviada': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'; case 'Cliente Activo': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20'; case 'Perdido': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20'; default: return 'bg-slate-500/10 text-slate-400'; } }
+        
+        function openEditProspectModal() {
+            if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return;
+            document.getElementById('modal-title').innerText = "Editar Ficha de Control";
+            document.getElementById('modal-id').value = p.id;
+            document.getElementById('modal-name').value = p.nombre || '';
+            document.getElementById('modal-niche').value = p.nicho || 'Gimnasio';
+            document.getElementById('modal-city').value = p.ciudad || '';
+            document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp';
+            document.getElementById('modal-contact').value = p.contacto || '';
+            document.getElementById('modal-date').value = p.proximo_seguimiento || '';
+            document.getElementById('add-prospect-modal').classList.remove('hidden');
+        }
     </script>
 </body>
 </html>
