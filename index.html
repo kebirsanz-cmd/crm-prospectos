@@ -56,7 +56,7 @@
     <!-- ESTADO DE CONEXIÓN SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar: Configura los parámetros de Supabase.</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.1</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES DE SEGUIMIENTO -->
@@ -92,26 +92,84 @@
     <!-- CONTENEDOR PRINCIPAL -->
     <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
         
-        <!-- SECCIÓN IZQUIERDA -->
+        <!-- SECCIÓN IZQUIERDA: PIPELINE -->
         <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl overflow-hidden flex flex-col h-[calc(100vh-165px)] lg:h-[680px]">
             <div class="px-4 py-3 border-b border-slate-800/60 flex justify-between items-center bg-vertexCard/50 shrink-0">
-                <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Prospectos en Pipeline</h2>
-                <span id="prospects-count" class="text-[10px] md:text-xs bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded-full font-semibold">0</span>
+                <div class="flex items-center gap-2">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Prospectos</h2>
+                    <span id="prospects-count" class="text-[10px] md:text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-semibold">0</span>
+                </div>
+                <button onclick="showDashboardView()" class="text-xs text-vertexBlue font-bold hover:underline flex items-center gap-1">
+                    📊 Ver Dashboard
+                </button>
             </div>
             <div id="prospects-list" class="divide-y divide-slate-800/40 overflow-y-auto flex-1 no-scrollbar p-2 space-y-2">
                 <div class="p-8 text-center text-slate-500 text-sm">Cargando base de datos...</div>
             </div>
         </section>
 
-        <!-- SECCIÓN DERECHA -->
-        <section id="details-section" class="hidden lg:flex lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px]">
-            <div id="active-prospect-details" class="hidden flex-col h-full overflow-y-auto no-scrollbar">
-                
+        <!-- SECCIÓN DERECHA: PANEL EVOLUTIVO (FICHA O DASHBOARD GLOBAL) -->
+        <section id="details-section" class="lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
+            
+            <!-- CONTENEDOR 1: VISUALIZACIÓN DEL DASHBOARD GENERAL (VERSIÓN 1.2) -->
+            <div id="dashboard-view" class="flex flex-col gap-6 h-full w-full">
+                <div>
+                    <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
+                    <p class="text-xs text-slate-400">Rendimiento comercial y salud de tu embudo de ventas</p>
+                </div>
+
+                <!-- BLOQUE DE INDICADORES FINANCIEROS Y VOLUMEN -->
+                <div class="grid grid-cols-2 gap-3 sm:gap-4 shrink-0">
+                    <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl shadow-md">
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">💰 Ingresos Activos</span>
+                        <span id="dash-active-money" class="text-xl sm:text-2xl font-black text-vertexTurquoise mt-1 block">$0.00</span>
+                        <span class="text-[10px] text-slate-500 block mt-0.5">Servicios en progreso / entregados</span>
+                    </div>
+                    <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl shadow-md">
+                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">⏳ Pipeline Estimado</span>
+                        <span id="dash-pending-money" class="text-xl sm:text-2xl font-black text-vertexBlue mt-1 block">$0.00</span>
+                        <span class="text-[10px] text-slate-500 block mt-0.5">Propuestas en cotización activa</span>
+                    </div>
+                </div>
+
+                <!-- REJILLA DE METRICAS ATÓMICAS -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
+                    <div class="bg-vertexCard/60 border border-slate-800/80 p-3 rounded-xl text-center">
+                        <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Clientes Totales</span>
+                        <span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span>
+                    </div>
+                    <div class="bg-vertexCard/60 border border-slate-800/80 p-3 rounded-xl text-center">
+                        <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cierres Activos</span>
+                        <span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span>
+                    </div>
+                    <div class="bg-vertexCard/60 border border-slate-800/80 p-3 rounded-xl text-center">
+                        <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Servicios Vendidos</span>
+                        <span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span>
+                    </div>
+                    <div class="bg-vertexCard/60 border border-slate-800/80 p-3 rounded-xl text-center border-amber-500/20 bg-amber-500/5">
+                        <span class="block text-[9px] font-bold text-amber-400 uppercase tracking-wider">Seguimientos Hoy</span>
+                        <span id="dash-count-alerts" class="text-lg font-extrabold text-amber-500 mt-0.5 block animate-pulse">0</span>
+                    </div>
+                </div>
+
+                <!-- LISTA DE SEGUIMIENTOS CRÍTICOS PRIORITARIOS PARA HOY -->
+                <div class="flex-1 flex flex-col min-h-[200px]">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+                        <span>🎯</span> Prioridad de Contacto de Hoy
+                    </h3>
+                    <div id="dash-followups-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1 bg-slate-950/20 border border-slate-900 rounded-xl p-3">
+                        <div class="text-center text-slate-500 text-xs py-8">No hay alertas de seguimiento calculadas para hoy.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENEDOR 2: DETALLES PARTICULARES DE UN CLIENTE SELECCIONADO (VERSIÓN 1.1) -->
+            <div id="active-prospect-details" class="hidden flex-col h-full">
                 <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 mb-6 shrink-0 shadow-lg relative overflow-hidden">
                     <div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-vertexBlue to-vertexTurquoise"></div>
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-slate-800/60">
                         <div>
-                            <button onclick="backToList()" class="lg:hidden mb-2.5 text-xs font-bold text-vertexBlue flex items-center gap-1">🎒 Volver a la lista</button>
+                            <button onclick="showDashboardView()" class="mb-2.5 text-xs font-bold text-vertexBlue flex items-center gap-1">🎒 Volver al Dashboard</button>
                             <div class="flex items-center gap-2 flex-wrap">
                                 <h2 id="detail-name" class="text-xl md:text-2xl font-bold tracking-tight text-slate-50"></h2>
                                 <span id="detail-city" class="bg-vertexBlue/10 text-vertexBlue border border-vertexBlue/20 text-[9px] uppercase font-black px-2 py-0.5 rounded-md"></span>
@@ -164,11 +222,6 @@
                     </div>
                     <div id="services-list" class="space-y-2"></div>
                 </div>
-            </div>
-            <div id="empty-state" class="flex flex-col items-center justify-center py-16 text-center h-full">
-                <div class="w-16 h-16 bg-slate-900/60 rounded-2xl flex items-center justify-center border border-slate-800 text-2xl text-slate-500 mb-4 shadow-inner">📂</div>
-                <h3 class="text-sm font-bold text-slate-300 mb-1">Ningún cliente seleccionado</h3>
-                <p class="text-xs text-slate-500 max-w-xs mx-auto">Selecciona un prospecto de la columna izquierda.</p>
             </div>
         </section>
     </main>
@@ -271,13 +324,10 @@
             initDatabase();
         });
 
-        // FUNCIÓN FILTRADORA DE URLS CORRUPTAS
         function cleanUrl(rawUrl) {
             if (!rawUrl) return '';
             let url = rawUrl.trim();
-            if (url.endsWith('/')) {
-                url = url.slice(0, -1); // Elimina la barra diagonal final si existe
-            }
+            if (url.endsWith('/')) url = url.slice(0, -1);
             return url;
         }
 
@@ -285,7 +335,6 @@
             const rawUrl = localStorage.getItem('supabase_url');
             const key = localStorage.getItem('supabase_key') ? localStorage.getItem('supabase_key').trim() : null;
             const url = cleanUrl(rawUrl);
-            
             const supabaseLib = window.supabase?.supabase || window.supabase;
 
             if (url && key && supabaseLib) {
@@ -317,7 +366,7 @@
                     localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
                     filteredProspectsList = [...localProspects];
                     renderProspects();
-                    checkTodayFollowUps();
+                    calculateDashboardMetrics(); // Renderizar métricas del Home
                 } else {
                     document.getElementById('prospects-list').innerHTML = `<div class="p-4 text-center text-rose-400 text-xs">Error de tablas: ${err1.message}</div>`;
                 }
@@ -326,19 +375,114 @@
             }
         }
 
-        function saveSupabaseConfig() {
-            const rawUrl = document.getElementById('supabase-url').value;
-            const key = document.getElementById('supabase-key').value.trim();
-            const url = cleanUrl(rawUrl);
+        // CÁLCULO E INYECCIÓN DE MÉTRICAS DEL DASHBOARD (VERSIÓN 1.2)
+        function calculateDashboardMetrics() {
+            const todayStr = getTodayString();
+            
+            // 1. Conteo de Entidades
+            document.getElementById('dash-count-total').innerText = localProspects.length;
+            
+            const clientesActivos = localProspects.filter(p => p.estado === 'Cliente Activo');
+            document.getElementById('dash-count-active').innerText = clientesActivos.length;
+            document.getElementById('dash-count-services').innerText = localServices.length;
 
-            if (url && key) {
-                localStorage.setItem('supabase_url', url);
-                localStorage.setItem('supabase_key', key);
-                initDatabase();
-                toggleSettings();
-            } else {
-                alert("Ambos campos son obligatorios.");
+            // 2. Cálculo Financiero Seguro
+            let ingresosActivos = 0;
+            let pipelineEstimado = 0;
+
+            localServices.forEach(s => {
+                const price = parseFloat(s.precio) || 0;
+                if (s.estado === 'En Progreso' || s.estado === 'Entregado') {
+                    ingresosActivos += price;
+                } else {
+                    pipelineEstimado += price;
+                }
+            });
+
+            document.getElementById('dash-active-money').innerText = `$${ingresosActivos.toFixed(2)}`;
+            document.getElementById('dash-pending-money').innerText = `$${pipelineEstimado.toFixed(2)}`;
+
+            // 3. Filtrado de Alertas de Seguimiento Crítico
+            const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && p.estado !== 'Cliente Activo' && p.estado !== 'Perdido');
+            document.getElementById('dash-count-alerts').innerText = pendings.length;
+
+            // Renderizado de lista de tareas del Dashboard
+            const dashFollowupsContainer = document.getElementById('dash-followups-list');
+            
+            if (pendings.length === 0) {
+                dashFollowupsContainer.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8 font-medium">✨ ¡Felicidades! No te quedan seguimientos pendientes para hoy.</div>';
+                document.getElementById('followup-banner').classList.add('hidden');
+                return;
             }
+
+            // Banner superior de alerta
+            document.getElementById('followup-banner').classList.remove('hidden');
+
+            dashFollowupsContainer.innerHTML = pendings.map(p => {
+                const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
+                const waLink = String(p.contacto).startsWith('http') ? p.contacto : `https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}`;
+
+                return `
+                    <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center hover:border-amber-500/30 transition-all">
+                        <div>
+                            <h4 class="font-bold text-slate-100 text-xs sm:text-sm">${p.nombre}</h4>
+                            <p class="text-[10px] text-amber-400 mt-0.5">⚠️ Venció el: ${formatDate(p.proximo_seguimiento)} • Estado: ${p.estado}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg font-bold hover:bg-slate-700">Ver Ficha</button>
+                            <a href="${waLink}" target="_blank" class="bg-emerald-600 text-white text-xs px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-700 flex items-center">💬 WhatsApp</a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showDashboardView() {
+            selectedProspectId = null;
+            renderProspects();
+            
+            document.getElementById('active-prospect-details').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            document.getElementById('dashboard-view').classList.add('flex');
+            
+            // En móvil, asegura el intercambio correcto de secciones
+            if (window.innerWidth < 1024) {
+                document.getElementById('list-section').classList.add('hidden');
+                document.getElementById('details-section').classList.remove('hidden');
+            }
+            
+            calculateDashboardMetrics();
+        }
+
+        function selectProspect(id) {
+            selectedProspectId = id;
+            renderProspects();
+            const p = localProspects.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('active-prospect-details').classList.remove('hidden');
+            document.getElementById('active-prospect-details').classList.add('flex');
+
+            if (window.innerWidth < 1024) {
+                document.getElementById('list-section').classList.add('hidden');
+                document.getElementById('details-section').classList.remove('hidden');
+            }
+
+            document.getElementById('detail-name').innerText = p.nombre;
+            document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
+            document.getElementById('detail-niche').innerText = p.nicho || 'General';
+            document.getElementById('detail-status').value = p.estado || 'Nuevo';
+
+            const clientServices = localServices.filter(s => s.prospecto_id === id);
+            const totalValue = clientServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
+            
+            document.getElementById('summary-value').innerText = `$${totalValue.toFixed(2)}`;
+            document.getElementById('summary-services-count').innerText = clientServices.length;
+            document.getElementById('summary-next-date').innerText = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin programar';
+
+            renderQuickActions(p);
+            renderServices(id);
         }
 
         function renderProspects() {
@@ -359,7 +503,6 @@
                 
                 const ciudadText = p.ciudad || 'GYE';
                 const estadoText = p.estado || 'Nuevo';
-
                 const isPendingFollowUp = p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && estadoText !== 'Cliente Activo' && estadoText !== 'Perdido';
 
                 return `
@@ -381,37 +524,6 @@
                     </div>
                 `;
             }).join('');
-        }
-
-        function selectProspect(id) {
-            selectedProspectId = id;
-            renderProspects();
-            const p = localProspects.find(item => item.id === id);
-            if (!p) return;
-
-            if (window.innerWidth < 1024) {
-                document.getElementById('list-section').classList.add('hidden');
-                document.getElementById('details-section').classList.remove('hidden');
-            }
-
-            document.getElementById('empty-state').classList.add('hidden');
-            document.getElementById('active-prospect-details').classList.add('flex');
-            document.getElementById('active-prospect-details').classList.remove('hidden');
-
-            document.getElementById('detail-name').innerText = p.nombre;
-            document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
-            document.getElementById('detail-niche').innerText = p.nicho || 'General';
-            document.getElementById('detail-status').value = p.estado || 'Nuevo';
-
-            const clientServices = localServices.filter(s => s.prospecto_id === id);
-            const totalValue = clientServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
-            
-            document.getElementById('summary-value').innerText = `$${totalValue.toFixed(2)}`;
-            document.getElementById('summary-services-count').innerText = clientServices.length;
-            document.getElementById('summary-next-date').innerText = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin programar';
-
-            renderQuickActions(p);
-            renderServices(id);
         }
 
         function renderQuickActions(p) {
@@ -462,12 +574,8 @@
             const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
 
             if (dbClient) {
-                if (id) {
-                    await dbClient.from('prospectos').update(payload).eq('id', id);
-                } else {
-                    payload.estado = "Nuevo";
-                    await dbClient.from('prospectos').insert([payload]);
-                }
+                if (id) await dbClient.from('prospectos').update(payload).eq('id', id);
+                else { payload.estado = "Nuevo"; await dbClient.from('prospectos').insert([payload]); }
             }
             loadInitialData();
             closeAddProspectModal();
@@ -479,12 +587,7 @@
                 await dbClient.from('servicios').delete().eq('prospecto_id', id);
                 await dbClient.from('prospectos').delete().eq('id', id);
             }
-            selectedProspectId = null;
-            if (window.innerWidth < 1024) backToList();
-            else {
-                document.getElementById('active-prospect-details').classList.add('hidden');
-                document.getElementById('empty-state').classList.remove('hidden');
-            }
+            showDashboardView();
             loadInitialData();
         }
 
@@ -511,22 +614,22 @@
             loadInitialData();
         }
 
-        function checkTodayFollowUps() {
-            const todayStr = getTodayString();
-            const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && p.estado !== 'Cliente Activo' && p.estado !== 'Perdido');
-            const banner = document.getElementById('followup-banner');
-            if (pendings.length > 0) {
-                banner.classList.remove('hidden');
-                banner.classList.add('flex');
-            } else {
-                banner.classList.add('hidden');
-            }
-        }
-
         function filterProspects() {
             const query = document.getElementById('search-bar').value.toLowerCase().trim();
             filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects];
             renderProspects();
+        }
+
+        function saveSupabaseConfig() {
+            const rawUrl = document.getElementById('supabase-url').value;
+            const key = document.getElementById('supabase-key').value.trim();
+            const url = cleanUrl(rawUrl);
+            if (url && key) {
+                localStorage.setItem('supabase_url', url);
+                localStorage.setItem('supabase_key', key);
+                initDatabase();
+                toggleSettings();
+            }
         }
 
         function backToList() {
@@ -567,6 +670,22 @@
                 default: return 'bg-slate-500/10 text-slate-400';
             }
         }
+
+        window.addEventListener('resize', () => {
+            const isMobile = window.innerWidth < 1024;
+            if (!isMobile) {
+                document.getElementById('list-section').classList.remove('hidden');
+                document.getElementById('details-section').classList.remove('hidden');
+            } else {
+                if (selectedProspectId) {
+                    document.getElementById('list-section').classList.add('hidden');
+                    document.getElementById('details-section').classList.remove('hidden');
+                } else {
+                    document.getElementById('list-section').classList.remove('hidden');
+                    document.getElementById('details-section').classList.add('hidden');
+                }
+            }
+        });
     </script>
 </body>
 </html>
