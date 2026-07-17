@@ -148,7 +148,7 @@
                             <div class="flex gap-2 justify-center mt-1">
                                 <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue hover:underline font-bold">✏️ Editar</button>
                                 <span class="text-slate-700">|</span>
-                                <button onclick="deleteProspect(selectedProspectId)" class="text-xs text-rose-500 hover:underline font-bold">🗑 ...</button>
+                                <button onclick="deleteProspect(selectedProspectId)" class="text-xs text-rose-500 hover:underline font-bold">🗑 Borrar</button>
                             </div>
                         </div>
                     </div>
@@ -271,9 +271,21 @@
             initDatabase();
         });
 
+        // FUNCIÓN FILTRADORA DE URLS CORRUPTAS
+        function cleanUrl(rawUrl) {
+            if (!rawUrl) return '';
+            let url = rawUrl.trim();
+            if (url.endsWith('/')) {
+                url = url.slice(0, -1); // Elimina la barra diagonal final si existe
+            }
+            return url;
+        }
+
         function initDatabase() {
-            const url = localStorage.getItem('supabase_url');
-            const key = localStorage.getItem('supabase_key');
+            const rawUrl = localStorage.getItem('supabase_url');
+            const key = localStorage.getItem('supabase_key') ? localStorage.getItem('supabase_key').trim() : null;
+            const url = cleanUrl(rawUrl);
+            
             const supabaseLib = window.supabase?.supabase || window.supabase;
 
             if (url && key && supabaseLib) {
@@ -289,21 +301,19 @@
                 }
             } else {
                 document.getElementById('connection-status').innerText = "⚠️ Configuración pendiente (⚙️)";
-                document.getElementById('prospects-list').innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Abre configuración (⚙️) e ingresa credenciales.</div>';
+                document.getElementById('prospects-list').innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Abre configuración (⚙️) e ingresa credenciales limpias.</div>';
             }
         }
 
         async function loadInitialData() {
             if (!dbClient) return;
             try {
-                // Hacemos una petición limpia y segura sin romper si columnas fallan
                 const { data: prospects, error: err1 } = await dbClient.from('prospectos').select('*');
                 const { data: services, error: err2 } = await dbClient.from('servicios').select('*');
                 
                 if (!err1) {
                     localProspects = prospects || [];
                     localServices = services || [];
-                    // Ordenar localmente por fecha para evitar fallos de base de datos
                     localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
                     filteredProspectsList = [...localProspects];
                     renderProspects();
@@ -313,6 +323,21 @@
                 }
             } catch (e) {
                 console.error(e);
+            }
+        }
+
+        function saveSupabaseConfig() {
+            const rawUrl = document.getElementById('supabase-url').value;
+            const key = document.getElementById('supabase-key').value.trim();
+            const url = cleanUrl(rawUrl);
+
+            if (url && key) {
+                localStorage.setItem('supabase_url', url);
+                localStorage.setItem('supabase_key', key);
+                initDatabase();
+                toggleSettings();
+            } else {
+                alert("Ambos campos son obligatorios.");
             }
         }
 
@@ -332,9 +357,7 @@
                 const totalServicios = matchServices.length;
                 const valorEstimado = matchServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
                 
-                // Salvaguarda para campos inexistentes o nulos
                 const ciudadText = p.ciudad || 'GYE';
-                const nichoText = p.nicho || 'General';
                 const estadoText = p.estado || 'Nuevo';
 
                 const isPendingFollowUp = p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && estadoText !== 'Cliente Activo' && estadoText !== 'Perdido';
@@ -504,17 +527,6 @@
             const query = document.getElementById('search-bar').value.toLowerCase().trim();
             filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects];
             renderProspects();
-        }
-
-        function saveSupabaseConfig() {
-            const url = document.getElementById('supabase-url').value.trim();
-            const key = document.getElementById('supabase-key').value.trim();
-            if (url && key) {
-                localStorage.setItem('supabase_url', url);
-                localStorage.setItem('supabase_key', key);
-                initDatabase();
-                toggleSettings();
-            }
         }
 
         function backToList() {
