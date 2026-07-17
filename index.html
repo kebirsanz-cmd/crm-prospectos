@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vertex CRM — Clientes • Servicios • Seguimiento</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link class="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <script>
@@ -56,7 +56,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2.4</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES -->
@@ -98,7 +98,7 @@
         <!-- SECCIÓN DERECHA -->
         <section id="details-section" class="lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
             
-            <!-- VIEW 1: DASHBOARD GENERAL -->
+            <!-- DASHBOARD GENERAL -->
             <div id="dashboard-view" class="flex flex-col gap-6 h-full w-full">
                 <div>
                     <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
@@ -126,7 +126,7 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: DETALLES DEL CLIENTE / ATLETA -->
+            <!-- FICHA DETALLES -->
             <div id="active-prospect-details" class="hidden flex-col h-full">
                 <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 mb-6 shrink-0 relative overflow-hidden">
                     <div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-vertexBlue to-vertexTurquoise"></div>
@@ -185,11 +185,12 @@
                     <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:border-vertexBlue focus:outline-none">
                         <option value="Comercial">🏢 Local Comercial / Cliente de Software Web</option>
                         <option value="Atleta">🏋️ Atleta / Cliente de Asesoramiento Fitness</option>
+                        <option value="SaaS Tecnicos">🛠️ Validación de App / Propuesta SaaS a Medida</option>
                     </select>
                 </div>
                 <div>
-                    <label id="label-modal-name" class="block text-xs font-semibold text-slate-400 mb-1">Nombre de la Empresa / Negocio</label>
-                    <input type="text" id="modal-name" placeholder="Ej. Cairo Gym o Juan Pérez" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    <label id="label-modal-name" class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Cliente / Empresa</label>
+                    <input type="text" id="modal-name" placeholder="Ej. Bryan Gomez o Cairo Gym" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
                 <div id="modal-section-comercial" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
@@ -198,8 +199,7 @@
                             <select id="modal-niche" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                                 <option value="Gimnasio">Gimnasio / Box</option>
                                 <option value="Restaurante">Restaurante / Comida</option>
-                                <option value="Entrenador Personal">Entrenador Personal</option>
-                                <option value="Fármacos / Suplementación">Fármacos / Suple</option>
+                                <option value="Técnico Especialista">Técnico Especialista</option>
                                 <option value="Otro">Otro sector</option>
                             </select>
                         </div>
@@ -212,13 +212,32 @@
                 <div id="modal-section-fitness" class="space-y-4 hidden border-t border-slate-800/80 pt-3">
                     <h4 class="text-[11px] font-bold uppercase text-vertexTurquoise tracking-widest">Ficha Antropométrica e Ingreso</h4>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Peso Inicial (kg)</label><input type="number" step="0.1" id="modal-fit-peso" placeholder="75.5" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
-                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Objetivo Deportivo</label><input type="text" id="modal-fit-objetivo" placeholder="Ej. Recomposición" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Peso Inicial (kg)</label><input type="number" step="0.1" id="modal-fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Objetivo Deportivo</label><input type="text" id="modal-fit-objetivo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     </div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Plan de Entrenamiento / Rutina</label><input type="text" id="modal-fit-plan" placeholder="Ej. Torso/Pierna 4 días" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Guía de Nutrición Inicial</label><input type="text" id="modal-fit-nutricion" placeholder="Ej. 2500 kcal - Hiperproteico" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio de Mensualidad / Asesoría ($)</label><input type="number" id="modal-fit-precio" placeholder="60" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexTurquoise focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Plan de Entrenamiento / Rutina</label><input type="text" id="modal-fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Guía de Nutrición Inicial</label><input type="text" id="modal-fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio de Asesoría ($)</label><input type="number" id="modal-fit-precio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexTurquoise"></div>
                 </div>
+
+                <!-- SECCIÓN DINÁMICA C: PROPUESAS DE APP / VALIDACIÓN SAAS (FLEXIBLE) -->
+                <div id="modal-section-saas-tecnicos" class="space-y-4 hidden border-t border-slate-800/80 pt-3">
+                    <h4 class="text-[11px] font-bold uppercase text-vertexBlue tracking-widest">Alcance de la App (Lovable)</h4>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Módulos Propuestos / Funciones a Validar</label><textarea id="modal-saas-modulos" rows="2" placeholder="Ej: Control de clientes de línea blanca, visitas técnicas, órdenes de trabajo..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-vertexBlue"></textarea></div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] text-slate-400 font-medium mb-0.5">Fase de Validación</label>
+                            <select id="modal-saas-fase" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100">
+                                <option value="Idea / Propuesta">Idea / Propuesta Comercial</option>
+                                <option value="Prototipo Lovable">Prototipo en Lovable (Demo)</option>
+                                <option value="Pruebas Beta">Pruebas con Clientes Reales</option>
+                                <option value="SaaS Cerrado">SaaS Cerrado / Producción</option>
+                            </select>
+                        </div>
+                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio Estimado (Opcional $)</label><input type="number" id="modal-saas-precio" placeholder="Por definir" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexBlue"></div>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Medio</label>
@@ -230,7 +249,7 @@
                     </div>
                     <div class="col-span-2">
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Contacto Directo</label>
-                        <input type="text" id="modal-contact" placeholder="Número celular o @handle" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                        <input type="text" id="modal-contact" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                     </div>
                 </div>
                 <div>
@@ -239,7 +258,7 @@
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
-                <button onclick="closeAddProspectModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold hover:bg-slate-900 rounded-xl">Cancelar</button>
+                <button onclick="closeAddProspectModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
                 <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl hover:bg-[#00B8E0]">Registrar Cuenta</button>
             </div>
         </div>
@@ -256,23 +275,32 @@
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Tipo de Servicio</label>
                     <select id="new-service-name" onchange="toggleDynamicServiceFields(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                        <option value="Propuesta de Aplicación Móvil / SaaS">📱 Propuesta de Aplicación Móvil / SaaS</option>
                         <option value="Página Web / Landing">🌐 Desarrollo de Página Web o Landing</option>
                         <option value="Asesoramiento Fitness Emprendedor">🏋️ Asesoramiento Fitness / Coaching</option>
-                        <option value="Desarrollo de App / SaaS">📱 Desarrollo de Aplicaciones Móviles</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Acordado ($)</label>
-                    <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Estimado o Acordado ($ — Opcional)</label>
+                    <input type="number" id="new-service-price" placeholder="Dejar vacío si no se ha definido" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
-                <div id="fields-web" class="space-y-3">
+                
+                <!-- CAMPOS SAAS ADAPTADOS A LOVABLE -->
+                <div id="fields-saas-tecnicos" class="space-y-3">
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Módulos Requeridos / Notas de Alcance</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo para técnicos, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Fase de la Propuesta</label><input type="text" id="saas-fase" placeholder="Ej: Idea / Validación / Prototipo Lovable" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Enlace Demo de Lovable (Opcional)</label><input type="url" id="new-service-url" placeholder="https://lovable.dev/..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                </div>
+
+                <div id="fields-web" class="space-y-3 hidden">
                     <div class="grid grid-cols-2 gap-2">
                         <div><label class="block text-[11px] text-slate-400">Dominio</label><input type="text" id="web-dominio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                         <div><label class="block text-[11px] text-slate-400">Hosting</label><input type="text" id="web-hosting" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     </div>
                     <div><label class="block text-[11px] text-slate-400">Fecha de Entrega</label><input type="date" id="web-entrega" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400">URL</label><input type="url" id="web-url" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400">URL Proyecto</label><input type="url" id="web-url" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
+                
                 <div id="fields-fitness" class="space-y-3 hidden">
                     <div class="grid grid-cols-2 gap-2">
                         <div><label class="block text-[11px] text-slate-400">Peso Inicial (kg)</label><input type="number" step="0.1" id="fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
@@ -280,14 +308,6 @@
                     </div>
                     <div><label class="block text-[11px] text-slate-400">Rutina</label><input type="text" id="fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     <div><label class="block text-[11px] text-slate-400">Nutrición</label><input type="text" id="fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                </div>
-                <div id="fields-app" class="space-y-3 hidden">
-                    <div><label class="block text-[11px] text-slate-400">Repo GitHub</label><input type="text" id="app-repo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[11px] text-slate-400">Versión</label><input type="text" id="app-version" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                        <div><label class="block text-[11px] text-slate-400">Estado API</label><input type="text" id="app-estado" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    </div>
-                    <div><label class="block text-[11px] text-slate-400">Demo Link</label><input type="url" id="app-demo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
@@ -303,12 +323,6 @@
         window.addEventListener('DOMContentLoaded', () => { initDatabase(); });
 
         function cleanUrl(rawUrl) { if (!rawUrl) return ''; let url = rawUrl.trim(); if (url.endsWith('/')) url = url.slice(0, -1); return url; }
-
-        document.addEventListener('click', function(e) {
-            if(e.target && e.target.id === 'service-status-select') {
-                e.stopPropagation();
-            }
-        });
 
         function initDatabase() {
             const rawUrl = localStorage.getItem('supabase_url');
@@ -347,22 +361,30 @@
             const lblName = document.getElementById('label-modal-name');
             const secComercial = document.getElementById('modal-section-comercial');
             const secFitness = document.getElementById('modal-section-fitness');
+            const secSaas = document.getElementById('modal-section-saas-tecnicos');
+
+            secComercial.classList.add('hidden'); secFitness.classList.add('hidden'); secSaas.classList.add('hidden');
+
             if (type === 'Atleta') {
                 lblName.innerText = "Nombre Completo del Atleta / Cliente";
-                secComercial.classList.add('hidden'); secFitness.classList.remove('hidden');
+                secFitness.classList.remove('hidden');
+            } else if (type === 'SaaS Tecnicos') {
+                lblName.innerText = "Nombre del Prospecto / Técnico Especialista";
+                secSaas.classList.remove('hidden');
             } else {
                 lblName.innerText = "Nombre de la Empresa / Negocio";
-                secComercial.classList.remove('hidden'); secFitness.classList.add('hidden');
+                secComercial.classList.remove('hidden');
             }
         }
 
         function toggleDynamicServiceFields(nicho) {
             document.getElementById('fields-web').classList.add('hidden');
             document.getElementById('fields-fitness').classList.add('hidden');
-            document.getElementById('fields-app').classList.add('hidden');
+            document.getElementById('fields-saas-tecnicos').classList.add('hidden');
+
             if (nicho.includes('Web')) document.getElementById('fields-web').classList.remove('hidden');
             else if (nicho.includes('Fitness')) document.getElementById('fields-fitness').classList.remove('hidden');
-            else if (nicho.includes('App')) document.getElementById('fields-app').classList.remove('hidden');
+            else if (nicho.includes('Aplicación') || nicho.includes('SaaS')) document.getElementById('fields-saas-tecnicos').classList.remove('hidden');
         }
 
         function calculateDashboardMetrics() {
@@ -395,7 +417,7 @@
                     <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
                         <div>
                             <h4 class="font-bold text-slate-100 text-xs sm:text-sm">${p.nombre}</h4>
-                            <p class="text-[10px] text-amber-400 mt-0.5">Control: ${formatDate(p.proximo_seguimiento)} • ${p.nicho || 'Fitness'}</p>
+                            <p class="text-[10px] text-amber-400 mt-0.5">Control: ${formatDate(p.proximo_seguimiento)} • ${p.nicho || 'General'}</p>
                         </div>
                         <div class="flex gap-2">
                             <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg font-bold">Ficha</button>
@@ -416,12 +438,10 @@
 
             if (!nombre || !contacto) { alert("Nombre y Contacto son obligatorios."); return; }
 
-            let nicho = document.getElementById('modal-niche').value;
+            let nicho = (profileType === 'SaaS Tecnicos') ? 'Técnico Especialista' : document.getElementById('modal-niche').value;
             let ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
 
-            if (profileType === 'Atleta') {
-                nicho = 'Asesoría Fitness'; ciudad = 'Guayaquil';
-            }
+            if (profileType === 'Atleta') { nicho = 'Asesoría Fitness'; ciudad = 'Guayaquil'; }
 
             const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
 
@@ -432,18 +452,29 @@
                     payload.estado = (profileType === 'Atleta') ? "Activo" : "Nuevo";
                     const { data: newProspect, error } = await dbClient.from('prospectos').insert([payload]).select();
                     
-                    if (!error && newProspect && profileType === 'Atleta') {
+                    if (!error && newProspect) {
                         const pid = newProspect[0].id;
-                        const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
-                        const fitDetails = {
-                            peso: document.getElementById('modal-fit-peso').value,
-                            objetivo: document.getElementById('modal-fit-objetivo').value.trim(),
-                            plan: document.getElementById('modal-fit-plan').value.trim(),
-                            nutricion: document.getElementById('modal-fit-nutricion').value.trim()
-                        };
-                        await dbClient.from('servicios').insert([{
-                            prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "Vigente / Activo", detalles_inteligentes: fitDetails
-                        }]);
+                        if (profileType === 'Atleta') {
+                            const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
+                            const fitDetails = {
+                                peso: document.getElementById('modal-fit-peso').value,
+                                objetivo: document.getElementById('modal-fit-objetivo').value.trim(),
+                                plan: document.getElementById('modal-fit-plan').value.trim(),
+                                nutricion: document.getElementById('modal-fit-nutricion').value.trim()
+                            };
+                            await dbClient.from('servicios').insert([{
+                                prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "Vigente / Activo", detalles_inteligentes: fitDetails
+                            }]);
+                        } else if (profileType === 'SaaS Tecnicos') {
+                            const saasPrecio = parseFloat(document.getElementById('modal-saas-precio').value) || 0;
+                            const saasDetails = {
+                                modulos: document.getElementById('modal-saas-modulos').value.trim(),
+                                fase: document.getElementById('modal-saas-fase').value
+                            };
+                            await dbClient.from('servicios').insert([{
+                                prospecto_id: pid, servicio: "Propuesta de Aplicación Móvil / SaaS", precio: saasPrecio, estado: "Demo Enviada", detalles_inteligentes: saasDetails
+                            }]);
+                        }
                     }
                 }
             }
@@ -471,22 +502,18 @@
                     plan: document.getElementById('fit-plan').value.trim(),
                     nutricion: document.getElementById('fit-nutricion').value.trim()
                 };
-            } else if (servicio.includes('App')) {
+            } else if (servicio.includes('Aplicación') || servicio.includes('SaaS')) {
                 detalles = {
-                    repositorio: document.getElementById('app-repo').value.trim(),
-                    version: document.getElementById('app-version').value.trim(),
-                    estado_api: document.getElementById('app-estado').value.trim(),
-                    demo: document.getElementById('app-demo').value.trim()
+                    modulos: document.getElementById('saas-modulos').value.trim(),
+                    fase: document.getElementById('saas-fase').value.trim()
                 };
             }
 
             const defaultEstado = servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado";
-
             await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
             loadInitialData(); closeAddServiceModal();
         }
 
-        // CONTROLADOR DE RENDERIZACIÓN DE SERVICIOS ADAPTATIVOS POR NICHO
         function renderServices(prospectId) {
             const container = document.getElementById('services-list');
             const services = localServices.filter(s => s.prospecto_id === prospectId);
@@ -494,43 +521,30 @@
 
             container.innerHTML = services.map(s => {
                 const extra = s.detalles_inteligentes || {};
-                let infoExtraHTML = '';
-                let selectorHTML = '';
+                let infoExtraHTML = ''; let selectorHTML = '';
                 const currentServiceStatus = s.estado || 'Cotizado';
 
-                // Renderizador Dinámico de Selectores por Ficha de Servicio
                 if (s.servicio.includes('Fitness') || s.servicio.includes('Asesoramiento')) {
-                    // 1. Campos específicos para Atletas
                     infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5">
                                         <p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso || '-'} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p>
                                         <p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p>
                                         <p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p>
                                      </div>`;
-
-                    // 2. Opciones de estado específicas para Alumnos
-                    selectorHTML = `
-                        <select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none">
-                            <option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' || currentServiceStatus === 'En Progreso' ? 'selected' : ''}>Vigente / Activo</option>
-                            <option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' || currentServiceStatus === 'Cotizado' ? 'selected' : ''}>⏳ Por Renovar</option>
-                            <option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' || currentServiceStatus === 'Entregado' ? 'selected' : ''}>❌ Inactivo</option>
-                        </select>
-                    `;
+                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
+                } else if (s.servicio.includes('Aplicación') || s.servicio.includes('SaaS')) {
+                    // DISEÑO ATÓMICO LIMPIO Y SIMPLIFICADO PARA TUS APPS DE LOVABLE
+                    const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2 py-0.5 rounded hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Demo Lovable</a></p>` : '';
+                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5">
+                                        <p class="text-slate-300">🛠️ <strong>Módulos Propuestos:</strong> ${extra.modulos || 'Pendiente de definir por el cliente'}</p>
+                                        <p class="text-slate-400">⚙️ <strong>Fase Comercial:</strong> <span class="text-vertexBlue font-medium">${extra.fase || 'Idea'}</span></p>
+                                        ${demoHTML}
+                                     </div>`;
+                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none"><option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado / En Validación</option><option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Construcción</option><option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>SaaS Activo / Cobro Mensual</option></select>`;
                 } else {
-                    // 1. Campos específicos para Software Comercial
                     if (s.servicio.includes('Web') && extra.dominio) {
                         infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🌐 Dom: <span class="text-vertexBlue">${extra.dominio}</span> • Host: ${extra.hosting || '-'} • Entrega: ${extra.entrega ? formatDate(extra.entrega) : '-'}</p>`;
-                    } else if (s.servicio.includes('App') && extra.repositorio) {
-                        infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">📱 Repo: <span class="text-purple-400">${extra.repositorio}</span> • Build: ${extra.version || '-'}</p>`;
                     }
-
-                    // 2. Opciones de estado tradicionales para Desarrollo Software
-                    selectorHTML = `
-                        <select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 text-[11px] rounded px-2 py-1 focus:outline-none">
-                            <option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
-                            <option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
-                            <option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>Entregado</option>
-                        </select>
-                    `;
+                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 text-[11px] rounded px-2 py-1 focus:outline-none"><option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado</option><option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Progreso</option><option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>Entregado</option></select>`;
                 }
 
                 return `
@@ -540,10 +554,7 @@
                                 <h4 class="font-bold text-slate-200 text-xs sm:text-sm truncate">${s.servicio}</h4>
                                 <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
                             </div>
-                            <div class="flex items-center gap-2">
-                                ${selectorHTML}
-                                <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-2">✕</button>
-                            </div>
+                            <div class="flex items-center gap-2">${selectorHTML}<button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-2">✕</button></div>
                         </div>
                         ${infoExtraHTML}
                     </div>
@@ -573,24 +584,9 @@
             const currentStatus = p.estado || 'Nuevo';
 
             if (p.nicho === 'Asesoría Fitness') {
-                selectorContainer.innerHTML = `
-                    <select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2 focus:outline-none">
-                        <option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option>
-                        <option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option>
-                        <option value="Pausado" ${currentStatus === 'Pausado' ? 'selected' : ''}>⏳ Membresía Pausada</option>
-                        <option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado / Inactivo</option>
-                    </select>
-                `;
+                selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option><option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option><option value="Pausado" ${currentStatus === 'Pausado' ? 'selected' : ''}>⏳ Membresía Pausada</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado</option></select>`;
             } else {
-                selectorContainer.innerHTML = `
-                    <select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2 focus:outline-none">
-                        <option value="Nuevo" ${currentStatus === 'Nuevo' ? 'selected' : ''}>Nuevo Lead</option>
-                        <option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>Contacto Inicial</option>
-                        <option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>Demo Enviada</option>
-                        <option value="Cliente Activo" ${currentStatus === 'Cliente Activo' || currentStatus === 'Activo' ? 'selected' : ''}>🏢 Cliente Cerrado</option>
-                        <option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Oportunidad Perdida</option>
-                    </select>
-                `;
+                selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Nuevo" ${currentStatus === 'Nuevo' ? 'selected' : ''}>Nuevo Lead</option><option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>Contacto Inicial</option><option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>Demo Enviada</option><option value="Cliente Activo" ${currentStatus === 'Cliente Activo' || currentStatus === 'Activo' ? 'selected' : ''}>🏢 Cliente Cerrado</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Perdido</option></select>`;
             }
 
             const clientServices = localServices.filter(s => s.prospecto_id === id);
@@ -641,13 +637,7 @@
 
         async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
         async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
-        
-        async function updateServiceStatus(serviceId, nuevoEstado) { 
-            if (!dbClient) return; 
-            await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); 
-            loadInitialData(); 
-        }
-        
+        async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); }
         async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); }
         function saveSupabaseConfig() { const rawUrl = document.getElementById('supabase-url').value; const key = document.getElementById('supabase-key').value.trim(); const url = cleanUrl(rawUrl); if (url && key) { localStorage.setItem('supabase_url', url); localStorage.setItem('supabase_key', key); initDatabase(); toggleSettings(); } }
         function filterProspects() { const query = document.getElementById('search-bar').value.toLowerCase().trim(); filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects]; renderProspects(); }
@@ -655,23 +645,12 @@
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
         function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; document.getElementById('modal-profile-type').value = "Comercial"; toggleModalProfileLayout("Comercial"); }
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
-        function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
+        function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); document.getElementById('new-service-name').value = "Propuesta de Aplicación Móvil / SaaS"; toggleDynamicServiceFields("Propuesta de Aplicación Móvil / SaaS"); }
         function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
         function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
         function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
         function closeFollowupBanner() { document.getElementById('followup-banner').classList.add('hidden'); }
-        
-        function getStatusClass(status) {
-            switch(status) {
-                case 'Nuevo': case 'Prospecto': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20';
-                case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
-                case 'Demo Enviada': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
-                case 'Cliente Activo': case 'Activo': case 'Vigente / Activo': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20';
-                case 'Pausado': case 'Renovación Pendiente': return 'bg-amber-500/10 text-amber-500 border border-amber-500/20';
-                case 'Perdido': case 'Vencido / Congelado': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
-                default: return 'bg-slate-500/10 text-slate-400';
-            }
-        }
+        function getStatusClass(status) { switch(status) { case 'Nuevo': case 'Prospecto': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20'; case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20'; case 'Demo Enviada': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'; case 'Cliente Activo': case 'Activo': case 'Vigente / Activo': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20'; case 'Pausado': case 'Renovación Pendiente': return 'bg-amber-500/10 text-amber-500 border border-amber-500/20'; case 'Perdido': case 'Vencido / Congelado': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20'; default: return 'bg-slate-500/10 text-slate-400'; } }
         
         function openEditProspectModal() {
             if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return;
@@ -685,12 +664,6 @@
             document.getElementById('modal-date').value = p.proximo_seguimiento || '';
             document.getElementById('add-prospect-modal').classList.remove('hidden');
         }
-
-        window.addEventListener('resize', () => {
-            const isMobile = window.innerWidth < 1024;
-            if (!isMobile) { document.getElementById('list-section').classList.remove('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
-            else { if (selectedProspectId) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); } else { document.getElementById('list-section').classList.remove('hidden'); document.getElementById('details-section').classList.add('hidden'); } }
-        });
     </script>
 </body>
 </html>
