@@ -92,80 +92,57 @@
     <!-- CONTENEDOR PRINCIPAL -->
     <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
         
-        <!-- SECCIÓN IZQUIERDA: PIPELINE -->
+        <!-- SECCIÓN IZQUIERDA -->
         <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl overflow-hidden flex flex-col h-[calc(100vh-165px)] lg:h-[680px]">
             <div class="px-4 py-3 border-b border-slate-800/60 flex justify-between items-center bg-vertexCard/50 shrink-0">
                 <div class="flex items-center gap-2">
                     <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Prospectos</h2>
                     <span id="prospects-count" class="text-[10px] md:text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-semibold">0</span>
                 </div>
-                <button onclick="showDashboardView()" class="text-xs text-vertexBlue font-bold hover:underline flex items-center gap-1">
-                    📊 Ver Dashboard
-                </button>
+                <button onclick="showDashboardView()" class="text-xs text-vertexBlue font-bold hover:underline flex items-center gap-1">📊 Ver Dashboard</button>
             </div>
             <div id="prospects-list" class="divide-y divide-slate-800/40 overflow-y-auto flex-1 no-scrollbar p-2 space-y-2">
                 <div class="p-8 text-center text-slate-500 text-sm">Cargando base de datos...</div>
             </div>
         </section>
 
-        <!-- SECCIÓN DERECHA: PANEL EVOLUTIVO (FICHA O DASHBOARD GLOBAL) -->
+        <!-- SECCIÓN DERECHA -->
         <section id="details-section" class="lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
             
-            <!-- CONTENEDOR 1: VISUALIZACIÓN DEL DASHBOARD GENERAL (VERSIÓN 1.2) -->
+            <!-- CONTENEDOR 1: DASHBOARD GENERAL -->
             <div id="dashboard-view" class="flex flex-col gap-6 h-full w-full">
                 <div>
                     <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
-                    <p class="text-xs text-slate-400">Rendimiento comercial y salud de tu embudo de ventas</p>
+                    <p class="text-xs text-slate-400">Rendimiento comercial de tus asesorías y sistemas web</p>
                 </div>
 
-                <!-- BLOQUE DE INDICADORES FINANCIEROS Y VOLUMEN -->
-                <div class="grid grid-cols-2 gap-3 sm:gap-4 shrink-0">
-                    <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl shadow-md">
+                <div class="grid grid-cols-2 gap-4 shrink-0">
+                    <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl">
                         <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">💰 Ingresos Activos</span>
                         <span id="dash-active-money" class="text-xl sm:text-2xl font-black text-vertexTurquoise mt-1 block">$0.00</span>
-                        <span class="text-[10px] text-slate-500 block mt-0.5">Servicios en progreso / entregados</span>
                     </div>
-                    <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl shadow-md">
+                    <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl">
                         <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">⏳ Pipeline Estimado</span>
                         <span id="dash-pending-money" class="text-xl sm:text-2xl font-black text-vertexBlue mt-1 block">$0.00</span>
-                        <span class="text-[10px] text-slate-500 block mt-0.5">Propuestas en cotización activa</span>
                     </div>
                 </div>
 
-                <!-- REJILLA DE METRICAS ATÓMICAS -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
-                    <div class="bg-vertexCard/60 border border-slate-800/80 p-3 rounded-xl text-center">
-                        <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Clientes Totales</span>
-                        <span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span>
-                    </div>
-                    <div class="bg-vertexCard/60 border border-slate-800/80 p-3 rounded-xl text-center">
-                        <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cierres Activos</span>
-                        <span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span>
-                    </div>
-                    <div class="bg-vertexCard/60 border border-slate-800/80 p-3 rounded-xl text-center">
-                        <span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Servicios Vendidos</span>
-                        <span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span>
-                    </div>
-                    <div class="bg-vertexCard/60 border border-slate-800/80 p-3 rounded-xl text-center border-amber-500/20 bg-amber-500/5">
-                        <span class="block text-[9px] font-bold text-amber-400 uppercase tracking-wider">Seguimientos Hoy</span>
-                        <span id="dash-count-alerts" class="text-lg font-extrabold text-amber-500 mt-0.5 block animate-pulse">0</span>
-                    </div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Contactos</span><span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cierres Activos</span><span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Suscripciones</span><span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center border-amber-500/20 bg-amber-500/5"><span class="block text-[9px] font-bold text-amber-400 uppercase tracking-wider">Alertas Hoy</span><span id="dash-count-alerts" class="text-lg font-extrabold text-amber-500 mt-0.5 block animate-pulse">0</span></div>
                 </div>
 
-                <!-- LISTA DE SEGUIMIENTOS CRÍTICOS PRIORITARIOS PARA HOY -->
                 <div class="flex-1 flex flex-col min-h-[200px]">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                        <span>🎯</span> Prioridad de Contacto de Hoy
-                    </h3>
-                    <div id="dash-followups-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1 bg-slate-950/20 border border-slate-900 rounded-xl p-3">
-                        <div class="text-center text-slate-500 text-xs py-8">No hay alertas de seguimiento calculadas para hoy.</div>
-                    </div>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">🎯 Seguimientos Prioritarios</h3>
+                    <div id="dash-followups-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1 bg-slate-950/20 border border-slate-900 rounded-xl p-3"></div>
                 </div>
             </div>
 
-            <!-- CONTENEDOR 2: DETALLES PARTICULARES DE UN CLIENTE SELECCIONADO (VERSIÓN 1.1) -->
+            <!-- CONTENEDOR 2: DETALLES DEL CLIENTE -->
             <div id="active-prospect-details" class="hidden flex-col h-full">
-                <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 mb-6 shrink-0 shadow-lg relative overflow-hidden">
+                <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 mb-6 shrink-0 relative overflow-hidden">
                     <div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-vertexBlue to-vertexTurquoise"></div>
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-slate-800/60">
                         <div>
@@ -178,47 +155,37 @@
                                 <span id="detail-niche" class="bg-slate-800/80 text-slate-300 text-[10px] md:text-xs px-2.5 py-0.5 rounded-full font-medium border border-slate-700/50"></span>
                             </div>
                         </div>
-                        <div class="w-full sm:w-auto shrink-0">
-                            <select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2 focus:outline-none focus:border-vertexBlue transition-all">
-                                <option value="Nuevo">Nuevo</option>
-                                <option value="Contacto Inicial">Contacto Inicial</option>
-                                <option value="Demo Enviada">Demo Enviada</option>
-                                <option value="Cliente Activo">Cliente Activo</option>
-                                <option value="Perdido">Perdido</option>
-                            </select>
-                        </div>
+                        <select id="detail-status" onchange="updateProspectStatus(this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2">
+                            <option value="Nuevo">Nuevo</option>
+                            <option value="Contacto Inicial">Contacto Inicial</option>
+                            <option value="Demo Enviada">Demo Enviada</option>
+                            <option value="Cliente Activo">Cliente Activo</option>
+                            <option value="Perdido">Perdido</option>
+                        </select>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center">
-                        <div class="border-r border-slate-800/60 last:border-none">
-                            <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Valor Cuenta</span>
-                            <span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span>
-                        </div>
-                        <div class="sm:border-r border-slate-800/60 last:border-none">
-                            <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Servicios</span>
-                            <span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span>
-                        </div>
-                        <div class="border-r border-slate-800/60 last:border-none">
-                            <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Seguimiento</span>
-                            <span id="summary-next-date" class="text-xs font-semibold text-slate-300 mt-1 block">-</span>
-                        </div>
+                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Valor Cuenta</span><span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span></div>
+                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Servicios</span><span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Seguimiento</span><span id="summary-next-date" class="text-xs font-semibold text-slate-300 mt-1 block">-</span></div>
                         <div>
                             <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Acciones</span>
                             <div class="flex gap-2 justify-center mt-1">
-                                <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue hover:underline font-bold">✏️ Editar</button>
+                                <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue font-bold">✏️ Editar</button>
                                 <span class="text-slate-700">|</span>
-                                <button onclick="deleteProspect(selectedProspectId)" class="text-xs text-rose-500 hover:underline font-bold">🗑 Borrar</button>
+                                <button onclick="deleteProspect(selectedProspectId)" class="text-xs text-rose-500 font-bold">🗑 Borrar</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                
                 <div class="mb-6 shrink-0">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">Canales de Comunicación Rápida</h3>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="quick-actions-container"></div>
+                    <div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div>
                 </div>
+
                 <div class="flex-1 mb-6 overflow-y-auto no-scrollbar min-h-[160px]">
                     <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Portafolio de Servicios Cotizados</h3>
-                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue hover:text-[#00B8E0] font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue transition-all">+ Agregar</button>
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Suscripciones y Servicios</h3>
+                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue transition-all">+ Agregar Servicio</button>
                     </div>
                     <div id="services-list" class="space-y-2"></div>
                 </div>
@@ -226,37 +193,37 @@
         </section>
     </main>
 
-    <!-- MODALES -->
+    <!-- MODAL 1: PROSPECTO -->
     <div id="add-prospect-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-vertexCard border border-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+        <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
                 <h3 id="modal-title" class="font-bold tracking-tight text-slate-100">Agregar Nuevo Prospecto</h3>
-                <button onclick="closeAddProspectModal()" class="text-slate-400 hover:text-slate-200 text-xl font-bold px-2">×</button>
+                <button onclick="closeAddProspectModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
             </div>
             <div class="p-6 space-y-4">
                 <input type="hidden" id="modal-id">
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Negocio / Cliente</label>
-                    <input type="text" id="modal-name" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                    <input type="text" id="modal-name" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Categoría</label>
                         <select id="modal-niche" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                             <option value="Gimnasio">Gimnasio / Box</option>
-                            <option value="Restaurante">Restaurante / Comida</option>
                             <option value="Entrenador Personal">Entrenador Personal</option>
+                            <option value="Restaurante">Restaurante / Comida</option>
                             <option value="Fármacos / Suplementación">Fármacos / Suple</option>
                             <option value="Otro">Otro sector</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Ciudad</label>
-                        <input type="text" id="modal-city" placeholder="Ej. Guayaquil" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                        <input type="text" id="modal-city" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-3">
-                    <div class="col-span-1">
+                    <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Medio</label>
                         <select id="modal-contact-method" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                             <option value="WhatsApp">WhatsApp</option>
@@ -266,7 +233,7 @@
                     </div>
                     <div class="col-span-2">
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Contacto</label>
-                        <input type="text" id="modal-contact" placeholder="Número o handle" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                        <input type="text" id="modal-contact" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                     </div>
                 </div>
                 <div>
@@ -281,34 +248,60 @@
         </div>
     </div>
 
+    <!-- MODAL 2: ASOCIAR SERVICIO INTELIGENTE DINÁMICO (V1.2 / V1.7) -->
     <div id="add-service-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
-                <h3 class="font-bold tracking-tight text-slate-100">Asociar Nuevo Servicio</h3>
-                <button onclick="closeAddServiceModal()" class="text-slate-400 hover:text-slate-200 text-xl font-bold px-2">×</button>
+                <h3 class="font-bold tracking-tight text-slate-100">Asociar Servicio Inteligente</h3>
+                <button onclick="closeAddServiceModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
             </div>
             <div class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Tipo de Servicio</label>
-                    <select id="new-service-name" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
-                        <option value="Landing Page de Ventas / Conversión">Landing Page de Ventas</option>
-                        <option value="Web Multi-página Profesional">Web Multi-página Profesional</option>
-                        <option value="Sistema de Reservas / Citas">Sistema de Reservas / Citas</option>
-                        <option value="Mantenimiento Mensual y Hosting">Mantenimiento Mensual</option>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Tipo de Servicio</label>
+                    <select id="new-service-name" onchange="toggleDynamicServiceFields(this.value)" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
+                        <option value="Página Web / Landing">🌐 Desarrollo de Página Web o Landing</option>
+                        <option value="Asesoramiento Fitness Emprendedor">🏋️ Asesoramiento Fitness / Coaching</option>
+                        <option value="Desarrollo de App / SaaS">📱 Desarrollo de Aplicaciones Móviles</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Acordado ($)</label>
-                    <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
                 </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Enlace Demo (Opcional)</label>
-                    <input type="url" id="new-service-url" placeholder="https://..." class="w-full px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+
+                <!-- SUBFORMULARIO DINÁMICO 1: WEB -->
+                <div id="fields-web" class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block text-[11px] text-slate-400 font-medium">Dominio</label><input type="text" id="web-dominio" placeholder="Ej. mofit.com" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                        <div><label class="block text-[11px] text-slate-400 font-medium">Hosting Provider</label><input type="text" id="web-hosting" placeholder="Ej. Hostinger" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    </div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Fecha de Entrega Pactada</label><input type="date" id="web-entrega" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">URL de Producción / Proyecto</label><input type="url" id="web-url" placeholder="https://..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                </div>
+
+                <!-- SUBFORMULARIO DINÁMICO 2: FITNESS -->
+                <div id="fields-fitness" class="space-y-3 hidden">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block text-[11px] text-slate-400 font-medium">Peso Inicial (kg)</label><input type="number" step="0.1" id="fit-peso" placeholder="Ej. 78.4" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                        <div><label class="block text-[11px] text-slate-400 font-medium">Objetivo Principal</label><input type="text" id="fit-objetivo" placeholder="Ej. Definición / Fuerza" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    </div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Plan de Entrenamiento / Rutina</label><input type="text" id="fit-plan" placeholder="Ej. Push/Pull/Legs 4 días" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Estructura Nutricional / Macrocálculo</label><input type="text" id="fit-nutricion" placeholder="Ej. Deficit 2100 kcal / 160g P" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                </div>
+
+                <!-- SUBFORMULARIO DINÁMICO 3: APP -->
+                <div id="fields-app" class="space-y-3 hidden">
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Repositorio GitHub / GitLab</label><input type="text" id="app-repo" placeholder="github.com/usuario/repo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block text-[11px] text-slate-400 font-medium">Versión de Build</label><input type="text" id="app-version" placeholder="Ej. v1.0.0" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                        <div><label class="block text-[11px] text-slate-400 font-medium">Estado General API</label><input type="text" id="app-estado" placeholder="Ej. Stable / En pruebas" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
+                    </div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Enlace de Demo Pública / TestFlight</label><input type="url" id="app-demo" placeholder="https://..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></div>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
                 <button onclick="closeAddServiceModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold hover:bg-slate-900 rounded-xl">Cancelar</button>
-                <button onclick="addService()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl hover:bg-[#00B8E0]">Agregar</button>
+                <button onclick="addService()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl hover:bg-[#00B8E0]">Vincular Servicio</button>
             </div>
         </div>
     </div>
@@ -320,16 +313,9 @@
         let filteredProspectsList = [];
         let selectedProspectId = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            initDatabase();
-        });
+        window.addEventListener('DOMContentLoaded', () => { initDatabase(); });
 
-        function cleanUrl(rawUrl) {
-            if (!rawUrl) return '';
-            let url = rawUrl.trim();
-            if (url.endsWith('/')) url = url.slice(0, -1);
-            return url;
-        }
+        function cleanUrl(rawUrl) { if (!rawUrl) return ''; let url = rawUrl.trim(); if (url.endsWith('/')) url = url.slice(0, -1); return url; }
 
         function initDatabase() {
             const rawUrl = localStorage.getItem('supabase_url');
@@ -345,12 +331,10 @@
                     document.getElementById('connection-status').innerText = "🟢 Conectado de forma segura a Supabase Cloud";
                     document.getElementById('connection-status').className = "text-vertexTurquoise font-semibold";
                     loadInitialData();
-                } catch (e) {
-                    console.error("Fallo de inicialización:", e);
-                }
+                } catch (e) { console.error(e); }
             } else {
                 document.getElementById('connection-status').innerText = "⚠️ Configuración pendiente (⚙️)";
-                document.getElementById('prospects-list').innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Abre configuración (⚙️) e ingresa credenciales limpias.</div>';
+                document.getElementById('prospects-list').innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Ingresa credenciales.</div>';
             }
         }
 
@@ -359,186 +343,113 @@
             try {
                 const { data: prospects, error: err1 } = await dbClient.from('prospectos').select('*');
                 const { data: services, error: err2 } = await dbClient.from('servicios').select('*');
-                
                 if (!err1) {
                     localProspects = prospects || [];
                     localServices = services || [];
                     localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
                     filteredProspectsList = [...localProspects];
                     renderProspects();
-                    calculateDashboardMetrics(); // Renderizar métricas del Home
-                } else {
-                    document.getElementById('prospects-list').innerHTML = `<div class="p-4 text-center text-rose-400 text-xs">Error de tablas: ${err1.message}</div>`;
+                    calculateDashboardMetrics();
                 }
-            } catch (e) {
-                console.error(e);
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // CÁLCULO E INYECCIÓN DE MÉTRICAS DEL DASHBOARD (VERSIÓN 1.2)
+        function toggleDynamicServiceFields(nicho) {
+            document.getElementById('fields-web').classList.add('hidden');
+            document.getElementById('fields-fitness').classList.add('hidden');
+            document.getElementById('fields-app').classList.add('hidden');
+
+            if (nicho.includes('Web')) document.getElementById('fields-web').classList.remove('hidden');
+            else if (nicho.includes('Fitness')) document.getElementById('fields-fitness').classList.remove('hidden');
+            else if (nicho.includes('App')) document.getElementById('fields-app').classList.remove('hidden');
+        }
+
         function calculateDashboardMetrics() {
             const todayStr = getTodayString();
-            
-            // 1. Conteo de Entidades
             document.getElementById('dash-count-total').innerText = localProspects.length;
-            
-            const clientesActivos = localProspects.filter(p => p.estado === 'Cliente Activo');
-            document.getElementById('dash-count-active').innerText = clientesActivos.length;
+            document.getElementById('dash-count-active').innerText = localProspects.filter(p => p.estado === 'Cliente Activo').length;
             document.getElementById('dash-count-services').innerText = localServices.length;
 
-            // 2. Cálculo Financiero Seguro
-            let ingresosActivos = 0;
-            let pipelineEstimado = 0;
-
+            let activos = 0, pendientes = 0;
             localServices.forEach(s => {
                 const price = parseFloat(s.precio) || 0;
-                if (s.estado === 'En Progreso' || s.estado === 'Entregado') {
-                    ingresosActivos += price;
-                } else {
-                    pipelineEstimado += price;
-                }
+                if (s.estado === 'En Progreso' || s.estado === 'Entregado') activos += price;
+                else pendientes += price;
             });
+            document.getElementById('dash-active-money').innerText = `$${activos.toFixed(2)}`;
+            document.getElementById('dash-pending-money').innerText = `$${pendientes.toFixed(2)}`;
 
-            document.getElementById('dash-active-money').innerText = `$${ingresosActivos.toFixed(2)}`;
-            document.getElementById('dash-pending-money').innerText = `$${pipelineEstimado.toFixed(2)}`;
-
-            // 3. Filtrado de Alertas de Seguimiento Crítico
             const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && p.estado !== 'Cliente Activo' && p.estado !== 'Perdido');
             document.getElementById('dash-count-alerts').innerText = pendings.length;
 
-            // Renderizado de lista de tareas del Dashboard
-            const dashFollowupsContainer = document.getElementById('dash-followups-list');
-            
+            const container = document.getElementById('dash-followups-list');
             if (pendings.length === 0) {
-                dashFollowupsContainer.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8 font-medium">✨ ¡Felicidades! No te quedan seguimientos pendientes para hoy.</div>';
+                container.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8">✨ Ningún seguimiento pendiente hoy.</div>';
                 document.getElementById('followup-banner').classList.add('hidden');
                 return;
             }
-
-            // Banner superior de alerta
             document.getElementById('followup-banner').classList.remove('hidden');
-
-            dashFollowupsContainer.innerHTML = pendings.map(p => {
+            container.innerHTML = pendings.map(p => {
                 const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
-                const waLink = String(p.contacto).startsWith('http') ? p.contacto : `https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}`;
-
                 return `
-                    <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center hover:border-amber-500/30 transition-all">
+                    <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
                         <div>
                             <h4 class="font-bold text-slate-100 text-xs sm:text-sm">${p.nombre}</h4>
-                            <p class="text-[10px] text-amber-400 mt-0.5">⚠️ Venció el: ${formatDate(p.proximo_seguimiento)} • Estado: ${p.estado}</p>
+                            <p class="text-[10px] text-amber-400 mt-0.5">Vence: ${formatDate(p.proximo_seguimiento)} • ${p.estado}</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg font-bold hover:bg-slate-700">Ver Ficha</button>
-                            <a href="${waLink}" target="_blank" class="bg-emerald-600 text-white text-xs px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-700 flex items-center">💬 WhatsApp</a>
+                            <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg font-bold">Ficha</button>
+                            <a href="https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}" target="_blank" class="bg-emerald-600 text-white text-xs px-2.5 py-1 rounded-lg font-bold">💬 WA</a>
                         </div>
                     </div>
                 `;
             }).join('');
         }
 
-        function showDashboardView() {
-            selectedProspectId = null;
-            renderProspects();
-            
-            document.getElementById('active-prospect-details').classList.add('hidden');
-            document.getElementById('dashboard-view').classList.remove('hidden');
-            document.getElementById('dashboard-view').classList.add('flex');
-            
-            // En móvil, asegura el intercambio correcto de secciones
-            if (window.innerWidth < 1024) {
-                document.getElementById('list-section').classList.add('hidden');
-                document.getElementById('details-section').classList.remove('hidden');
-            }
-            
-            calculateDashboardMetrics();
-        }
+        async function addService() {
+            if (!selectedProspectId || !dbClient) return;
+            const servicio = document.getElementById('new-service-name').value;
+            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
+            const enlace_demo = document.getElementById('new-service-url').value.trim();
 
-        function selectProspect(id) {
-            selectedProspectId = id;
-            renderProspects();
-            const p = localProspects.find(item => item.id === id);
-            if (!p) return;
-
-            document.getElementById('dashboard-view').classList.add('hidden');
-            document.getElementById('active-prospect-details').classList.remove('hidden');
-            document.getElementById('active-prospect-details').classList.add('flex');
-
-            if (window.innerWidth < 1024) {
-                document.getElementById('list-section').classList.add('hidden');
-                document.getElementById('details-section').classList.remove('hidden');
-            }
-
-            document.getElementById('detail-name').innerText = p.nombre;
-            document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
-            document.getElementById('detail-niche').innerText = p.nicho || 'General';
-            document.getElementById('detail-status').value = p.estado || 'Nuevo';
-
-            const clientServices = localServices.filter(s => s.prospecto_id === id);
-            const totalValue = clientServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
-            
-            document.getElementById('summary-value').innerText = `$${totalValue.toFixed(2)}`;
-            document.getElementById('summary-services-count').innerText = clientServices.length;
-            document.getElementById('summary-next-date').innerText = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin programar';
-
-            renderQuickActions(p);
-            renderServices(id);
-        }
-
-        function renderProspects() {
-            const listContainer = document.getElementById('prospects-list');
-            document.getElementById('prospects-count').innerText = filteredProspectsList.length;
-
-            if (filteredProspectsList.length === 0) {
-                listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Pipeline vacío.</div>';
-                return;
+            // CAPTURA DINÁMICA DE CAMPOS SEGÚN EL NICHO SELECCIONADO
+            let detalles = {};
+            if (servicio.includes('Web')) {
+                detalles = {
+                    dominio: document.getElementById('web-dominio').value.trim(),
+                    hosting: document.getElementById('web-hosting').value.trim(),
+                    entrega: document.getElementById('web-entrega').value,
+                    url: document.getElementById('web-url').value.trim()
+                };
+            } else if (servicio.includes('Fitness')) {
+                detalles = {
+                    peso: document.getElementById('fit-peso').value,
+                    objetivo: document.getElementById('fit-objetivo').value.trim(),
+                    plan: document.getElementById('fit-plan').value.trim(),
+                    nutricion: document.getElementById('fit-nutricion').value.trim()
+                };
+            } else if (servicio.includes('App')) {
+                detalles = {
+                    repositorio: document.getElementById('app-repo').value.trim(),
+                    version: document.getElementById('app-version').value.trim(),
+                    estado_api: document.getElementById('app-estado').value.trim(),
+                    demo: document.getElementById('app-demo').value.trim()
+                };
             }
 
-            const todayStr = getTodayString();
-            listContainer.innerHTML = filteredProspectsList.map(p => {
-                const isActive = p.id === selectedProspectId;
-                const matchServices = localServices.filter(s => s.prospecto_id === p.id);
-                const totalServicios = matchServices.length;
-                const valorEstimado = matchServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
-                
-                const ciudadText = p.ciudad || 'GYE';
-                const estadoText = p.estado || 'Nuevo';
-                const isPendingFollowUp = p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && estadoText !== 'Cliente Activo' && estadoText !== 'Perdido';
+            // Guardamos en Supabase incluyendo el payload estructurado JSONB
+            await dbClient.from('servicios').insert([{ 
+                prospecto_id: selectedProspectId, 
+                servicio, 
+                precio, 
+                estado: "Cotizado", 
+                enlace_demo,
+                detalles_inteligentes: detalles 
+            }]);
 
-                return `
-                    <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 hover:border-vertexBlue/50 transition-all cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md ring-1 ring-vertexBlue/20' : ''}">
-                        <div class="flex justify-between items-start gap-2">
-                            <div class="space-y-1 flex-1 min-w-0">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <h4 class="font-bold text-slate-100 text-sm md:text-base truncate">${p.nombre}</h4>
-                                    <span class="bg-slate-800 text-slate-400 text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded">${ciudadText}</span>
-                                    ${isPendingFollowUp ? '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>' : ''}
-                                </div>
-                                <div class="flex items-center gap-3 text-xs text-slate-400">
-                                    <span>🌐 ${totalServicios} serv.</span>
-                                    <span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span>
-                                </div>
-                            </div>
-                            <span class="${getStatusClass(estadoText)} text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${estadoText}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderQuickActions(p) {
-            const container = document.getElementById('quick-actions-container');
-            const rawContact = p.contacto ? String(p.contacto).trim() : '';
-            const cleanNum = rawContact.replace(/\s+/g, '').replace('+', '');
-            const cleanHandle = rawContact.startsWith('@') ? rawContact.substring(1) : rawContact;
-
-            let actionsHTML = '';
-            const waLink = rawContact.startsWith('http') ? rawContact : `https://wa.me/${cleanNum.startsWith('0') ? '593' + cleanNum.substring(1) : cleanNum}`;
-            actionsHTML += `<a href="${waLink}" target="_blank" class="bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-emerald-600 hover:text-white transition-all">💬 WhatsApp</a>`;
-            const igLink = rawContact.startsWith('http') ? rawContact : `https://instagram.com/${cleanHandle}`;
-            actionsHTML += `<a href="${igLink}" target="_blank" class="bg-purple-600/10 border border-purple-500/30 text-purple-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-purple-600 hover:text-white transition-all">📸 Instagram</a>`;
-            actionsHTML += `<a href="tel:${cleanNum}" class="bg-cyan-600/10 border border-cyan-500/30 text-cyan-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-cyan-600 hover:text-white transition-all">📞 Llamar</a>`;
-            container.innerHTML = actionsHTML;
+            loadInitialData();
+            closeAddServiceModal();
+            setTimeout(() => { selectProspect(selectedProspectId); }, 400);
         }
 
         function renderServices(prospectId) {
@@ -550,15 +461,105 @@
                 return;
             }
 
-            container.innerHTML = services.map(s => `
-                <div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3 flex justify-between items-center">
-                    <div class="min-w-0 flex-1">
-                        <h4 class="font-bold text-slate-200 text-xs sm:text-sm truncate">${s.servicio}</h4>
-                        <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
+            container.innerHTML = services.map(s => {
+                const extra = s.detalles_inteligentes || {};
+                let infoExtraHTML = '';
+
+                // Renderizador condicional según el Nicho guardado en el JSONB
+                if (s.servicio.includes('Web') && extra.dominio) {
+                    infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🌐 Dom: <span class="text-vertexBlue">${extra.dominio}</span> • Host: ${extra.hosting || '-'} • Entrega: ${extra.entrega ? formatDate(extra.entrega) : '-'}</p>`;
+                } else if (s.servicio.includes('Fitness') && extra.peso) {
+                    infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🏋️ Peso: <span class="text-vertexTurquoise">${extra.peso} kg</span> • Obj: ${extra.objetivo || '-'} • Plan: ${extra.plan || '-'}</p>
+                                     <p class="text-[9px] text-slate-500 font-mono">Nutrition: ${extra.nutricion || '-'}</p>`;
+                } else if (s.servicio.includes('App') && extra.repositorio) {
+                    infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">📱 Repo: <span class="text-purple-400">${extra.repositorio}</span> • Build: ${extra.version || '-'} • API: ${extra.estado_api || '-'}</p>`;
+                }
+
+                return `
+                    <div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                        <div class="flex justify-between items-center w-full">
+                            <div class="min-w-0 flex-1">
+                                <h4 class="font-bold text-slate-200 text-xs sm:text-sm truncate">${s.servicio}</h4>
+                                <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 text-[11px] rounded px-2 py-1">
+                                    <option value="Cotizado" ${s.estado === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
+                                    <option value="En Progreso" ${s.estado === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
+                                    <option value="Entregado" ${s.estado === 'Entregado' ? 'selected' : ''}>Entregado</option>
+                                </select>
+                                <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-2">✕</button>
+                            </div>
+                        </div>
+                        ${infoExtraHTML}
                     </div>
-                    <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-2">✕</button>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        function showDashboardView() {
+            selectedProspectId = null; renderProspects();
+            document.getElementById('active-prospect-details').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            document.getElementById('dashboard-view').classList.add('flex');
+            if (window.innerWidth < 1024) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
+            calculateDashboardMetrics();
+        }
+
+        function selectProspect(id) {
+            selectedProspectId = id; renderProspects();
+            const p = localProspects.find(item => item.id === id); if (!p) return;
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('active-prospect-details').classList.remove('hidden'); document.getElementById('active-prospect-details').classList.add('flex');
+            if (window.innerWidth < 1024) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
+            document.getElementById('detail-name').innerText = p.nombre;
+            document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
+            document.getElementById('detail-niche').innerText = p.nicho || 'General';
+            document.getElementById('detail-status').value = p.estado || 'Nuevo';
+            const clientServices = localServices.filter(s => s.prospecto_id === id);
+            const totalValue = clientServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
+            document.getElementById('summary-value').innerText = `$${totalValue.toFixed(2)}`;
+            document.getElementById('summary-services-count').innerText = clientServices.length;
+            document.getElementById('summary-next-date').innerText = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin programar';
+            renderQuickActions(p); renderServices(id);
+        }
+
+        function renderProspects() {
+            const listContainer = document.getElementById('prospects-list');
+            document.getElementById('prospects-count').innerText = filteredProspectsList.length;
+            if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Pipeline vacío.</div>'; return; }
+            const todayStr = getTodayString();
+            listContainer.innerHTML = filteredProspectsList.map(p => {
+                const isActive = p.id === selectedProspectId;
+                const matchServices = localServices.filter(s => s.prospecto_id === p.id);
+                const valorEstimado = matchServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
+                const isPendingFollowUp = p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && p.estado !== 'Cliente Activo' && p.estado !== 'Perdido';
+                return `
+                    <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md ring-1 ring-vertexBlue/20' : ''}">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="space-y-1 flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h4 class="font-bold text-slate-100 text-sm md:text-base truncate">${p.nombre}</h4>
+                                    <span class="bg-slate-800 text-slate-400 text-[8px] font-bold px-1.5 py-0.5 rounded">${p.ciudad || 'GYE'}</span>
+                                    ${isPendingFollowUp ? '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>' : ''}
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>🌐 ${matchServices.length} serv.</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
+                            </div>
+                            <span class="${getStatusClass(p.estado || 'Nuevo')} text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${p.estado || 'Nuevo'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderQuickActions(p) {
+            const container = document.getElementById('quick-actions-container');
+            const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
+            container.innerHTML = `
+                <a href="https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}" target="_blank" class="bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-emerald-600 hover:text-white transition-all">💬 WhatsApp</a>
+                <a href="https://instagram.com/${p.contacto}" target="_blank" class="bg-purple-600/10 border border-purple-500/30 text-purple-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-purple-600 hover:text-white transition-all">📸 Instagram</a>
+                <a href="tel:${num}" class="bg-cyan-600/10 border border-cyan-500/30 text-cyan-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-cyan-600 hover:text-white transition-all">📞 Llamar</a>
+            `;
         }
 
         async function saveProspect() {
@@ -569,73 +570,19 @@
             const metodo_contacto = document.getElementById('modal-contact-method').value;
             const contacto = document.getElementById('modal-contact').value.trim();
             const proximo_seguimiento = document.getElementById('modal-date').value || null;
-
             if (!nombre || !contacto) return;
             const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
-
-            if (dbClient) {
-                if (id) await dbClient.from('prospectos').update(payload).eq('id', id);
-                else { payload.estado = "Nuevo"; await dbClient.from('prospectos').insert([payload]); }
-            }
-            loadInitialData();
-            closeAddProspectModal();
+            if (dbClient) { if (id) await dbClient.from('prospectos').update(payload).eq('id', id); else { payload.estado = "Nuevo"; await dbClient.from('prospectos').insert([payload]); } }
+            loadInitialData(); closeAddProspectModal();
         }
 
-        async function deleteProspect(id) {
-            if (!id || !confirm("¿Eliminar permanentemente?")) return;
-            if (dbClient) {
-                await dbClient.from('servicios').delete().eq('prospecto_id', id);
-                await dbClient.from('prospectos').delete().eq('id', id);
-            }
-            showDashboardView();
-            loadInitialData();
-        }
-
-        async function updateProspectStatus(nuevoEstado) {
-            if (!selectedProspectId || !dbClient) return;
-            await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId);
-            loadInitialData();
-        }
-
-        async function addService() {
-            if (!selectedProspectId || !dbClient) return;
-            const servicio = document.getElementById('new-service-name').value;
-            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
-            const enlace_demo = document.getElementById('new-service-url').value.trim();
-
-            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: "Cotizado", enlace_demo }]);
-            loadInitialData();
-            closeAddServiceModal();
-        }
-
-        async function deleteService(serviceId) {
-            if (!confirm("¿Eliminar servicio?") || !dbClient) return;
-            await dbClient.from('servicios').delete().eq('id', serviceId);
-            loadInitialData();
-        }
-
-        function filterProspects() {
-            const query = document.getElementById('search-bar').value.toLowerCase().trim();
-            filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects];
-            renderProspects();
-        }
-
-        function saveSupabaseConfig() {
-            const rawUrl = document.getElementById('supabase-url').value;
-            const key = document.getElementById('supabase-key').value.trim();
-            const url = cleanUrl(rawUrl);
-            if (url && key) {
-                localStorage.setItem('supabase_url', url);
-                localStorage.setItem('supabase_key', key);
-                initDatabase();
-                toggleSettings();
-            }
-        }
-
-        function backToList() {
-            document.getElementById('details-section').classList.add('hidden');
-            document.getElementById('list-section').classList.remove('hidden');
-        }
+        async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
+        async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
+        async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); setTimeout(() => { if (selectedProspectId) selectProspect(selectedProspectId); }, 300); }
+        async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); setTimeout(() => { if (selectedProspectId) selectProspect(selectedProspectId); }, 300); }
+        function saveSupabaseConfig() { const rawUrl = document.getElementById('supabase-url').value; const key = document.getElementById('supabase-key').value.trim(); const url = cleanUrl(rawUrl); if (url && key) { localStorage.setItem('supabase_url', url); localStorage.setItem('supabase_key', key); initDatabase(); toggleSettings(); } }
+        function filterProspects() { const query = document.getElementById('search-bar').value.toLowerCase().trim(); filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects]; renderProspects(); }
+        function backToList() { document.getElementById('details-section').classList.add('hidden'); document.getElementById('list-section').classList.remove('hidden'); }
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
         function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; }
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
@@ -644,48 +591,8 @@
         function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
         function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
         function closeFollowupBanner() { document.getElementById('followup-banner').classList.add('hidden'); }
-        
-        function openEditProspectModal() {
-            if (!selectedProspectId) return;
-            const p = localProspects.find(item => item.id === selectedProspectId);
-            if (!p) return;
-            document.getElementById('modal-title').innerText = "Editar Ficha de Control";
-            document.getElementById('modal-id').value = p.id;
-            document.getElementById('modal-name').value = p.nombre || '';
-            document.getElementById('modal-niche').value = p.nicho || 'Gimnasio';
-            document.getElementById('modal-city').value = p.ciudad || '';
-            document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp';
-            document.getElementById('modal-contact').value = p.contacto || '';
-            document.getElementById('modal-date').value = p.proximo_seguimiento || '';
-            document.getElementById('add-prospect-modal').classList.remove('hidden');
-        }
-
-        function getStatusClass(status) {
-            switch(status) {
-                case 'Nuevo': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20';
-                case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
-                case 'Demo Enviada': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
-                case 'Cliente Activo': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20';
-                case 'Perdido': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
-                default: return 'bg-slate-500/10 text-slate-400';
-            }
-        }
-
-        window.addEventListener('resize', () => {
-            const isMobile = window.innerWidth < 1024;
-            if (!isMobile) {
-                document.getElementById('list-section').classList.remove('hidden');
-                document.getElementById('details-section').classList.remove('hidden');
-            } else {
-                if (selectedProspectId) {
-                    document.getElementById('list-section').classList.add('hidden');
-                    document.getElementById('details-section').classList.remove('hidden');
-                } else {
-                    document.getElementById('list-section').classList.remove('hidden');
-                    document.getElementById('details-section').classList.add('hidden');
-                }
-            }
-        });
+        function openEditProspectModal() { if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return; document.getElementById('modal-title').innerText = "Editar Ficha de Control"; document.getElementById('modal-id').value = p.id; document.getElementById('modal-name').value = p.nombre || ''; document.getElementById('modal-niche').value = p.nicho || 'Gimnasio'; document.getElementById('modal-city').value = p.ciudad || ''; document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp'; document.getElementById('modal-contact').value = p.contacto || ''; document.getElementById('modal-date').value = p.proximo_seguimiento || ''; document.getElementById('add-prospect-modal').classList.remove('hidden'); }
+        function getStatusClass(status) { switch(status) { case 'Nuevo': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20'; case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20'; case 'Demo Enviada': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'; case 'Cliente Activo': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20'; case 'Perdido': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20'; default: return 'bg-slate-500/10 text-slate-400'; } }
     </script>
 </body>
 </html>
