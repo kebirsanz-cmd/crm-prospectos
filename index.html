@@ -141,11 +141,7 @@
                                 <span id="detail-niche" class="bg-slate-800/80 text-slate-300 text-[10px] md:text-xs px-2.5 py-0.5 rounded-full font-medium border border-slate-700/50"></span>
                             </div>
                         </div>
-                        
-                        <!-- CONTENEDOR SELECTOR DINÁMICO REFACTORIZADO -->
-                        <div id="status-select-container" class="w-full sm:w-auto shrink-0">
-                            <!-- Se inyecta dinámicamente vía JS -->
-                        </div>
+                        <div id="status-select-container" class="w-full sm:w-auto shrink-0"></div>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center">
                         <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Valor Cuenta</span><span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span></div>
@@ -308,6 +304,12 @@
 
         function cleanUrl(rawUrl) { if (!rawUrl) return ''; let url = rawUrl.trim(); if (url.endsWith('/')) url = url.slice(0, -1); return url; }
 
+        document.addEventListener('click', function(e) {
+            if(e.target && e.target.id === 'service-status-select') {
+                e.stopPropagation();
+            }
+        });
+
         function initDatabase() {
             const rawUrl = localStorage.getItem('supabase_url');
             const key = localStorage.getItem('supabase_key') ? localStorage.getItem('supabase_key').trim() : null;
@@ -372,7 +374,7 @@
             let activos = 0, pendientes = 0;
             localServices.forEach(s => {
                 const price = parseFloat(s.precio) || 0;
-                if (s.estado === 'En Progreso' || s.estado === 'Entregado') activos += price;
+                if (s.estado === 'En Progreso' || s.estado === 'Entregado' || s.estado === 'Vigente / Activo') activos += price;
                 else pendientes += price;
             });
             document.getElementById('dash-active-money').innerText = `$${activos.toFixed(2)}`;
@@ -440,7 +442,7 @@
                             nutricion: document.getElementById('modal-fit-nutricion').value.trim()
                         };
                         await dbClient.from('servicios').insert([{
-                            prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "En Progreso", detalles_inteligentes: fitDetails
+                            prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "Vigente / Activo", detalles_inteligentes: fitDetails
                         }]);
                     }
                 }
@@ -478,10 +480,13 @@
                 };
             }
 
-            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: "Cotizado", enlace_demo, detalles_inteligentes: detalles }]);
+            const defaultEstado = servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado";
+
+            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
             loadInitialData(); closeAddServiceModal();
         }
 
+        // CONTROLADOR DE RENDERIZACIÓN DE SERVICIOS ADAPTATIVOS POR NICHO
         function renderServices(prospectId) {
             const container = document.getElementById('services-list');
             const services = localServices.filter(s => s.prospecto_id === prospectId);
@@ -490,16 +495,42 @@
             container.innerHTML = services.map(s => {
                 const extra = s.detalles_inteligentes || {};
                 let infoExtraHTML = '';
-                if (s.servicio.includes('Web') && extra.dominio) {
-                    infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🌐 Dom: <span class="text-vertexBlue">${extra.dominio}</span> • Host: ${extra.hosting || '-'} • Entrega: ${extra.entrega ? formatDate(extra.entrega) : '-'}</p>`;
-                } else if (s.servicio.includes('Fitness') && extra.peso) {
+                let selectorHTML = '';
+                const currentServiceStatus = s.estado || 'Cotizado';
+
+                // Renderizador Dinámico de Selectores por Ficha de Servicio
+                if (s.servicio.includes('Fitness') || s.servicio.includes('Asesoramiento')) {
+                    // 1. Campos específicos para Atletas
                     infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5">
-                                        <p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p>
+                                        <p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso || '-'} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p>
                                         <p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p>
                                         <p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p>
                                      </div>`;
-                } else if (s.servicio.includes('App') && extra.repositorio) {
-                    infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">📱 Repo: <span class="text-purple-400">${extra.repositorio}</span> • Build: ${extra.version || '-'}</p>`;
+
+                    // 2. Opciones de estado específicas para Alumnos
+                    selectorHTML = `
+                        <select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none">
+                            <option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' || currentServiceStatus === 'En Progreso' ? 'selected' : ''}>Vigente / Activo</option>
+                            <option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' || currentServiceStatus === 'Cotizado' ? 'selected' : ''}>⏳ Por Renovar</option>
+                            <option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' || currentServiceStatus === 'Entregado' ? 'selected' : ''}>❌ Inactivo</option>
+                        </select>
+                    `;
+                } else {
+                    // 1. Campos específicos para Software Comercial
+                    if (s.servicio.includes('Web') && extra.dominio) {
+                        infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🌐 Dom: <span class="text-vertexBlue">${extra.dominio}</span> • Host: ${extra.hosting || '-'} • Entrega: ${extra.entrega ? formatDate(extra.entrega) : '-'}</p>`;
+                    } else if (s.servicio.includes('App') && extra.repositorio) {
+                        infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">📱 Repo: <span class="text-purple-400">${extra.repositorio}</span> • Build: ${extra.version || '-'}</p>`;
+                    }
+
+                    // 2. Opciones de estado tradicionales para Desarrollo Software
+                    selectorHTML = `
+                        <select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 text-[11px] rounded px-2 py-1 focus:outline-none">
+                            <option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
+                            <option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
+                            <option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>Entregado</option>
+                        </select>
+                    `;
                 }
 
                 return `
@@ -510,11 +541,7 @@
                                 <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
                             </div>
                             <div class="flex items-center gap-2">
-                                <select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 text-[11px] rounded px-2 py-1">
-                                    <option value="Cotizado" ${s.estado === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
-                                    <option value="En Progreso" ${s.estado === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
-                                    <option value="Entregado" ${s.estado === 'Entregado' ? 'selected' : ''}>Entregado</option>
-                                </select>
+                                ${selectorHTML}
                                 <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-2">✕</button>
                             </div>
                         </div>
@@ -532,7 +559,6 @@
             calculateDashboardMetrics();
         }
 
-        // LÓGICA REFACTORIZADA PARA INYECTAR SELECTORES DE ESTADO DINÁMICOS
         function selectProspect(id) {
             selectedProspectId = id; renderProspects();
             const p = localProspects.find(item => item.id === id); if (!p) return;
@@ -543,7 +569,6 @@
             document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
             document.getElementById('detail-niche').innerText = p.nicho || 'General';
 
-            // AQUÍ INYECTAMOS LAS OPCIONES SEGÚN EL NICHO DEL CLIENTE
             const selectorContainer = document.getElementById('status-select-container');
             const currentStatus = p.estado || 'Nuevo';
 
@@ -578,7 +603,7 @@
 
         function renderProspects() {
             const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
-            if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Pipeline vacío.</div>'; return; }
+            if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Pipeline vacío.</div>'; return; }
             const todayStr = getTodayString();
             listContainer.innerHTML = filteredProspectsList.map(p => {
                 const isActive = p.id === selectedProspectId;
@@ -616,7 +641,13 @@
 
         async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
         async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
-        async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); }
+        
+        async function updateServiceStatus(serviceId, nuevoEstado) { 
+            if (!dbClient) return; 
+            await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); 
+            loadInitialData(); 
+        }
+        
         async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); }
         function saveSupabaseConfig() { const rawUrl = document.getElementById('supabase-url').value; const key = document.getElementById('supabase-key').value.trim(); const url = cleanUrl(rawUrl); if (url && key) { localStorage.setItem('supabase_url', url); localStorage.setItem('supabase_key', key); initDatabase(); toggleSettings(); } }
         function filterProspects() { const query = document.getElementById('search-bar').value.toLowerCase().trim(); filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects]; renderProspects(); }
@@ -635,9 +666,9 @@
                 case 'Nuevo': case 'Prospecto': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20';
                 case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
                 case 'Demo Enviada': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
-                case 'Cliente Activo': case 'Activo': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20';
-                case 'Pausado': return 'bg-amber-500/10 text-amber-500 border border-amber-500/20';
-                case 'Perdido': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+                case 'Cliente Activo': case 'Activo': case 'Vigente / Activo': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20';
+                case 'Pausado': case 'Renovación Pendiente': return 'bg-amber-500/10 text-amber-500 border border-amber-500/20';
+                case 'Perdido': case 'Vencido / Congelado': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
                 default: return 'bg-slate-500/10 text-slate-400';
             }
         }
