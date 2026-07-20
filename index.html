@@ -50,8 +50,7 @@
         <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto items-stretch sm:items-center flex-1 lg:justify-end max-w-3xl">
             <div class="relative flex-1 max-w-md">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">🔍</span>
-                <!-- BLINDAJE CONTRA AUTOCOMPLETADO AGRESIVO -->
-                <input type="text" id="search-bar" oninput="filterProspects()" placeholder="Buscar por nombre, ciudad, nicho o tipo..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
+                <input type="text" id="vertex-search-filter" oninput="filterProspects()" placeholder="Buscar por nombre, ciudad o nicho..." autocomplete="off" class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
             </div>
             
             <div class="flex gap-2 shrink-0">
@@ -64,26 +63,20 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.9</span>
-    </div>
-
-    <!-- BANNER DE NOTIFICACIONES DINÁMICAS -->
-    <div id="followup-banner" class="hidden bg-amber-500/10 border-b border-amber-500/20 px-4 md:px-8 py-3 text-xs md:text-sm text-amber-400 justify-between items-center shrink-0">
-        <div class="flex items-center gap-2"><span>🔔</span><span id="followup-banner-text">Revisión de controles pendientes hoy.</span></div>
-        <button onclick="closeFollowupBanner()" class="text-amber-500 font-bold text-lg px-2">×</button>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v2.0.0</span>
     </div>
 
     <!-- PANEL CONFIGURACIÓN -->
     <div id="settings-panel" class="hidden bg-vertexCard border-b border-slate-800 p-4 md:p-6 shrink-0">
         <div class="max-w-4xl mx-auto">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Configuración Supabase</h3>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Configuración Supabase Cloud</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Project URL</label><input type="text" id="supabase-url" autocomplete="off" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label><input type="password" id="supabase-key" autocomplete="new-password" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Project URL</label><input type="text" id="supabase-url" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label><input type="password" id="supabase-key" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
             </div>
             <div class="mt-4 flex justify-end gap-2">
                 <button type="button" onclick="toggleSettings()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button type="button" onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0]">Guardar</button>
+                <button type="button" onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0]">Guardar Configuración</button>
             </div>
         </div>
     </div>
@@ -118,11 +111,8 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
-                        <p class="text-xs text-slate-400">Rendimiento de tus asesorías y desarrollo software</p>
+                        <p class="text-xs text-slate-400">Rendimiento comercial y control de atletas</p>
                     </div>
-                    <button onclick="backToClientList()" class="lg:hidden text-xs bg-slate-800 border border-slate-700 hover:border-vertexBlue text-vertexBlue font-bold px-3 py-1.5 rounded-xl transition-all">
-                        ⬅️ Ver Lista
-                    </button>
                 </div>
                 <div class="grid grid-cols-2 gap-4 shrink-0">
                     <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl">
@@ -134,14 +124,13 @@
                         <span id="dash-pending-money" class="text-xl sm:text-2xl font-black text-vertexBlue mt-1 block">$0.00</span>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 shrink-0">
-                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Contactos</span><span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
-                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cierres Activos</span><span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span></div>
-                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Suscripciones</span><span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
-                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center border-amber-500/20 bg-amber-500/5"><span class="block text-[9px] font-bold text-amber-400 uppercase tracking-wider">Alertas Hoy</span><span id="dash-count-alerts" class="text-lg font-extrabold text-amber-500 mt-0.5 block animate-pulse">0</span></div>
+                <div class="grid grid-cols-3 gap-3 shrink-0">
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total Cuentas</span><span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cerrados Activos</span><span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Servicios/Planes</span><span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
                 </div>
                 <div class="flex-1 flex flex-col min-h-[200px]">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">🎯 Alertas Prioritarias de Hoy</h3>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">🎯 Fichas y Controles con Alerta para Hoy</h3>
                     <div id="dash-followups-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1 bg-slate-950/20 border border-slate-900 rounded-xl p-3"></div>
                 </div>
             </div>
@@ -165,7 +154,7 @@
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center">
                         <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Valor Cuenta</span><span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span></div>
-                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Servicios / Planes</span><span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Planes Vinculados</span><span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span></div>
                         <div>
                             <span id="summary-date-label" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Seguimiento</span>
                             <span id="summary-next-date" class="text-xs font-semibold text-slate-300 mt-1 block">-</span>
@@ -183,11 +172,11 @@
                 
                 <div class="shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
 
-                <!-- BITÁCORA / HISTORIAL DE INTERACCIONES -->
+                <!-- BITÁCORA DE SEGUIMIENTO -->
                 <div class="bg-slate-950/30 border border-slate-800/60 rounded-xl p-4 shrink-0 space-y-3">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">📝 Bitácora de Seguimiento</h3>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">📝 Bitácora de Historial</h3>
                     <div class="flex gap-2">
-                        <input type="text" id="interaction-note-input" placeholder="Escribe qué acordaste hoy con este cliente..." class="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-vertexBlue">
+                        <input type="text" id="interaction-note-input" placeholder="Escribe una anotación rápido sobre este cliente..." class="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-vertexBlue">
                         <button onclick="addInteractionNote()" class="px-3 py-1.5 bg-vertexBlue text-slate-950 font-bold text-xs rounded-lg hover:bg-[#00B8E0]">Guardar</button>
                     </div>
                     <div id="interaction-history-container" class="max-h-[100px] overflow-y-auto no-scrollbar space-y-1.5 divide-y divide-slate-800/30 text-[11px]"></div>
@@ -204,25 +193,24 @@
         </section>
     </main>
 
-    <!-- MODAL 1: REGISTRO HÍBRIDO -->
+    <!-- MODALS DE CONTROL -->
     <div id="add-prospect-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
-                <h3 id="modal-title" class="font-bold tracking-tight text-slate-100">Registrar en Vertex CRM</h3>
+                <h3 id="modal-title" class="font-bold tracking-tight text-slate-100">Registrar Cuenta</h3>
                 <button onclick="closeAddProspectModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
             </div>
             <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
                 <input type="hidden" id="modal-id">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-vertexBlue mb-1.5">🎯 Tipo de Perfil Comercial</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-vertexBlue mb-1.5">🎯 Perfil Comercial</label>
                     <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:outline-none">
                         <option value="Comercial">🏢 Local Comercial / Cliente de Software Web</option>
                         <option value="Atleta">🏋️ Atleta / Cliente de Asesoramiento Fitness</option>
-                        <option value="SaaS Tecnicos">🛠️ Validación de App / Propuesta SaaS a Medida</option>
                     </select>
                 </div>
                 <div>
-                    <label id="label-modal-name" class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Cliente / Empresa</label>
+                    <label id="label-modal-name" class="block text-xs font-semibold text-slate-400 mb-1">Nombre</label>
                     <input type="text" id="modal-name" placeholder="Ej. Bryan Gomez" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
                 <div id="modal-section-comercial" class="space-y-4">
@@ -232,7 +220,6 @@
                             <select id="modal-niche" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                                 <option value="Gimnasio">Gimnasio / Box</option>
                                 <option value="Restaurante">Restaurante / Comida</option>
-                                <option value="Técnico Especialista">Técnico Especialista</option>
                                 <option value="Otro">Otro sector</option>
                             </select>
                         </div>
@@ -243,28 +230,13 @@
                     </div>
                 </div>
                 <div id="modal-section-fitness" class="space-y-4 hidden border-t border-slate-800/80 pt-3">
-                    <h4 class="text-[11px] font-bold uppercase text-vertexTurquoise tracking-widest">Ficha Antropométrica e Ingreso</h4>
                     <div class="grid grid-cols-2 gap-3">
                         <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Peso Inicial (kg)</label><input type="number" step="0.1" id="modal-fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                         <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Objetivo Deportivo</label><input type="text" id="modal-fit-objetivo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     </div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Plan de Entrenamiento / Rutina</label><input type="text" id="modal-fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Guía de Nutrición Inicial</label><input type="text" id="modal-fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio de Asesoría ($)</label><input type="number" id="modal-fit-precio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexTurquoise"></div>
-                </div>
-                <div id="modal-section-saas-tecnicos" class="space-y-4 hidden border-t border-slate-800/80 pt-3">
-                    <h4 class="text-[11px] font-bold uppercase text-vertexBlue tracking-widest">Alcance de la App (Lovable)</h4>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Módulos Propuestos / Funciones a Validar</label><textarea id="modal-saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo para técnicos..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-[11px] text-slate-400 font-medium mb-0.5">Fase de Validación</label>
-                            <select id="modal-saas-fase" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100">
-                                <option value="Idea / Propuesta">Idea / Propuesta Comercial</option>
-                                <option value="Prototipo Lovable">Prototipo en Lovable (Demo)</option>
-                            </select>
-                        </div>
-                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio Estimado ($)</label><input type="number" id="modal-saas-precio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    </div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Plan / Rutina</label><input type="text" id="modal-fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Guía Nutricional Inicial</label><input type="text" id="modal-fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio Asesoría ($)</label><input type="number" id="modal-fit-precio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexTurquoise"></div>
                 </div>
                 <div class="grid grid-cols-3 gap-3">
                     <div>
@@ -272,7 +244,6 @@
                         <select id="modal-contact-method" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                             <option value="WhatsApp">WhatsApp</option>
                             <option value="Instagram">Instagram</option>
-                            <option value="Llamada">Llamada</option>
                         </select>
                     </div>
                     <div class="col-span-2">
@@ -287,7 +258,7 @@
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
                 <button onclick="closeAddProspectModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl">Registrar Cuenta</button>
+                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl">Guardar Cuenta</button>
             </div>
         </div>
     </div>
@@ -301,7 +272,7 @@
             </div>
             <div class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Tipo de Servicio</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Tipo de Servicio</label>
                     <select id="new-service-name" onchange="toggleDynamicServiceFields(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                         <option value="Propuesta de Aplicación Móvil / SaaS">📱 Propuesta de Aplicación Móvil / SaaS</option>
                         <option value="Página Web / Landing">🌐 Desarrollo de Página Web o Landing</option>
@@ -309,29 +280,20 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Acordado / Estimado ($)</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Acordado ($)</label>
                     <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
-                <div id="fields-saas-tecnicos" class="space-y-3">
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Módulos Requeridos / Notas de Alcance</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Fase de la Propuesta</label><input type="text" id="saas-fase" placeholder="Ej: Idea / Validación / Prototipo Lovable" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Enlace Demo de Lovable (Opcional)</label><input type="url" id="new-service-url" placeholder="https://lovable.dev/..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                <div id="fields-software" class="space-y-3">
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Notas / Alcance Técnico</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Link de Demo (Opcional)</label><input type="url" id="new-service-url" placeholder="https://lovable.dev/..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
-                <div id="fields-web" class="space-y-3 hidden">
+                <div id="fields-fitness-add" class="space-y-3 hidden">
                     <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[11px] text-slate-400">Dominio</label><input type="text" id="web-dominio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                        <div><label class="block text-[11px] text-slate-400">Hosting</label><input type="text" id="web-hosting" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    </div>
-                    <div><label class="block text-[11px] text-slate-400">Fecha de Entrega</label><input type="date" id="web-entrega" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400">URL Proyecto</label><input type="url" id="web-url" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                </div>
-                <div id="fields-fitness" class="space-y-3 hidden">
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[11px] text-slate-400">Peso Inicial (kg)</label><input type="number" step="0.1" id="fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                        <div><label class="block text-[11px] text-slate-400">Peso Inicial</label><input type="number" step="0.1" id="fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                         <div><label class="block text-[11px] text-slate-400">Objetivo</label><input type="text" id="fit-objetivo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     </div>
-                    <div><label class="block text-[11px] text-slate-400">Rutina</label><input type="text" id="fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400">Nutrición</label><input type="text" id="fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400">Rutina Asignada</label><input type="text" id="fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400">Nutrición Asignada</label><input type="text" id="fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
@@ -341,49 +303,53 @@
         </div>
     </div>
 
-    <!-- MODAL 3: EDITAR DETALLES DEL PORTAFOLIO -->
-    <div id="edit-service-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <!-- REFACTORIZACIÓN COMPLETA: MODAL EXCLUSIVO DE SOFTWARE -->
+    <div id="edit-software-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
-                <h3 class="font-bold tracking-tight text-slate-100">Editar Detalle del Servicio</h3>
-                <button onclick="closeEditServiceModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
+                <h3 class="font-bold tracking-tight text-slate-100">Editar Software / Web</h3>
+                <button onclick="closeEditSoftwareModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
             </div>
-            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto no-scrollbar">
-                <input type="hidden" id="edit-service-id">
-                <input type="hidden" id="edit-service-type">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre / Entregable</label>
-                    <input type="text" id="edit-service-name-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Asignado ($)</label>
-                    <input type="number" id="edit-service-price-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
-                </div>
-                
-                <div id="edit-fields-software" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Enlace Demo / Proyecto (Opcional)</label>
-                        <input type="url" id="edit-service-url-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
-                    </div>
-                </div>
-
-                <div id="edit-fields-fitness" class="space-y-4 hidden">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-xs text-slate-400 font-medium mb-1">Peso Actual (kg)</label><input type="number" step="0.1" id="edit-fit-peso" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
-                        <div><label class="block text-xs text-slate-400 font-medium mb-1">Objetivo</label><input type="text" id="edit-fit-objetivo" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
-                    </div>
-                    <div><label class="block text-xs text-slate-400 font-medium mb-1">Rutina Asignada</label><input type="text" id="edit-fit-plan" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
-                    <div><label class="block text-xs text-slate-400 font-medium mb-1">Guía Nutricional</label><input type="text" id="edit-fit-nutricion" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
-                </div>
+            <div class="p-6 space-y-4">
+                <input type="hidden" id="edit-soft-id">
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nombre Entregable</label><input type="text" id="edit-soft-name" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Precio ($)</label><input type="number" id="edit-soft-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Enlace Proyecto / Demo</label><input type="url" id="edit-soft-url" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Notas de Alcance</label><textarea id="edit-soft-modules" rows="2" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
-                <button onclick="closeEditServiceModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="updateServiceData()" class="px-4 py-2 bg-vertexTurquoise text-slate-950 text-xs font-bold rounded-xl">Actualizar Cambios</button>
+                <button onclick="closeEditSoftwareModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
+                <button onclick="updateSoftwareData()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl">Actualizar Software</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT DE INICIALIZACIÓN COMPLETAMENTE SEGURO -->
+    <!-- REFACTORIZACIÓN COMPLETA: MODAL EXCLUSIVO DE REVISIONES FITNESS -->
+    <div id="edit-fitness-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
+                <h3 class="font-bold tracking-tight text-slate-100">Ficha de Control Antropométrico</h3>
+                <button onclick="closeEditFitnessModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
+            </div>
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto no-scrollbar">
+                <input type="hidden" id="edit-fit-id">
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Plan</label><input type="text" id="edit-fit-name" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Precio Renovación ($)</label><input type="number" id="edit-fit-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div><label class="block text-xs text-slate-400 font-medium mb-1">Peso Registrado (kg)</label><input type="number" step="0.1" id="edit-fit-peso-val" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-xs text-slate-400 font-medium mb-1">Objetivo Físico</label><input type="text" id="edit-fit-obj-val" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
+                </div>
+                <div><label class="block text-xs text-slate-400 font-medium mb-1">Plan de Entrenamiento / Rutina</label><input type="text" id="edit-fit-plan-val" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
+                <div><label class="block text-xs text-slate-400 font-medium mb-1">Estructura Nutricional</label><input type="text" id="edit-fit-nut-val" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
+            </div>
+            <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
+                <button onclick="closeEditFitnessModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
+                <button onclick="updateFitnessData()" class="px-4 py-2 bg-vertexTurquoise text-slate-950 text-xs font-bold rounded-xl">Actualizar Atleta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CODIGO LÓGICO BLINDADO V2.0.0 -->
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
         let currentNicheFilter = 'Todos';
@@ -403,6 +369,7 @@
             } 
         }
 
+        // COMIENZO DE ARQUITECTURA DE RENDERS AISLADOS
         function renderQuickActions(p) {
             const container = document.getElementById('quick-actions-container');
             if (!container) return;
@@ -419,7 +386,7 @@
             if (!container) return;
             const notes = prospect.notas_historial || [];
             if (notes.length === 0) {
-                container.innerHTML = `<div class="text-slate-500 italic text-center py-2">No hay interacciones registradas.</div>`;
+                container.innerHTML = `<div class="text-slate-500 italic text-center py-2">No hay notas registradas.</div>`;
                 return;
             }
             container.innerHTML = [...notes].reverse().map(n => `
@@ -430,60 +397,92 @@
             `).join('');
         }
 
-        function openEditServiceModal(id, name, price, url, isFitness, peso, objetivo, plan, nutricion) {
-            document.getElementById('edit-service-id').value = id;
-            document.getElementById('edit-service-name-input').value = name;
-            document.getElementById('edit-service-price-input').value = price;
-            document.getElementById('edit-service-type').value = isFitness ? "fitness" : "software";
-
-            const fieldsSoftware = document.getElementById('edit-fields-software');
-            const fieldsFitness = document.getElementById('edit-fields-fitness');
+        // FILTRADO INTELIGENTE DE MODALS (FITNESS SEPARADO DE SOFTWARE COMPLETAMENTE)
+        function triggerSmartEditModal(id, name, price, url, isFitness, jsonStr) {
+            let extra = {};
+            try { extra = JSON.parse(decodeURIComponent(jsonStr)) || {}; } catch(e){}
 
             if (isFitness) {
-                fieldsSoftware.classList.add('hidden');
-                fieldsFitness.classList.remove('hidden');
-                document.getElementById('edit-fit-peso').value = peso;
-                document.getElementById('edit-fit-objetivo').value = objetivo;
-                document.getElementById('edit-fit-plan').value = plan;
-                document.getElementById('edit-fit-nutricion').value = nutricion;
+                document.getElementById('edit-fit-id').value = id;
+                document.getElementById('edit-fit-name').value = name;
+                document.getElementById('edit-fit-price').value = price;
+                document.getElementById('edit-fit-peso-val').value = extra.peso || '';
+                document.getElementById('edit-fit-obj-val').value = extra.objetivo || '';
+                document.getElementById('edit-fit-plan-val').value = extra.plan || '';
+                document.getElementById('edit-fit-nut-val').value = extra.nutricion || '';
+                document.getElementById('edit-fitness-modal').classList.remove('hidden');
             } else {
-                fieldsFitness.classList.add('hidden');
-                fieldsSoftware.classList.remove('hidden');
-                document.getElementById('edit-service-url-input').value = url;
+                document.getElementById('edit-soft-id').value = id;
+                document.getElementById('edit-soft-name').value = name;
+                document.getElementById('edit-soft-price').value = price;
+                document.getElementById('edit-soft-url').value = url !== 'null' ? url : '';
+                document.getElementById('edit-soft-modules').value = extra.modulos || '';
+                document.getElementById('edit-software-modal').classList.remove('hidden');
             }
-            document.getElementById('edit-service-modal').classList.remove('hidden');
+        }
+
+        function closeEditSoftwareModal() { document.getElementById('edit-software-modal').classList.add('hidden'); }
+        function closeEditFitnessModal() { document.getElementById('edit-fitness-modal').classList.add('hidden'); }
+
+        async function updateSoftwareData() {
+            if (!dbClient) return;
+            const id = document.getElementById('edit-soft-id').value;
+            const servicio = document.getElementById('edit-soft-name').value.trim();
+            const precio = parseFloat(document.getElementById('edit-soft-price').value) || 0;
+            const enlace_demo = document.getElementById('edit-soft-url').value.trim();
+            const modulos = document.getElementById('edit-soft-modules').value.trim();
+
+            if (!servicio) return;
+            const { error } = await dbClient.from('servicios').update({ servicio, precio, enlace_demo, detalles_inteligentes: { modulos } }).eq('id', id);
+            if (!error) { closeEditSoftwareModal(); loadInitialData(); }
+        }
+
+        async function updateFitnessData() {
+            if (!dbClient) return;
+            const id = document.getElementById('edit-fit-id').value;
+            const servicio = document.getElementById('edit-fit-name').value.trim();
+            const precio = parseFloat(document.getElementById('edit-fit-price').value) || 0;
+            
+            const payloadDetails = {
+                peso: document.getElementById('edit-fit-peso-val').value,
+                objetivo: document.getElementById('edit-fit-obj-val').value.trim(),
+                plan: document.getElementById('edit-fit-plan-val').value.trim(),
+                nutricion: document.getElementById('edit-fit-nut-val').value.trim()
+            };
+
+            if (!servicio) return;
+            const { error } = await dbClient.from('servicios').update({ servicio, precio, detalles_inteligentes: payloadDetails }).eq('id', id);
+            if (!error) { closeEditFitnessModal(); loadInitialData(); }
         }
 
         function renderServices(prospectId) {
             const container = document.getElementById('services-list');
             if (!container) return;
             const services = localServices.filter(s => s.prospecto_id === prospectId);
-            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios asociados.</div>`; return; }
+            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios vinculados.</div>`; return; }
 
             container.innerHTML = services.map(s => {
                 const extra = s.detalles_inteligentes || {};
                 let infoExtraHTML = ''; let selectorHTML = '';
                 const currentServiceStatus = s.estado || 'Cotizado';
                 const isFitnessService = s.servicio.includes('Fitness') || s.servicio.includes('Asesoramiento');
+                
+                const safeJson = encodeURIComponent(JSON.stringify(extra));
 
                 if (isFitnessService) {
                     infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5"><p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso || '-'} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p><p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p><p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p></div>`;
-                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
+                    selectorHTML = `<select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
                 } else {
-                    const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2.5 py-0.5 rounded-lg hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Proyecto / Demo</a></p>` : '';
-                    if (extra.modulos) {
-                        infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] text-slate-400"><strong>Alcance Técnico:</strong> ${extra.modulos}</div>${demoHTML}`;
-                    } else {
-                        infoExtraHTML = demoHTML;
-                    }
+                    const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2.5 py-0.5 rounded-lg hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Proyecto</a></p>` : '';
+                    infoExtraHTML = `${extra.modulos ? `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] text-slate-400"><strong>Alcance:</strong> ${extra.modulos}</div>` : ''}${demoHTML}`;
                     
                     selectorHTML = `
-                        <select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none">
-                            <option value="Cotizado / Propuesta" ${currentServiceStatus === 'Cotizado / Propuesta' || currentServiceStatus === 'Cotizado' ? 'selected' : ''}>📋 Cotizado / Propuesta</option>
-                            <option value="Maquetación Lovable (Demo)" ${currentServiceStatus === 'Maquetación Lovable (Demo)' ? 'selected' : ''}>⚡ Maquetación Lovable</option>
+                        <select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none">
+                            <option value="Cotizado / Propuesta" ${currentServiceStatus === 'Cotizado / Propuesta' || currentServiceStatus === 'Cotizado' ? 'selected' : ''}>📋 Propuesta</option>
+                            <option value="Maquetación Lovable (Demo)" ${currentServiceStatus === 'Maquetación Lovable (Demo)' ? 'selected' : ''}>⚡ Maqueta Lovable</option>
                             <option value="Desarrollo Activo" ${currentServiceStatus === 'Desarrollo Activo' || currentServiceStatus === 'En Progreso' ? 'selected' : ''}>🛠️ Desarrollo Activo</option>
-                            <option value="Revisión con Cliente" ${currentServiceStatus === 'Revisión con Cliente' ? 'selected' : ''}>👀 Revisión con Cliente</option>
-                            <option value="Entregado / Producción" ${currentServiceStatus === 'Entregado / Producción' || currentServiceStatus === 'Entregado' ? 'selected' : ''}>🚀 Entregado / Producción</option>
+                            <option value="Revisión con Cliente" ${currentServiceStatus === 'Revisión con Cliente' ? 'selected' : ''}>👀 En Revisión</option>
+                            <option value="Entregado / Producción" ${currentServiceStatus === 'Entregado / Producción' || currentServiceStatus === 'Entregado' ? 'selected' : ''}>🚀 Entregado</option>
                         </select>
                     `;
                 }
@@ -497,7 +496,7 @@
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
                                 ${selectorHTML}
-                                <button onclick="openEditServiceModal('${s.id}', '${s.servicio}', '${s.precio}', '${s.enlace_demo || ''}', ${isFitnessService}, '${extra.peso || ''}', '${extra.objetivo || ''}', '${extra.plan || ''}', '${extra.nutricion || ''}')" class="text-[11px] bg-slate-800 border border-slate-700 hover:border-vertexBlue text-slate-300 px-2 py-1 rounded font-bold transition-all">✏️</button>
+                                <button onclick="triggerSmartEditModal('${s.id}', '${s.servicio}', '${s.precio}', '${s.enlace_demo}', ${isFitnessService}, '${safeJson}')" class="text-[11px] bg-slate-800 border border-slate-700 hover:border-vertexBlue text-slate-300 px-2 py-1 rounded font-bold transition-all">✏️</button>
                                 <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-1.5">✕</button>
                             </div>
                         </div>
@@ -571,10 +570,10 @@
 
             if (p.nicho === 'Asesoría Fitness') {
                 dateLabelContainer.innerText = "Fin del Programa";
-                selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option><option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option><option value="Pausado" ${currentStatus === 'Pausado' ? 'selected' : ''}>⏳ Membresía Pausada</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado</option></select>`;
+                selectorContainer.innerHTML = `<select onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option><option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option><option value="Pausado" ${currentStatus === 'Pausado' ? 'selected' : ''}>⏳ Membresía Pausada</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado</option></select>`;
             } else {
                 dateLabelContainer.innerText = "Seguimiento";
-                selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Nuevo" ${currentStatus === 'Nuevo' ? 'selected' : ''}>Nuevo Lead</option><option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>Contacto Inicial</option><option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>Demo Enviada</option><option value="Cliente Activo" ${currentStatus === 'Cliente Activo' || currentStatus === 'Activo' ? 'selected' : ''}>🏢 Cliente Cerrado</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Perdido</option></select>`;
+                selectorContainer.innerHTML = `<select onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Nuevo" ${currentStatus === 'Nuevo' ? 'selected' : ''}>Nuevo Lead</option><option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>Contacto Inicial</option><option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>Demo Enviada</option><option value="Cliente Activo" ${currentStatus === 'Cliente Activo' || currentStatus === 'Activo' ? 'selected' : ''}>🏢 Cliente Cerrado</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Perdido</option></select>`;
             }
 
             const clientServices = localServices.filter(s => s.prospecto_id === id);
@@ -591,31 +590,17 @@
         }
 
         function applyNicheAndSearchFilters() {
-            const searchBar = document.getElementById('search-bar');
-            let query = '';
-            
-            // CORRECCIÓN RADICAL: SI EL NAVEGADOR INTENTA METER UNA URL DE SUPABASE EN EL BUSCADOR, LA LÓGICA LA IGNORA Y BORRA EL INPUT
-            if (searchBar) {
-                query = searchBar.value.toLowerCase().trim();
-                if (query.includes('supabase.co') || query.includes('http')) {
-                    searchBar.value = '';
-                    query = '';
-                }
-            }
+            const filterBar = document.getElementById('vertex-search-filter');
+            let query = filterBar ? filterBar.value.toLowerCase().trim() : '';
 
             filteredProspectsList = localProspects.filter(p => {
                 let matchNiche = true;
-                if (currentNicheFilter === 'Asesoría Fitness') {
-                    matchNiche = (p.nicho === 'Asesoría Fitness');
-                } else if (currentNicheFilter === 'Software') {
-                    matchNiche = (p.nicho !== 'Asesoría Fitness');
-                }
+                if (currentNicheFilter === 'Asesoría Fitness') { matchNiche = (p.nicho === 'Asesoría Fitness'); } 
+                else if (currentNicheFilter === 'Software') { matchNiche = (p.nicho !== 'Asesoría Fitness'); }
                 
                 let matchQuery = true;
                 if (query) {
-                    matchQuery = p.nombre.toLowerCase().includes(query) || 
-                                 (p.ciudad && p.ciudad.toLowerCase().includes(query)) || 
-                                 (p.nicho && p.nicho.toLowerCase().includes(query));
+                    matchQuery = p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query));
                 }
                 return matchNiche && matchQuery;
             });
@@ -637,35 +622,24 @@
             document.getElementById('dash-active-money').innerText = `$${activos.toFixed(2)}`;
             document.getElementById('dash-pending-money').innerText = `$${pendientes.toFixed(2)}`;
 
-            const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null" && p.proximo_seguimiento !== null && p.proximo_seguimiento <= todayStr && p.estado !== 'Perdido');
-            document.getElementById('dash-count-alerts').innerText = pendings.length;
-
+            const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null" && p.proximo_seguimiento <= todayStr && p.estado !== 'Perdido');
             const container = document.getElementById('dash-followups-list');
-            if (pendings.length === 0) {
-                container.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8">✨ Ningún control o vencimiento para hoy.</div>';
-                document.getElementById('followup-banner').classList.add('hidden'); return;
-            }
             
-            document.getElementById('followup-banner').classList.remove('hidden');
+            if (pendings.length === 0) {
+                container.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8">✨ Ningún control pendiente.</div>';
+                return;
+            }
             container.innerHTML = pendings.map(p => {
                 const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
                 const isFitness = (p.nicho === 'Asesoría Fitness');
-                const alertText = isFitness ? `🚨 MEMBRESÍA VENCIDA` : `⏳ SEGUIMIENTO LEADS`;
-                const dateLabel = isFitness ? `Venció el:` : `Control:`;
-                const colorLabel = isFitness ? `text-vertexTurquoise` : `text-amber-400`;
-
                 return `
                     <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
                         <div>
-                            <div class="flex items-center gap-1.5">
-                                <h4 class="font-bold text-slate-100 text-xs sm:text-sm">${p.nombre}</h4>
-                                <span class="text-[9px] px-1 bg-rose-500/10 text-rose-400 rounded border border-rose-500/20 font-black">${alertText}</span>
-                            </div>
-                            <p class="text-[10px] ${colorLabel} mt-0.5">${dateLabel} ${formatDate(p.proximo_seguimiento)} • ${p.nicho || 'General'}</p>
+                            <h4 class="font-bold text-slate-100 text-xs">${p.nombre}</h4>
+                            <p class="text-[10px] text-amber-400 mt-0.5">${isFitness ? '🚨 MEMBRESÍA EXPIRADA' : '⏳ SEGUIMIENTO'} • ${formatDate(p.proximo_seguimiento)}</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2.5 py-1 rounded-lg font-bold">Ficha</button>
-                            <a href="https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}" target="_blank" class="bg-emerald-600 text-white text-xs px-2.5 py-1 rounded-lg font-bold">💬 WA</a>
+                            <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-bold">Ficha</button>
                         </div>
                     </div>
                 `;
@@ -675,83 +649,87 @@
         async function loadInitialData() {
             if (!dbClient) return;
             try {
-                const { data: prospects, error: err1 } = await dbClient.from('prospectos').select('*');
-                const { data: services, error: err2 } = await dbClient.from('servicios').select('*');
-                if (!err1) {
-                    localProspects = prospects || []; localServices = services || [];
-                    localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-                    applyNicheAndSearchFilters();
-                    
-                    if (window.innerWidth < 1024) {
-                        if (document.getElementById('list-section')) document.getElementById('list-section').classList.remove('hidden');
-                        if (document.getElementById('details-section')) document.getElementById('details-section').classList.add('hidden');
-                    } else {
-                        if (document.getElementById('list-section')) document.getElementById('list-section').classList.remove('hidden');
-                        if (document.getElementById('details-section')) document.getElementById('details-section').classList.remove('hidden');
-                    }
-                    
-                    calculateDashboardMetrics();
-                    if (selectedProspectId) selectProspect(selectedProspectId);
-                }
-            } catch (e) { console.error(e); }
+                const { data: prospects } = await dbClient.from('prospectos').select('*');
+                const { data: services } = await dbClient.from('servicios').select('*');
+                localProspects = prospects || []; localServices = services || [];
+                localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+                applyNicheAndSearchFilters();
+                calculateDashboardMetrics();
+            } catch (e){}
         }
 
-        function cleanUrl(rawUrl) { if (!rawUrl) return ''; let url = rawUrl.trim(); if (url.endsWith('/')) url = url.slice(0, -1); return url; }
-
         function initDatabase() {
-            const rawUrl = localStorage.getItem('supabase_url');
-            const key = localStorage.getItem('supabase_key') ? localStorage.getItem('supabase_key').trim() : null;
-            const url = cleanUrl(rawUrl); const supabaseLib = window.supabase?.supabase || window.supabase;
+            const url = cleanUrl(localStorage.getItem('supabase_url'));
+            const key = localStorage.getItem('supabase_key');
+            const supabaseLib = window.supabase?.supabase || window.supabase;
             
             if (document.getElementById('supabase-url')) document.getElementById('supabase-url').value = url || '';
             if (document.getElementById('supabase-key')) document.getElementById('supabase-key').value = key || '';
 
             if (url && key && supabaseLib) {
-                try {
-                    dbClient = supabaseLib.createClient(url, key);
-                    document.getElementById('connection-status').innerText = "🟢 Conectado de forma segura a Supabase Cloud";
-                    document.getElementById('connection-status').className = "text-vertexTurquoise font-semibold";
-                    loadInitialData();
-                } catch (e) { console.error(e); }
+                dbClient = supabaseLib.createClient(url, key);
+                document.getElementById('connection-status').innerText = "🟢 Conectado Cloud";
+                document.getElementById('connection-status').className = "text-vertexTurquoise font-semibold";
+                loadInitialData();
             } else {
-                document.getElementById('connection-status').innerText = "⚠️ Configuración pendiente (⚙️)";
-                document.getElementById('prospects-list').innerHTML = '<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800/60 rounded-xl m-2">⚠️ Configuración pendiente. Toca la tuerca (⚙️) para ingresar las credenciales de Supabase.</div>';
+                document.getElementById('connection-status').innerText = "⚠️ Desconectado";
             }
         }
 
         function saveSupabaseConfig() { 
-            const rawUrl = document.getElementById('supabase-url').value; 
+            let url = cleanUrl(document.getElementById('supabase-url').value); 
             const key = document.getElementById('supabase-key').value.trim(); 
-            let url = cleanUrl(rawUrl); 
-            
-            if (url.includes('/rest/v1')) {
-                url = url.split('/rest/v1')[0];
-            }
+            if (url.includes('/rest/v1')) url = url.split('/rest/v1')[0];
 
             if (url && key) { 
                 localStorage.setItem('supabase_url', url); 
                 localStorage.setItem('supabase_key', key); 
-                initDatabase(); 
-                toggleSettings(); 
-            } else {
-                alert("Ambas credenciales son obligatorias.");
+                initDatabase(); toggleSettings(); 
             }
         }
 
-        // LIMPIEZA ADICIONAL AL CARGAR PARA DESTRUIR AUTOCOMPLETADO
-        window.addEventListener('load', () => { 
-            const searchBar = document.getElementById('search-bar');
-            if (searchBar) searchBar.value = '';
-            initDatabase(); 
-        });
+        window.addEventListener('load', () => { initDatabase(); });
+
+        function setNicheFilter(filter) {
+            currentNicheFilter = filter;
+            setNicheFilterButtonsVisuals(filter);
+            applyNicheAndSearchFilters();
+        }
+
+        function setNicheFilterButtonsVisuals(filter) {
+            const btnAll = document.getElementById('btn-filter-all');
+            const btnFit = document.getElementById('btn-filter-fit');
+            const btnSoft = document.getElementById('btn-filter-soft');
+            if(!btnAll) return;
+            btnAll.className = btnFit.className = btnSoft.className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700/50";
+            if (filter === 'Todos') btnAll.className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950";
+            else if (filter === 'Asesoría Fitness') btnFit.className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexTurquoise text-slate-950";
+            else btnSoft.className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950";
+        }
+
+        async function addInteractionNote() {
+            if (!selectedProspectId || !dbClient) return;
+            const input = document.getElementById('interaction-note-input');
+            const text = input.value.trim(); if (!text) return;
+            const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return;
+            
+            const currentNotes = p.notas_historial || [];
+            const now = new Date();
+            const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const updatedNotes = [...currentNotes, { fecha: dateStr, nota: text }];
+
+            const { error } = await dbClient.from('prospectos').update({ notas_historial: updatedNotes }).eq('id', selectedProspectId);
+            if (!error) { p.notas_historial = updatedNotes; input.value = ''; renderInteractionHistory(p); }
+        }
 
         function showDashboardView() {
             selectedProspectId = null; applyNicheAndSearchFilters();
             document.getElementById('active-prospect-details').classList.add('hidden');
-            document.getElementById('dashboard-view').classList.remove('hidden'); document.getElementById('dashboard-view').classList.add('flex');
-            document.getElementById('list-section').classList.add('hidden');
-            document.getElementById('details-section').classList.remove('hidden');
-            calculateDashboardMetrics();
+            document.getElementById('dashboard-view').classList.remove('hidden');
+            if (window.innerWidth < 1024) {
+                document.getElementById('list-section').classList.add('hidden');
+                document.getElementById('details-section').classList.remove('hidden');
+            }
         }
 
         function backToClientList() {
@@ -766,12 +744,10 @@
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
         function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
         function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
-        function closeFollowupBanner() { document.getElementById('followup-banner').classList.add('hidden'); }
         function filterProspects() { applyNicheAndSearchFilters(); }
 
         function openEditProspectModal() {
             if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return;
-            document.getElementById('modal-title').innerText = "Editar Ficha de Control";
             document.getElementById('modal-id').value = p.id; document.getElementById('modal-name').value = p.nombre || '';
             document.getElementById('modal-niche').value = p.nicho || 'Gimnasio'; document.getElementById('modal-city').value = p.ciudad || '';
             document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp'; document.getElementById('modal-contact').value = p.contacto || '';
@@ -792,25 +768,21 @@
             const contacto = document.getElementById('modal-contact').value.trim();
             const metodo_contacto = document.getElementById('modal-contact-method').value;
             const proximo_seguimiento = document.getElementById('modal-date').value || null;
-            if (!nombre || !contacto) { alert("Nombre y Contacto son obligatorios."); return; }
-            let nicho = (profileType === 'SaaS Tecnicos') ? 'Técnico Especialista' : document.getElementById('modal-niche').value;
+            if (!nombre || !contacto) return;
+            let nicho = (profileType === 'Atleta') ? 'Asesoría Fitness' : document.getElementById('modal-niche').value;
             let ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
-            if (profileType === 'Atleta') { nicho = 'Asesoría Fitness'; ciudad = 'Guayaquil'; }
             const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
             if (dbClient) {
-                if (id) { await dbClient.from('prospectos').update(payload).eq('id', id); } else {
+                if (id) { await dbClient.from('prospectos').update(payload).eq('id', id); } 
+                else {
                     payload.estado = "Nuevo"; payload.notas_historial = [];
-                    const { data: newProspect, error } = await dbClient.from('prospectos').insert([payload]).select();
-                    if (!error && newProspect) {
+                    const { data: newProspect } = await dbClient.from('prospectos').insert([payload]).select();
+                    if (newProspect) {
                         const pid = newProspect[0].id;
                         if (profileType === 'Atleta') {
                             const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
                             const fitDetails = { peso: document.getElementById('modal-fit-peso').value, objetivo: document.getElementById('modal-fit-objetivo').value.trim(), plan: document.getElementById('modal-fit-plan').value.trim(), nutricion: document.getElementById('modal-fit-nutricion').value.trim() };
                             await dbClient.from('servicios').insert([{ prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "Vigente / Activo", detalles_inteligentes: fitDetails }]);
-                        } else if (profileType === 'SaaS Tecnicos') {
-                            const saasPrecio = parseFloat(document.getElementById('modal-saas-precio').value) || 0;
-                            const saasDetails = { modulos: document.getElementById('modal-saas-modulos').value.trim(), fase: document.getElementById('modal-saas-fase').value };
-                            await dbClient.from('servicios').insert([{ prospecto_id: pid, servicio: "Propuesta de Aplicación Móvil / SaaS", precio: saasPrecio, estado: "Demo Enviada", detalles_inteligentes: saasDetails }]);
                         }
                     }
                 }
@@ -824,16 +796,20 @@
             const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
             const enlace_demo = document.getElementById('new-service-url').value.trim();
             let detalles = {};
-            if (servicio.includes('Web')) {
-                detalles = { dominio: document.getElementById('web-dominio').value.trim(), hosting: document.getElementById('web-hosting').value.trim(), entrega: document.getElementById('web-entrega').value, url: document.getElementById('web-url').value.trim() };
-            } else if (servicio.includes('Fitness')) {
+            if (servicio.includes('Fitness')) {
                 detalles = { peso: document.getElementById('fit-peso').value, objetivo: document.getElementById('fit-objetivo').value.trim(), plan: document.getElementById('fit-plan').value.trim(), nutricion: document.getElementById('fit-nutricion').value.trim() };
-            } else if (servicio.includes('Aplicación') || servicio.includes('SaaS')) {
-                detalles = { modulos: document.getElementById('saas-modulos').value.trim(), fase: document.getElementById('saas-fase').value.trim() };
+            } else {
+                detalles = { modulos: document.getElementById('saas-modulos').value.trim() };
             }
-            const defaultEstado = servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado";
-            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
+            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado", enlace_demo, detalles_inteligentes: detalles }]);
             loadInitialData(); closeAddServiceModal();
+        }
+
+        function toggleDynamicServiceFields(nicho) {
+            document.getElementById('fields-software').classList.add('hidden');
+            document.getElementById('fields-fitness-add').classList.add('hidden');
+            if (nicho.includes('Fitness')) document.getElementById('fields-fitness-add').classList.remove('hidden');
+            else document.getElementById('fields-software').classList.remove('hidden');
         }
     </script>
 </body>
