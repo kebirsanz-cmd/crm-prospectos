@@ -63,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v2.0.1</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v2.0.2</span>
     </div>
 
     <!-- PANEL CONFIGURACIÓN -->
@@ -349,11 +349,13 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE LÓGICA AISLADA -->
+    <!-- SCRIPT DE LÓGICA CON JERARQUÍA ESTRICTA PARA ARRANQUE LIMPIO -->
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
         let currentNicheFilter = 'Todos';
 
+        // 1. UTILIDADES CRÍTICAS PUESTAS ARRIBA DE TODO PARA EVITAR EL REFERENCEERROR
+        function cleanUrl(rawUrl) { if (!rawUrl) return ''; let url = rawUrl.trim(); if (url.endsWith('/')) url = url.slice(0, -1); return url; }
         function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
         function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
         
@@ -587,14 +589,12 @@
             renderInteractionHistory(p);
         }
 
-        // CONTROL INTEGRADO CONTRA INTERFERENCIAS DE NAVEGADOR
         function applyNicheAndSearchFilters() {
             const filterBar = document.getElementById('vertex-search-filter');
             let query = '';
 
             if (filterBar) {
                 query = filterBar.value.toLowerCase().trim();
-                // Si el valor ingresado es un enlace, forzamos el vaciado del campo
                 if (query.includes('supabase.co') || query.includes('http')) {
                     filterBar.value = '';
                     query = '';
@@ -608,7 +608,7 @@
                 
                 let matchQuery = true;
                 if (query) {
-                    matchQuery = p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query));
+                    matchQuery = p.nombre.toLowerCase().includes(query) || (p.city && p.city.toLowerCase().includes(query));
                 }
                 return matchNiche && matchQuery;
             });
@@ -633,24 +633,26 @@
             const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null" && p.proximo_seguimiento <= todayStr && p.estado !== 'Perdido');
             const container = document.getElementById('dash-followups-list');
             
-            if (pendings.length === 0) {
-                container.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8">✨ Ningún control pendiente.</div>';
-                return;
+            if (container) {
+                if (pendings.length === 0) {
+                    container.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8">✨ Ningún control pendiente.</div>';
+                    return;
+                }
+                container.innerHTML = pendings.map(p => {
+                    const isFitness = (p.nicho === 'Asesoría Fitness');
+                    return `
+                        <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-slate-100 text-xs">${p.nombre}</h4>
+                                <p class="text-[10px] text-amber-400 mt-0.5">${isFitness ? '🚨 MEMBRESÍA EXPIRADA' : '⏳ SEGUIMIENTO'} • ${formatDate(p.proximo_seguimiento)}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-bold">Ficha</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
             }
-            container.innerHTML = pendings.map(p => {
-                const isFitness = (p.nicho === 'Asesoría Fitness');
-                return `
-                    <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
-                        <div>
-                            <h4 class="font-bold text-slate-100 text-xs">${p.nombre}</h4>
-                            <p class="text-[10px] text-amber-400 mt-0.5">${isFitness ? '🚨 MEMBRESÍA EXPIRADA' : '⏳ SEGUIMIENTO'} • ${formatDate(p.proximo_seguimiento)}</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-bold">Ficha</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
         }
 
         async function loadInitialData() {
@@ -695,12 +697,9 @@
             }
         }
 
-        // CONTROL AGRESIVO DE LIMPIEZA DE EVENTOS AL CARGAR LA PÁGINA
         window.addEventListener('load', () => { 
             const filterBar = document.getElementById('vertex-search-filter');
-            if (filterBar) {
-                filterBar.value = ''; 
-            }
+            if (filterBar) filterBar.value = ''; 
             initDatabase(); 
         });
 
