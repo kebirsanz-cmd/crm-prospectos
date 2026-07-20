@@ -63,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2.7</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.0</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES -->
@@ -99,6 +99,14 @@
                 </div>
                 <button onclick="showDashboardView()" class="text-xs text-vertexBlue font-bold hover:underline flex items-center gap-1">📊 Ver Dashboard</button>
             </div>
+            
+            <!-- MEJORA 2: BOTONES DE FILTRO RÁPIDO -->
+            <div class="px-4 py-2 bg-slate-950/20 border-b border-slate-800/40 flex gap-2 shrink-0">
+                <button id="btn-filter-all" onclick="setNicheFilter('Todos')" class="flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950 transition-all">Todos</button>
+                <button id="btn-filter-fit" onclick="setNicheFilter('Asesoría Fitness')" class="flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700/50 hover:border-vertexTurquoise transition-all">🏋️ Fitness</button>
+                <button id="btn-filter-soft" onclick="setNicheFilter('Software')" class="flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700/50 hover:border-vertexBlue transition-all">🏢 Apps/Web</button>
+            </div>
+
             <div id="prospects-list" class="divide-y divide-slate-800/40 overflow-y-auto flex-1 no-scrollbar p-2 space-y-2"></div>
         </section>
 
@@ -139,8 +147,8 @@
             </div>
 
             <!-- VIEW 2: DETALLES DEL CLIENTE / ATLETA -->
-            <div id="active-prospect-details" class="hidden flex-col h-full">
-                <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 mb-6 shrink-0 relative overflow-hidden">
+            <div id="active-prospect-details" class="hidden flex-col h-full space-y-5">
+                <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 shrink-0 relative overflow-hidden">
                     <div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-vertexBlue to-vertexTurquoise"></div>
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-slate-800/60">
                         <div>
@@ -170,9 +178,19 @@
                     </div>
                 </div>
                 
-                <div class="mb-6 shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
+                <div class="shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
 
-                <div class="flex-1 mb-6 overflow-y-auto no-scrollbar min-h-[160px]">
+                <!-- MEJORA 1: BITÁCORA / HISTORIAL DE INTERACCIONES -->
+                <div class="bg-slate-950/30 border border-slate-800/60 rounded-xl p-4 shrink-0 space-y-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">📝 Bitácora de Seguimiento</h3>
+                    <div class="flex gap-2">
+                        <input type="text" id="interaction-note-input" placeholder="Escribe qué acordaste hoy con este cliente..." class="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-vertexBlue">
+                        <button onclick="addInteractionNote()" class="px-3 py-1.5 bg-vertexBlue text-slate-950 font-bold text-xs rounded-lg hover:bg-[#00B8E0]">Guardar</button>
+                    </div>
+                    <div id="interaction-history-container" class="max-h-[100px] overflow-y-auto no-scrollbar space-y-1.5 divide-y divide-slate-800/30 text-[11px]"></div>
+                </div>
+
+                <div class="flex-1 overflow-y-auto no-scrollbar min-h-[160px]">
                     <div class="flex justify-between items-center mb-3">
                         <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Portafolio Asignado</h3>
                         <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue transition-all">+ Vincular Servicio</button>
@@ -194,7 +212,7 @@
                 <input type="hidden" id="modal-id">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-vertexBlue mb-1.5">🎯 Tipo de Perfil Comercial</label>
-                    <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:outline-none">
+                    <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:border-vertexBlue focus:outline-none">
                         <option value="Comercial">🏢 Local Comercial / Cliente de Software Web</option>
                         <option value="Atleta">🏋️ Atleta / Cliente de Asesoramiento Fitness</option>
                         <option value="SaaS Tecnicos">🛠️ Validación de App / Propuesta SaaS a Medida</option>
@@ -322,6 +340,7 @@
 
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
+        let currentNicheFilter = 'Todos'; // Control de filtro rápido de nicho
 
         window.addEventListener('DOMContentLoaded', () => { initDatabase(); });
 
@@ -341,7 +360,7 @@
                 } catch (e) { console.error(e); }
             } else {
                 document.getElementById('connection-status').innerText = "⚠️ Configuración pendiente (⚙️)";
-                document.getElementById('prospects-list').innerHTML = '<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800/60 rounded-xl m-2">⚠️ Configuración pendiente. Toca la tuerca (⚙️) para ingresar las credenciales de Supabase en esta nueva ventana de la app.</div>';
+                document.getElementById('prospects-list').innerHTML = '<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800/60 rounded-xl m-2">⚠️ Configuración pendiente. Toca la tuerca (⚙️) para ingresar las credenciales de Supabase.</div>';
             }
         }
 
@@ -353,7 +372,7 @@
                 if (!err1) {
                     localProspects = prospects || []; localServices = services || [];
                     localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-                    filteredProspectsList = [...localProspects];
+                    applyNicheAndSearchFilters();
                     
                     if (window.innerWidth < 1024) {
                         document.getElementById('list-section').classList.remove('hidden');
@@ -363,10 +382,53 @@
                         document.getElementById('details-section').classList.remove('hidden');
                     }
                     
-                    renderProspects(); calculateDashboardMetrics();
+                    calculateDashboardMetrics();
                     if (selectedProspectId) selectProspect(selectedProspectId);
                 }
             } catch (e) { console.error(e); }
+        }
+
+        // CONTROL LÓGICO DE LOS FILTROS RÁPIDOS DE NICHO
+        function setNicheFilter(filter) {
+            currentNicheFilter = filter;
+            const buttons = {
+                'Todos': document.getElementById('btn-filter-all'),
+                'Asesoría Fitness': document.getElementById('btn-filter-fit'),
+                'Software': document.getElementById('btn-filter-soft')
+            };
+            
+            Object.keys(buttons).forEach(key => {
+                if (buttons[key]) {
+                    buttons[key].className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700/50";
+                }
+            });
+            
+            if (filter === 'Todos') buttons['Todos'].className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950";
+            else if (filter === 'Asesoría Fitness') buttons['Asesoría Fitness'].className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexTurquoise text-slate-950";
+            else buttons['Software'].className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950";
+            
+            applyNicheAndSearchFilters();
+        }
+
+        function applyNicheAndSearchFilters() {
+            const query = document.getElementById('search-bar').value.toLowerCase().trim();
+            filteredProspectsList = localProspects.filter(p => {
+                let matchNiche = true;
+                if (currentNicheFilter === 'Asesoría Fitness') {
+                    matchNiche = (p.nicho === 'Asesoría Fitness');
+                } else if (currentNicheFilter === 'Software') {
+                    matchNiche = (p.nicho !== 'Asesoría Fitness');
+                }
+                
+                let matchQuery = true;
+                if (query) {
+                    matchQuery = p.nombre.toLowerCase().includes(query) || 
+                                 (p.ciudad && p.ciudad.toLowerCase().includes(query)) || 
+                                 (p.nicho && p.nicho.toLowerCase().includes(query));
+                }
+                return matchNiche && matchQuery;
+            });
+            renderProspects();
         }
 
         function toggleModalProfileLayout(type) {
@@ -436,10 +498,9 @@
         }
 
         function showDashboardView() {
-            selectedProspectId = null; renderProspects();
+            selectedProspectId = null; applyNicheAndSearchFilters();
             document.getElementById('active-prospect-details').classList.add('hidden');
             document.getElementById('dashboard-view').classList.remove('hidden'); document.getElementById('dashboard-view').classList.add('flex');
-            
             document.getElementById('list-section').classList.add('hidden');
             document.getElementById('details-section').classList.remove('hidden');
             calculateDashboardMetrics();
@@ -449,11 +510,11 @@
             selectedProspectId = null;
             document.getElementById('details-section').classList.add('hidden');
             document.getElementById('list-section').classList.remove('hidden');
-            renderProspects();
+            applyNicheAndSearchFilters();
         }
 
         function selectProspect(id) {
-            selectedProspectId = id; renderProspects();
+            selectedProspectId = id; applyNicheAndSearchFilters();
             const p = localProspects.find(item => item.id === id); if (!p) return;
             document.getElementById('dashboard-view').classList.add('hidden');
             document.getElementById('active-prospect-details').classList.remove('hidden'); document.getElementById('active-prospect-details').classList.add('flex');
@@ -481,12 +542,56 @@
             document.getElementById('summary-value').innerText = `$${totalValue.toFixed(2)}`;
             document.getElementById('summary-services-count').innerText = clientServices.length;
             document.getElementById('summary-next-date').innerText = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin programar';
-            renderQuickActions(p); renderServices(id);
+            
+            renderQuickActions(p); 
+            renderServices(id);
+            renderInteractionHistory(p); // Cargar notas de seguimiento
+        }
+
+        // LÓGICA DE GESTIÓN E INYECCIÓN DE BITÁCORA / HISTORIAL
+        function renderInteractionHistory(prospect) {
+            const container = document.getElementById('interaction-history-container');
+            const notes = prospect.notas_historial || [];
+            if (notes.length === 0) {
+                container.innerHTML = `<div class="text-slate-500 italic text-center py-2">No hay interacciones registradas.</div>`;
+                return;
+            }
+            // Mostrar ordenadas de más reciente a más antigua
+            container.innerHTML = [...notes].reverse().map(n => `
+                <div class="pt-1.5 pb-0.5">
+                    <span class="text-vertexBlue font-bold">${n.fecha}:</span>
+                    <span class="text-slate-200">${n.nota}</span>
+                </div>
+            `).join('');
+        }
+
+        async function addInteractionNote() {
+            if (!selectedProspectId || !dbClient) return;
+            const input = document.getElementById('interaction-note-input');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const p = localProspects.find(item => item.id === selectedProspectId);
+            if (!p) return;
+
+            const currentNotes = p.notas_historial || [];
+            const now = new Date();
+            const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            
+            const updatedNotes = [...currentNotes, { fecha: dateStr, nota: text }];
+
+            // Guardar en la columna JSON nativa de la tabla prospectos de tu Supabase
+            const { error } = await dbClient.from('prospectos').update({ notas_historial: updatedNotes }).eq('id', selectedProspectId);
+            if (!error) {
+                p.notas_historial = updatedNotes;
+                input.value = '';
+                renderInteractionHistory(p);
+            }
         }
 
         function renderProspects() {
             const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
-            if (filteredProspectsList.length === 0 && dbClient) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Pipeline vacío.</div>'; return; }
+            if (filteredProspectsList.length === 0 && dbClient) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Ningún cliente coincide.</div>'; return; }
             if (!dbClient) return;
             const todayStr = getTodayString();
             listContainer.innerHTML = filteredProspectsList.map(p => {
@@ -504,7 +609,7 @@
                                     <span class="bg-slate-800 text-slate-400 text-[8px] font-bold px-1.5 py-0.5 rounded">${p.ciudad || 'GYE'}</span>
                                     ${isPendingFollowUp ? '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>' : ''}
                                 </div>
-                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>🌐 ${matchServices.length} serv/plan</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
+                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>🌐 ${matchServices.length} planes</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
                             </div>
                             <span class="${getStatusClass(estadoText)} text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${estadoText}</span>
                         </div>
@@ -537,7 +642,8 @@
             const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
             if (dbClient) {
                 if (id) { await dbClient.from('prospectos').update(payload).eq('id', id); } else {
-                    payload.estado = "Nuevo"; const { data: newProspect, error } = await dbClient.from('prospectos').insert([payload]).select();
+                    payload.estado = "Nuevo"; payload.notas_historial = [];
+                    const { data: newProspect, error } = await dbClient.from('prospectos').insert([payload]).select();
                     if (!error && newProspect) {
                         const pid = newProspect[0].id;
                         if (profileType === 'Atleta') {
@@ -588,7 +694,7 @@
                     selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
                 } else if (s.servicio.includes('Aplicación') || s.servicio.includes('SaaS')) {
                     const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2 py-0.5 rounded hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Demo Lovable</a></p>` : '';
-                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5"><p class="text-slate-300">🛠️ <strong>Módulos Propuestos:</strong> ${extra.modulos || '-'}</p><p class="text-slate-400">⚙️ <strong>Fase Comercial:</strong> <span class="text-vertexBlue font-medium">${extra.fase || 'Idea'}</span></p>${demoHTML}</div>`;
+                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5"><p class="text-slate-300">🛠️ <strong>Módulos:</strong> ${extra.modulos || '-'}</p><p class="text-slate-400">⚙️ <strong>Fase:</strong> <span class="text-vertexBlue font-medium">${extra.fase || 'Idea'}</span></p>${demoHTML}</div>`;
                     selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none"><option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado / En Validación</option><option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Construcción</option><option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>SaaS Activo</option></select>`;
                 } else {
                     if (s.servicio.includes('Web') && extra.dominio) { infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🌐 Dom: <span class="text-vertexBlue">${extra.dominio}</span></p>`; }
@@ -616,7 +722,7 @@
             } 
         }
         
-        function filterProspects() { const query = document.getElementById('search-bar').value.toLowerCase().trim(); filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects]; renderProspects(); }
+        function filterProspects() { applyNicheAndSearchFilters(); }
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
         function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; document.getElementById('modal-profile-type').value = "Comercial"; toggleModalProfileLayout("Comercial"); }
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
