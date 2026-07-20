@@ -63,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2.6</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2.7</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES -->
@@ -341,7 +341,7 @@
                 } catch (e) { console.error(e); }
             } else {
                 document.getElementById('connection-status').innerText = "⚠️ Configuración pendiente (⚙️)";
-                document.getElementById('prospects-list').innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Ingresa credenciales.</div>';
+                document.getElementById('prospects-list').innerHTML = '<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800/60 rounded-xl m-2">⚠️ Configuración pendiente. Toca la tuerca (⚙️) para ingresar las credenciales de Supabase en esta nueva ventana de la app.</div>';
             }
         }
 
@@ -378,7 +378,7 @@
 
             if (type === 'Atleta') {
                 lblName.innerText = "Nombre Completo del Atleta / Cliente"; secFitness.classList.remove('hidden');
-            } else if (type === 'SaaS Maceda' || type === 'SaaS Tecnicos') {
+            } else if (type === 'SaaS Tecnicos') {
                 lblName.innerText = "Nombre del Prospecto / Técnico Especialista"; secSaas.classList.remove('hidden');
             } else {
                 lblName.innerText = "Nombre de la Empresa / Negocio"; secComercial.classList.remove('hidden');
@@ -486,7 +486,8 @@
 
         function renderProspects() {
             const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
-            if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Pipeline vacío.</div>'; return; }
+            if (filteredProspectsList.length === 0 && dbClient) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Pipeline vacío.</div>'; return; }
+            if (!dbClient) return;
             const todayStr = getTodayString();
             listContainer.innerHTML = filteredProspectsList.map(p => {
                 const isActive = p.id === selectedProspectId;
@@ -602,7 +603,19 @@
         async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
         async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); }
         async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); }
-        function saveSupabaseConfig() { const rawUrl = document.getElementById('supabase-url').value; const key = document.getElementById('supabase-key').value.trim(); const url = cleanUrl(rawUrl); if (url && key) { localStorage.setItem('supabase_url', url); localStorage.setItem('supabase_key', key); initDatabase(); toggleSettings(); } }
+        
+        function saveSupabaseConfig() { 
+            const rawUrl = document.getElementById('supabase-url').value; 
+            const key = document.getElementById('supabase-key').value.trim(); 
+            const url = cleanUrl(rawUrl); 
+            if (url && key) { 
+                localStorage.setItem('supabase_url', url); 
+                localStorage.setItem('supabase_key', key); 
+                initDatabase(); 
+                toggleSettings(); 
+            } 
+        }
+        
         function filterProspects() { const query = document.getElementById('search-bar').value.toLowerCase().trim(); filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects]; renderProspects(); }
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
         function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; document.getElementById('modal-profile-type').value = "Comercial"; toggleModalProfileLayout("Comercial"); }
