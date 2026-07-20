@@ -63,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.4</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.5</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES DINÁMICAS -->
@@ -313,7 +313,7 @@
                 </div>
                 <div id="fields-saas-tecnicos" class="space-y-3">
                     <div><label class="block text-[11px] text-slate-400 font-medium">Módulos Requeridos / Notas de Alcance</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Fase de la Propuesta</label><input type="text" id="saas-fase" placeholder="Ej: Idea / Validation / Prototipo Lovable" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Fase de la Propuesta</label><input type="text" id="saas-fase" placeholder="Ej: Idea / Validación / Prototipo Lovable" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     <div><label class="block text-[11px] text-slate-400 font-medium">Enlace Demo de Lovable (Opcional)</label><input type="url" id="new-service-url" placeholder="https://lovable.dev/..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
                 <div id="fields-web" class="space-y-3 hidden">
@@ -340,7 +340,7 @@
         </div>
     </div>
 
-    <!-- MODAL 3: EDITAR DETALLES DEL PORTAFOLIO INTELEGENTE -->
+    <!-- MODAL 3: EDITAR DETALLES DEL PORTAFOLIO -->
     <div id="edit-service-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
@@ -359,7 +359,6 @@
                     <input type="number" id="edit-service-price-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
                 
-                <!-- SECCIÓN DINÁMICA DE SOFTWARE -->
                 <div id="edit-fields-software" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Enlace Demo / Proyecto (Opcional)</label>
@@ -367,14 +366,13 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN DINÁMICA DE FITNESS -->
                 <div id="edit-fields-fitness" class="space-y-4 hidden">
                     <div class="grid grid-cols-2 gap-3">
                         <div><label class="block text-xs text-slate-400 font-medium mb-1">Peso Actual (kg)</label><input type="number" step="0.1" id="edit-fit-peso" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
                         <div><label class="block text-xs text-slate-400 font-medium mb-1">Objetivo</label><input type="text" id="edit-fit-objetivo" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
                     </div>
-                    <div><label class="block text Red-xs text-slate-400 font-medium mb-1">Rutina Asignada</label><input type="text" id="edit-fit-plan" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
-                    <div><label class="block text-xs text-slate-400 font-medium mb-1">Guía Nutricional</label><input type="text" id="edit-fit-nutricion" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text-xs text-slate-400 font-medium mb-1">Rutina Asignada</label><input type="text" id="edit-fit-plan" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
+                    <div><label class="block text Red-xs text-slate-400 font-medium mb-1">Guía Nutricional</label><input type="text" id="edit-fit-nutricion" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
@@ -384,32 +382,15 @@
         </div>
     </div>
 
+    <!-- EL SCRIPT COMPLETAMENTE REORGANIZADO DESDE EL COMIENZO -->
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
         let currentNicheFilter = 'Todos';
 
-        window.addEventListener('DOMContentLoaded', () => { initDatabase(); });
-
-        function cleanUrl(rawUrl) { if (!rawUrl) return ''; let url = rawUrl.trim(); if (url.endsWith('/')) url = url.slice(0, -1); return url; }
-
-        function initDatabase() {
-            const rawUrl = localStorage.getItem('supabase_url');
-            const key = localStorage.getItem('supabase_key') ? localStorage.getItem('supabase_key').trim() : null;
-            const url = cleanUrl(rawUrl); const supabaseLib = window.supabase?.supabase || window.supabase;
-            if (url && key && supabaseLib) {
-                try {
-                    document.getElementById('supabase-url').value = url; document.getElementById('supabase-key').value = key;
-                    dbClient = supabaseLib.createClient(url, key);
-                    document.getElementById('connection-status').innerText = "🟢 Conectado de forma segura a Supabase Cloud";
-                    document.getElementById('connection-status').className = "text-vertexTurquoise font-semibold";
-                    loadInitialData();
-                } catch (e) { console.error(e); }
-            } else {
-                document.getElementById('connection-status').innerText = "⚠️ Configuración pendiente (⚙️)";
-                document.getElementById('prospects-list').innerHTML = '<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800/60 rounded-xl m-2">⚠️ Configuración pendiente. Toca la tuerca (⚙️) para ingresar las credenciales de Supabase.</div>';
-            }
-        }
-
+        // 1. UTILIDADES Y FORMATOS BASE (DECLARADOS PRIMERO)
+        function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
+        function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
+        
         function getStatusClass(status) { 
             switch(status) { 
                 case 'Nuevo': case 'Prospecto': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20'; 
@@ -422,8 +403,110 @@
             } 
         }
 
-        function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
-        function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
+        // 2. RENDERS PRIMARIOS DE INTERFAZ (DISPONIBLES PARA SER LLAMADOS DESDE ARRIBA)
+        function renderQuickActions(p) {
+            const container = document.getElementById('quick-actions-container');
+            if (!container) return;
+            const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
+            container.innerHTML = `
+                <a href="https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}" target="_blank" class="bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-emerald-600 hover:text-white transition-all">💬 WhatsApp</a>
+                <a href="https://instagram.com/${p.contacto}" target="_blank" class="bg-purple-600/10 border border-purple-500/30 text-purple-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-purple-600 hover:text-white transition-all">📸 Instagram</a>
+                <a href="tel:${num}" class="bg-cyan-600/10 border border-cyan-500/30 text-cyan-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-cyan-600 hover:text-white transition-all">📞 Llamar</a>
+            `;
+        }
+
+        function renderInteractionHistory(prospect) {
+            const container = document.getElementById('interaction-history-container');
+            if (!container) return;
+            const notes = prospect.notas_historial || [];
+            if (notes.length === 0) {
+                container.innerHTML = `<div class="text-slate-500 italic text-center py-2">No hay interacciones registradas.</div>`;
+                return;
+            }
+            container.innerHTML = [...notes].reverse().map(n => `
+                <div class="pt-1.5 pb-0.5">
+                    <span class="text-vertexBlue font-bold">${n.fecha}:</span>
+                    <span class="text-slate-200">${n.nota}</span>
+                </div>
+            `).join('');
+        }
+
+        function openEditServiceModal(id, name, price, url, isFitness, peso, objetivo, plan, nutricion) {
+            document.getElementById('edit-service-id').value = id;
+            document.getElementById('edit-service-name-input').value = name;
+            document.getElementById('edit-service-price-input').value = price;
+            document.getElementById('edit-service-type').value = isFitness ? "fitness" : "software";
+
+            const fieldsSoftware = document.getElementById('edit-fields-software');
+            const fieldsFitness = document.getElementById('edit-fields-fitness');
+
+            if (isFitness) {
+                fieldsSoftware.classList.add('hidden');
+                fieldsFitness.classList.remove('hidden');
+                document.getElementById('edit-fit-peso').value = peso;
+                document.getElementById('edit-fit-objetivo').value = objetivo;
+                document.getElementById('edit-fit-plan').value = plan;
+                document.getElementById('edit-fit-nutricion').value = nutricion;
+            } else {
+                fieldsFitness.classList.add('hidden');
+                fieldsSoftware.classList.remove('hidden');
+                document.getElementById('edit-service-url-input').value = url;
+            }
+            document.getElementById('edit-service-modal').classList.remove('hidden');
+        }
+
+        function renderServices(prospectId) {
+            const container = document.getElementById('services-list');
+            if (!container) return;
+            const services = localServices.filter(s => s.prospecto_id === prospectId);
+            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios asociados.</div>`; return; }
+
+            container.innerHTML = services.map(s => {
+                const extra = s.detalles_inteligentes || {};
+                let infoExtraHTML = ''; let selectorHTML = '';
+                const currentServiceStatus = s.estado || 'Cotizado';
+                const isFitnessService = s.servicio.includes('Fitness') || s.servicio.includes('Asesoramiento');
+
+                if (isFitnessService) {
+                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5"><p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso || '-'} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p><p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p><p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p></div>`;
+                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
+                } else {
+                    const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2.5 py-0.5 rounded-lg hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Proyecto / Demo</a></p>` : '';
+                    if (extra.modulos) {
+                        infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] text-slate-400"><strong>Alcance Técnico:</strong> ${extra.modulos}</div>${demoHTML}`;
+                    } else {
+                        infoExtraHTML = demoHTML;
+                    }
+                    
+                    selectorHTML = `
+                        <select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none">
+                            <option value="Cotizado / Propuesta" ${currentServiceStatus === 'Cotizado / Propuesta' || currentServiceStatus === 'Cotizado' ? 'selected' : ''}>📋 Cotizado / Propuesta</option>
+                            <option value="Maquetación Lovable (Demo)" ${currentServiceStatus === 'Maquetación Lovable (Demo)' ? 'selected' : ''}>⚡ Maquetación Lovable</option>
+                            <option value="Desarrollo Activo" ${currentServiceStatus === 'Desarrollo Active' || currentServiceStatus === 'En Progreso' ? 'selected' : ''}>🛠️ Desarrollo Activo</option>
+                            <option value="Revisión con Cliente" ${currentServiceStatus === 'Revisión con Cliente' ? 'selected' : ''}>👀 Revisión con Cliente</option>
+                            <option value="Entregado / Producción" ${currentServiceStatus === 'Entregado / Producción' || currentServiceStatus === 'Entregado' ? 'selected' : ''}>🚀 Entregado / Producción</option>
+                        </select>
+                    `;
+                }
+
+                return `
+                    <div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                        <div class="flex justify-between items-center w-full gap-2">
+                            <div class="min-w-0 flex-1">
+                                <h4 class="font-bold text-slate-200 text-xs sm:text-sm truncate">${s.servicio}</h4>
+                                <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                ${selectorHTML}
+                                <button onclick="openEditServiceModal('${s.id}', '${s.servicio}', '${s.precio}', '${s.enlace_demo || ''}', ${isFitnessService}, '${extra.peso || ''}', '${extra.objetivo || ''}', '${extra.plan || ''}', '${extra.nutricion || ''}')" class="text-[11px] bg-slate-800 border border-slate-700 hover:border-vertexBlue text-slate-300 px-2 py-1 rounded font-bold transition-all">✏️</button>
+                                <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-1.5">✕</button>
+                            </div>
+                        </div>
+                        ${infoExtraHTML}
+                    </div>
+                `;
+            }).join('');
+        }
 
         function renderProspects() {
             const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
@@ -437,15 +520,17 @@
                 const estadoText = p.estado || 'Nuevo';
                 const isFitness = (p.nicho === 'Asesoría Fitness');
                 
-                // CONTROL DE ALERTA: SÓLO ENTRA SI HAY FECHA EXPLÍCITA
-                const isExpired = p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento <= todayStr && estadoText !== 'Perdido';
+                // PROTECCIÓN ESTRICTA CONTRA VALORES CASILLERO VACÍO O NULO
+                const hasValidDate = p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null";
+                const isExpired = hasValidDate && p.proximo_seguimiento <= todayStr && estadoText !== 'Perdido';
+                
                 let tagAlertHTML = '';
                 if (isExpired) {
                     tagAlertHTML = isFitness ? '<span class="bg-rose-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ VENCIDO</span>' : '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>';
                 }
 
                 const subtextLabel = isFitness ? `🏁 Expira:` : `🌐 Planes:`;
-                const dateVal = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin programar';
+                const dateVal = hasValidDate ? formatDate(p.proximo_seguimiento) : 'Sin fecha asignada';
 
                 return `
                     <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md ring-1 ring-vertexBlue/20' : ''}">
@@ -465,6 +550,47 @@
             }).join('');
         }
 
+        function selectProspect(id) {
+            selectedProspectId = id; applyNicheAndSearchFilters();
+            const p = localProspects.find(item => item.id === id); if (!p) return;
+            document.getElementById('dashboard-view').classList.add('hidden');
+            document.getElementById('active-prospect-details').classList.remove('hidden'); document.getElementById('active-prospect-details').classList.add('flex');
+            
+            if (window.innerWidth < 1024) { 
+                document.getElementById('list-section').classList.add('hidden'); 
+                document.getElementById('details-section').classList.remove('hidden'); 
+            }
+
+            document.getElementById('detail-name').innerText = p.nombre;
+            document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
+            document.getElementById('detail-niche').innerText = p.nicho || 'General';
+
+            const selectorContainer = document.getElementById('status-select-container');
+            const dateLabelContainer = document.getElementById('summary-date-label');
+            const currentStatus = p.estado || 'Nuevo';
+
+            if (p.nicho === 'Asesoría Fitness') {
+                dateLabelContainer.innerText = "Fin del Programa";
+                selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option><option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option><option value="Pausado" ${currentStatus === 'Pausado' ? 'selected' : ''}>⏳ Membresía Pausada</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado</option></select>`;
+            } else {
+                dateLabelContainer.innerText = "Seguimiento";
+                selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Nuevo" ${currentStatus === 'Nuevo' ? 'selected' : ''}>Nuevo Lead</option><option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>Contacto Inicial</option><option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>Demo Enviada</option><option value="Cliente Activo" ${currentStatus === 'Cliente Activo' || currentStatus === 'Activo' ? 'selected' : ''}>🏢 Cliente Cerrado</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Perdido</option></select>`;
+            }
+
+            const clientServices = localServices.filter(s => s.prospecto_id === id);
+            const totalValue = clientServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
+            document.getElementById('summary-value').innerText = `$${totalValue.toFixed(2)}`;
+            document.getElementById('summary-services-count').innerText = clientServices.length;
+            
+            const hasValidDate = p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null";
+            document.getElementById('summary-next-date').innerText = hasValidDate ? formatDate(p.proximo_seguimiento) : 'Sin programar';
+            
+            renderQuickActions(p); 
+            renderServices(id);
+            renderInteractionHistory(p);
+        }
+
+        // 3. LOGICA FILTROS Y APIS (LLAMADAS DESDE LOS BOTONES)
         function applyNicheAndSearchFilters() {
             const query = document.getElementById('search-bar').value.toLowerCase().trim();
             filteredProspectsList = localProspects.filter(p => {
@@ -578,7 +704,8 @@
             document.getElementById('dash-active-money').innerText = `$${activos.toFixed(2)}`;
             document.getElementById('dash-pending-money').innerText = `$${pendientes.toFixed(2)}`;
 
-            const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento <= todayStr && p.estado !== 'Perdido');
+            // ALERTAS EXCLUSIVAS SI TIENEN FECHA ACTIVA
+            const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null" && p.proximo_seguimiento <= todayStr && p.estado !== 'Perdido');
             document.getElementById('dash-count-alerts').innerText = pendings.length;
 
             const container = document.getElementById('dash-followups-list');
@@ -613,57 +740,20 @@
             }).join('');
         }
 
-        function selectProspect(id) {
-            selectedProspectId = id; applyNicheAndSearchFilters();
-            const p = localProspects.find(item => item.id === id); if (!p) return;
-            document.getElementById('dashboard-view').classList.add('hidden');
-            document.getElementById('active-prospect-details').classList.remove('hidden'); document.getElementById('active-prospect-details').classList.add('flex');
-            
-            if (window.innerWidth < 1024) { 
-                document.getElementById('list-section').classList.add('hidden'); 
-                document.getElementById('details-section').classList.remove('hidden'); 
-            }
-
-            document.getElementById('detail-name').innerText = p.nombre;
-            document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
-            document.getElementById('detail-niche').innerText = p.nicho || 'General';
-
-            const selectorContainer = document.getElementById('status-select-container');
-            const dateLabelContainer = document.getElementById('summary-date-label');
-            const currentStatus = p.estado || 'Nuevo';
-
-            if (p.nicho === 'Asesoría Fitness') {
-                dateLabelContainer.innerText = "Fin del Programa";
-                selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option><option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option><option value="Pausado" ${currentStatus === 'Pausado' ? 'selected' : ''}>⏳ Membresía Pausada</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado</option></select>`;
-            } else {
-                dateLabelContainer.innerText = "Seguimiento";
-                selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Nuevo" ${currentStatus === 'Nuevo' ? 'selected' : ''}>Nuevo Lead</option><option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>Contacto Inicial</option><option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>Demo Enviada</option><option value="Cliente Activo" ${currentStatus === 'Cliente Activo' || currentStatus === 'Activo' ? 'selected' : ''}>🏢 Cliente Cerrado</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Perdido</option></select>`;
-            }
-
-            const clientServices = localServices.filter(s => s.prospecto_id === id);
-            const totalValue = clientServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
-            document.getElementById('summary-value').innerText = `$${totalValue.toFixed(2)}`;
-            document.getElementById('summary-services-count').innerText = clientServices.length;
-            document.getElementById('summary-next-date').innerText = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin programar';
-            
-            renderQuickActions(p); 
-            renderServices(id);
-            renderInteractionHistory(p);
+        function showDashboardView() {
+            selectedProspectId = null; applyNicheAndSearchFilters();
+            document.getElementById('active-prospect-details').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden'); document.getElementById('dashboard-view').classList.add('flex');
+            document.getElementById('list-section').classList.add('hidden');
+            document.getElementById('details-section').classList.remove('hidden');
+            calculateDashboardMetrics();
         }
 
-        function renderInteractionHistory(prospect) {
-            const container = document.getElementById('interaction-history-container');
-            const notes = prospect.notas_historial || [];
-            if (notes.length === 0) {
-                container.innerHTML = `<div class="text-slate-500 italic text-center py-2">No hay interacciones registradas.</div>`;
-                return;
-            }
-            container.innerHTML = [...notes].reverse().map(n => `
-                <div class="pt-1.5 pb-0.5">
-                    <span class="text-vertexBlue font-bold">${n.fecha}:</span>
-                    <span class="text-slate-200">${n.nota}</span>
-                </div>
-            `).join('');
+        function backToClientList() {
+            selectedProspectId = null;
+            document.getElementById('details-section').classList.add('hidden');
+            document.getElementById('list-section').classList.remove('hidden');
+            applyNicheAndSearchFilters();
         }
 
         async function addInteractionNote() {
@@ -686,85 +776,7 @@
             }
         }
 
-        function renderServices(prospectId) {
-            const container = document.getElementById('services-list');
-            const services = localServices.filter(s => s.prospecto_id === prospectId);
-            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios asociados.</div>`; return; }
-
-            container.innerHTML = services.map(s => {
-                const extra = s.detalles_inteligentes || {};
-                let infoExtraHTML = ''; let selectorHTML = '';
-                const currentServiceStatus = s.estado || 'Cotizado';
-                const isFitnessService = s.servicio.includes('Fitness') || s.servicio.includes('Asesoramiento');
-
-                if (isFitnessService) {
-                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5"><p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso || '-'} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p><p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p><p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p></div>`;
-                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
-                } else {
-                    const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2.5 py-0.5 rounded-lg hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Proyecto / Demo</a></p>` : '';
-                    if (extra.modulos) {
-                        infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] text-slate-400"><strong>Alcance Técnico:</strong> ${extra.modulos}</div>${demoHTML}`;
-                    } else {
-                        infoExtraHTML = demoHTML;
-                    }
-                    
-                    selectorHTML = `
-                        <select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none">
-                            <option value="Cotizado / Propuesta" ${currentServiceStatus === 'Cotizado / Propuesta' || currentServiceStatus === 'Cotizado' ? 'selected' : ''}>📋 Cotizado / Propuesta</option>
-                            <option value="Maquetación Lovable (Demo)" ${currentServiceStatus === 'Maquetación Lovable (Demo)' ? 'selected' : ''}>⚡ Maquetación Lovable</option>
-                            <option value="Desarrollo Activo" ${currentServiceStatus === 'Desarrollo Activo' || currentServiceStatus === 'En Progreso' ? 'selected' : ''}>🛠️ Desarrollo Activo</option>
-                            <option value="Revisión con Cliente" ${currentServiceStatus === 'Revisión con Cliente' ? 'selected' : ''}>👀 Revisión con Cliente</option>
-                            <option value="Entregado / Producción" ${currentServiceStatus === 'Entregado / Producción' || currentServiceStatus === 'Entregado' ? 'selected' : ''}>🚀 Entregado / Producción</option>
-                        </select>
-                    `;
-                }
-
-                // INYECTAMOS EL FILTRO DE NICHO DIRECTAMENTE EN LA EJECUCIÓN DEL LÁPIZ
-                return `
-                    <div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between hover:border-slate-700 transition-all">
-                        <div class="flex justify-between items-center w-full gap-2">
-                            <div class="min-w-0 flex-1">
-                                <h4 class="font-bold text-slate-200 text-xs sm:text-sm truncate">${s.servicio}</h4>
-                                <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
-                            </div>
-                            <div class="flex items-center gap-1.5 shrink-0">
-                                ${selectorHTML}
-                                <button onclick="openEditServiceModal('${s.id}', '${s.servicio}', '${s.precio}', '${s.enlace_demo || ''}', ${isFitnessService}, '${extra.peso || ''}', '${extra.objetivo || ''}', '${extra.plan || ''}', '${extra.nutricion || ''}')" class="text-[11px] bg-slate-800 border border-slate-700 hover:border-vertexBlue text-slate-300 px-2 py-1 rounded font-bold transition-all">✏️</button>
-                                <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-1.5">✕</button>
-                            </div>
-                        </div>
-                        ${infoExtraHTML}
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // LÓGICA DE EDICIÓN AVANZADA: CAMBIA LAS CASILLAS DE FORMA INTELIGENTE
-        function openEditServiceModal(id, name, price, url, isFitness, peso, objetivo, plan, nutricion) {
-            document.getElementById('edit-service-id').value = id;
-            document.getElementById('edit-service-name-input').value = name;
-            document.getElementById('edit-service-price-input').value = price;
-            document.getElementById('edit-service-type').value = isFitness ? "fitness" : "software";
-
-            const fieldsSoftware = document.getElementById('edit-fields-software');
-            const fieldsFitness = document.getElementById('edit-fields-fitness');
-
-            if (isFitness) {
-                fieldsSoftware.classList.add('hidden');
-                fieldsFitness.classList.remove('hidden');
-                document.getElementById('edit-fit-peso').value = peso;
-                document.getElementById('edit-fit-objetivo').value = objetivo;
-                document.getElementById('edit-fit-plan').value = plan;
-                document.getElementById('edit-fit-nutricion').value = nutricion;
-            } else {
-                fieldsFitness.classList.add('hidden');
-                fieldsSoftware.classList.remove('hidden');
-                document.getElementById('edit-service-url-input').value = url;
-            }
-            document.getElementById('edit-service-modal').classList.remove('hidden');
-        }
-
-        function closeEditServiceModal() { document.getElementById('edit-service-modal').classList.add('hidden'); }
+        async function closeEditServiceModal() { document.getElementById('edit-service-modal').classList.add('hidden'); }
 
         async function updateServiceData() {
             if (!dbClient) return;
@@ -774,7 +786,6 @@
             const type = document.getElementById('edit-service-type').value;
 
             if (!servicio) { alert("El nombre es obligatorio"); return; }
-
             let payload = { servicio, precio };
 
             if (type === "fitness") {
@@ -814,6 +825,57 @@
             document.getElementById('modal-date').value = p.proximo_seguimiento || ''; 
             toggleModalProfileLayout(p.nicho === 'Asesoría Fitness' ? 'Atleta' : 'Comercial');
             document.getElementById('add-prospect-modal').classList.remove('hidden');
+        }
+
+        async function saveProspect() {
+            const id = document.getElementById('modal-id').value;
+            const profileType = document.getElementById('modal-profile-type').value;
+            const nombre = document.getElementById('modal-name').value.trim();
+            const contacto = document.getElementById('modal-contact').value.trim();
+            const metodo_contacto = document.getElementById('modal-contact-method').value;
+            const proximo_seguimiento = document.getElementById('modal-date').value || null;
+            if (!nombre || !contacto) { alert("Nombre y Contacto son obligatorios."); return; }
+            let nicho = (profileType === 'SaaS Tecnicos') ? 'Técnico Especialista' : document.getElementById('modal-niche').value;
+            let ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
+            if (profileType === 'Atleta') { nicho = 'Asesoría Fitness'; ciudad = 'Guayaquil'; }
+            const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
+            if (dbClient) {
+                if (id) { await dbClient.from('prospectos').update(payload).eq('id', id); } else {
+                    payload.estado = "Nuevo"; payload.notas_historial = [];
+                    const { data: newProspect, error } = await dbClient.from('prospectos').insert([payload]).select();
+                    if (!error && newProspect) {
+                        const pid = newProspect[0].id;
+                        if (profileType === 'Atleta') {
+                            const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
+                            const fitDetails = { peso: document.getElementById('modal-fit-peso').value, objetivo: document.getElementById('modal-fit-objetivo').value.trim(), plan: document.getElementById('modal-fit-plan').value.trim(), nutricion: document.getElementById('modal-fit-nutricion').value.trim() };
+                            await dbClient.from('servicios').insert([{ prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "Vigente / Activo", detalles_inteligentes: fitDetails }]);
+                        } else if (profileType === 'SaaS Tecnicos') {
+                            const saasPrecio = parseFloat(document.getElementById('modal-saas-precio').value) || 0;
+                            const saasDetails = { modulos: document.getElementById('modal-saas-modulos').value.trim(), fase: document.getElementById('modal-saas-fase').value };
+                            await dbClient.from('servicios').insert([{ prospecto_id: pid, servicio: "Propuesta de Aplicación Móvil / SaaS", precio: saasPrecio, estado: "Demo Enviada", detalles_inteligentes: saasDetails }]);
+                        }
+                    }
+                }
+            }
+            loadInitialData(); closeAddProspectModal();
+        }
+
+        async function addService() {
+            if (!selectedProspectId || !dbClient) return;
+            const servicio = document.getElementById('new-service-name').value;
+            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
+            const enlace_demo = document.getElementById('new-service-url').value.trim();
+            let detalles = {};
+            if (servicio.includes('Web')) {
+                detalles = { dominio: document.getElementById('web-dominio').value.trim(), hosting: document.getElementById('web-hosting').value.trim(), entrega: document.getElementById('web-entrega').value, url: document.getElementById('web-url').value.trim() };
+            } else if (servicio.includes('Fitness')) {
+                detalles = { peso: document.getElementById('fit-peso').value, objetivo: document.getElementById('fit-objetivo').value.trim(), plan: document.getElementById('fit-plan').value.trim(), nutricion: document.getElementById('fit-nutricion').value.trim() };
+            } else if (servicio.includes('Aplicación') || servicio.includes('SaaS')) {
+                detalles = { modulos: document.getElementById('saas-modulos').value.trim(), fase: document.getElementById('saas-fase').value.trim() };
+            }
+            const defaultEstado = servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado";
+            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
+            loadInitialData(); closeAddServiceModal();
         }
 
         window.addEventListener('resize', () => {
