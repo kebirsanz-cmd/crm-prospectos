@@ -63,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.2</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.3</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES DINÁMICAS -->
@@ -165,13 +165,10 @@
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center">
                         <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Valor Cuenta</span><span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span></div>
                         <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Servicios / Planes</span><span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span></div>
-                        
-                        <!-- REFACTORIZACIÓN LOGICA DE CABECERA DEPENDIENDO DEL NICHO -->
                         <div>
                             <span id="summary-date-label" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Seguimiento</span>
                             <span id="summary-next-date" class="text-xs font-semibold text-slate-300 mt-1 block">-</span>
                         </div>
-                        
                         <div>
                             <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Acciones</span>
                             <div class="flex gap-2 justify-center mt-1">
@@ -220,7 +217,7 @@
                     <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:border-vertexBlue focus:outline-none">
                         <option value="Comercial">🏢 Local Comercial / Cliente de Software Web</option>
                         <option value="Atleta">🏋️ Atleta / Cliente de Asesoramiento Fitness</option>
-                        <option value="SaaS稳">🛠️ Validación de App / Propuesta SaaS a Medida</option>
+                        <option value="SaaS Tecnicos">🛠️ Validación de App / Propuesta SaaS a Medida</option>
                     </select>
                 </div>
                 <div>
@@ -283,7 +280,6 @@
                     </div>
                 </div>
                 <div>
-                    <!-- CONTROL DINÁMICO DE FECHA POR SCRIPT -->
                     <label id="modal-date-label" class="block text-xs font-semibold text-slate-400 mb-1">Fecha Próximo Seguimiento</label>
                     <input type="date" id="modal-date" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
@@ -373,6 +369,7 @@
         </div>
     </div>
 
+    <!-- EL SCRIPT COMPLETO CON LA DECLARACIÓN DE FUNCIONES REORGANIZADA DE FORMA ESTRICTA -->
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
         let currentNicheFilter = 'Todos';
@@ -397,6 +394,82 @@
                 document.getElementById('connection-status').innerText = "⚠️ Configuración pendiente (⚙️)";
                 document.getElementById('prospects-list').innerHTML = '<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800/60 rounded-xl m-2">⚠️ Configuración pendiente. Toca la tuerca (⚙️) para ingresar las credenciales de Supabase.</div>';
             }
+        }
+
+        // DECLARACIÓN PRIORITARIA DE RENDERS (SOLUCIÓN AL REFERENCEERROR)
+        function getStatusClass(status) { 
+            switch(status) { 
+                case 'Nuevo': case 'Prospecto': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20'; 
+                case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20'; 
+                case 'Demo Enviada': case 'Maquetación Lovable (Demo)': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'; 
+                case 'Cliente Activo': case 'Activo': case 'Vigente / Activo': case 'Desarrollo Activo': case 'Entregado / Producción': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20'; 
+                case 'Pausado': case 'Renovación Pendiente': case 'Revisión con Cliente': return 'bg-amber-500/10 text-amber-500 border border-amber-500/20'; 
+                case 'Perdido': case 'Vencido / Congelado': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20'; 
+                default: return 'bg-slate-500/10 text-slate-400'; 
+            } 
+        }
+
+        function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
+        function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
+
+        function renderProspects() {
+            const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
+            if (filteredProspectsList.length === 0 && dbClient) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Ningún cliente coincide.</div>'; return; }
+            if (!dbClient) return;
+            const todayStr = getTodayString();
+            listContainer.innerHTML = filteredProspectsList.map(p => {
+                const isActive = p.id === selectedProspectId;
+                const matchServices = localServices.filter(s => s.prospecto_id === p.id);
+                const valorEstimado = matchServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
+                const estadoText = p.estado || 'Nuevo';
+                const isFitness = (p.nicho === 'Asesoría Fitness');
+                
+                const isExpired = p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && estadoText !== 'Perdido';
+                let tagAlertHTML = '';
+                if (isExpired) {
+                    tagAlertHTML = isFitness ? '<span class="bg-rose-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ VENCIDO</span>' : '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>';
+                }
+
+                const subtextLabel = isFitness ? `🏁 Expira:` : `🌐 Planes:`;
+                const dateVal = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin fecha';
+
+                return `
+                    <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md ring-1 ring-vertexBlue/20' : ''}">
+                        <div class="flex justify-between items-start gap-2">
+                            <div class="space-y-1 flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h4 class="font-bold text-slate-100 text-sm truncate">${p.nombre}</h4>
+                                    <span class="bg-slate-800 text-slate-400 text-[8px] font-bold px-1.5 py-0.5 rounded">${p.ciudad || 'GYE'}</span>
+                                    ${tagAlertHTML}
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>${subtextLabel} ${isFitness ? dateVal : matchServices.length}</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
+                            </div>
+                            <span class="${getStatusClass(estadoText)} text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${estadoText}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function applyNicheAndSearchFilters() {
+            const query = document.getElementById('search-bar').value.toLowerCase().trim();
+            filteredProspectsList = localProspects.filter(p => {
+                let matchNiche = true;
+                if (currentNicheFilter === 'Asesoría Fitness') {
+                    matchNiche = (p.nicho === 'Asesoría Fitness');
+                } else if (currentNicheFilter === 'Software') {
+                    matchNiche = (p.nicho !== 'Asesoría Fitness');
+                }
+                
+                let matchQuery = true;
+                if (query) {
+                    matchQuery = p.nombre.toLowerCase().includes(query) || 
+                                 (p.ciudad && p.ciudad.toLowerCase().includes(query)) || 
+                                 (p.nicho && p.nicho.toLowerCase().includes(query));
+                }
+                return matchNiche && matchQuery;
+            });
+            renderProspects();
         }
 
         async function loadInitialData() {
@@ -444,27 +517,6 @@
             applyNicheAndSearchFilters();
         }
 
-        function applyNicheAndSearchFilters() {
-            const query = document.getElementById('search-bar').value.toLowerCase().trim();
-            filteredProspectsList = localProspects.filter(p => {
-                let matchNiche = true;
-                if (currentNicheFilter === 'Asesoría Fitness') {
-                    matchNiche = (p.nicho === 'Asesoría Fitness');
-                } else if (currentNicheFilter === 'Software') {
-                    matchNiche = (p.nicho !== 'Asesoría Fitness');
-                }
-                
-                let matchQuery = true;
-                if (query) {
-                    matchQuery = p.nombre.toLowerCase().includes(query) || 
-                                 (p.ciudad && p.ciudad.toLowerCase().includes(query)) || 
-                                 (p.nicho && p.nicho.toLowerCase().includes(query));
-                }
-                return matchNiche && matchQuery;
-            });
-            renderProspects();
-        }
-
         function toggleModalProfileLayout(type) {
             const lblName = document.getElementById('label-modal-name');
             const lblDate = document.getElementById('modal-date-label');
@@ -475,7 +527,7 @@
 
             if (type === 'Atleta') {
                 lblName.innerText = "Nombre Completo del Atleta / Cliente"; 
-                lblDate.innerText = "📅 Fin del Programa (Fecha de Vencimiento)";
+                lblDate.innerText = "🏁 Fin del Programa (Fecha de Vencimiento)";
                 secFitness.classList.remove('hidden');
             } else if (type === 'SaaS Tecnicos') {
                 lblName.innerText = "Nombre del Prospecto / Técnico Especialista"; 
@@ -497,7 +549,6 @@
             else if (nicho.includes('Aplicación') || nicho.includes('SaaS')) document.getElementById('fields-saas-tecnicos').classList.remove('hidden');
         }
 
-        // LÓGICA DE MÉTRICAS ADAPTADA A RETENCIÓN FITNESS VS SEGUIMIENTO WEB
         function calculateDashboardMetrics() {
             const todayStr = getTodayString();
             document.getElementById('dash-count-total').innerText = localProspects.length;
@@ -513,7 +564,6 @@
             document.getElementById('dash-active-money').innerText = `$${activos.toFixed(2)}`;
             document.getElementById('dash-pending-money').innerText = `$${pendientes.toFixed(2)}`;
 
-            // Filtrar alertas: alertas de prospección web + expiraciones de atletas activos
             const pendings = localProspects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && p.estado !== 'Perdido');
             document.getElementById('dash-count-alerts').innerText = pendings.length;
 
@@ -527,8 +577,6 @@
             container.innerHTML = pendings.map(p => {
                 const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
                 const isFitness = (p.nicho === 'Asesoría Fitness');
-                
-                // Texto contextualizado (Diferenciación entre cobrar membresía o insistir propuesta)
                 const alertText = isFitness ? `🚨 MEMBRESÍA VENCIDA` : `⏳ SEGUIMIENTO LEADS`;
                 const dateLabel = isFitness ? `Venció el:` : `Control:`;
                 const colorLabel = isFitness ? `text-vertexTurquoise` : `text-amber-400`;
@@ -551,22 +599,6 @@
             }).join('');
         }
 
-        function showDashboardView() {
-            selectedProspectId = null; applyNicheAndSearchFilters();
-            document.getElementById('active-prospect-details').classList.add('hidden');
-            document.getElementById('dashboard-view').classList.remove('hidden'); document.getElementById('dashboard-view').classList.add('flex');
-            document.getElementById('list-section').classList.add('hidden');
-            document.getElementById('details-section').classList.remove('hidden');
-            calculateDashboardMetrics();
-        }
-
-        function backToClientList() {
-            selectedProspectId = null;
-            document.getElementById('details-section').classList.add('hidden');
-            document.getElementById('list-section').classList.remove('hidden');
-            applyNicheAndSearchFilters();
-        }
-
         function selectProspect(id) {
             selectedProspectId = id; applyNicheAndSearchFilters();
             const p = localProspects.find(item => item.id === id); if (!p) return;
@@ -586,7 +618,6 @@
             const dateLabelContainer = document.getElementById('summary-date-label');
             const currentStatus = p.estado || 'Nuevo';
 
-            // REFACTORIZACIÓN VISUAL DE FECHAS EN CABECERA DEPENDIENDO DEL NICHO
             if (p.nicho === 'Asesoría Fitness') {
                 dateLabelContainer.innerText = "Fin del Programa";
                 selectorContainer.innerHTML = `<select id="detail-status" onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option><option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option><option value="Pausado" ${currentStatus === 'Pausado' ? 'selected' : ''}>⏳ Membresía Pausada</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado</option></select>`;
@@ -713,46 +744,6 @@
             if (!error) { closeEditServiceModal(); loadInitialData(); }
         }
 
-        function renderProspects() {
-            const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
-            if (filteredProspectsList.length === 0 && dbClient) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Ningún cliente coincide.</div>'; return; }
-            if (!dbClient) return;
-            const todayStr = getTodayString();
-            listContainer.innerHTML = filteredProspectsList.map(p => {
-                const isActive = p.id === selectedProspectId;
-                const matchServices = localServices.filter(s => s.prospecto_id === p.id);
-                const valorEstimado = matchServices.reduce((sum, s) => sum + (parseFloat(s.precio) || 0), 0);
-                const estadoText = p.estado || 'Nuevo';
-                const isFitness = (p.nicho === 'Asesoría Fitness');
-                
-                // CONDICIONAL DE RETENCIÓN EN LA LISTA LATERAL
-                const isExpired = p.proximo_seguimiento && p.proximo_seguimiento <= todayStr && estadoText !== 'Perdido';
-                let tagAlertHTML = '';
-                if (isExpired) {
-                    tagAlertHTML = isFitness ? '<span class="bg-rose-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ VENCIDO</span>' : '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>';
-                }
-
-                const subtextLabel = isFitness ? `🏁 Expira:` : `🌐 Planes:`;
-                const dateVal = p.proximo_seguimiento ? formatDate(p.proximo_seguimiento) : 'Sin fecha';
-
-                return `
-                    <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md ring-1 ring-vertexBlue/20' : ''}">
-                        <div class="flex justify-between items-start gap-2">
-                            <div class="space-y-1 flex-1 min-w-0">
-                                <div class="flex items-center gap-2 flex-wrap">
-                                    <h4 class="font-bold text-slate-100 text-sm truncate">${p.nombre}</h4>
-                                    <span class="bg-slate-800 text-slate-400 text-[8px] font-bold px-1.5 py-0.5 rounded">${p.ciudad || 'GYE'}</span>
-                                    ${tagAlertHTML}
-                                </div>
-                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>${subtextLabel} ${isFitness ? dateVal : matchServices.length}</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
-                            </div>
-                            <span class="${getStatusClass(estadoText)} text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${estadoText}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
         async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
         async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
         async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); }
@@ -761,19 +752,10 @@
         function saveSupabaseConfig() { const rawUrl = document.getElementById('supabase-url').value; const key = document.getElementById('supabase-key').value.trim(); const url = cleanUrl(rawUrl); if (url && key) { localStorage.setItem('supabase_url', url); localStorage.setItem('supabase_key', key); initDatabase(); toggleSettings(); } }
         function filterProspects() { applyNicheAndSearchFilters(); }
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
-        
-        // MODAL CONFIGURACIÓN CON TEXTO DINÁMICO
-        function openAddProspectModal() { 
-            document.getElementById('add-prospect-modal').classList.remove('hidden'); 
-            document.getElementById('modal-id').value = ""; 
-            document.getElementById('modal-profile-type').value = "Comercial"; 
-            toggleModalProfileLayout("Comercial"); 
-        }
+        function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; document.getElementById('modal-profile-type').value = "Comercial"; toggleModalProfileLayout("Comercial"); }
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
         function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
         function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
-        function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
-        function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
         function closeFollowupBanner() { document.getElementById('followup-banner').classList.add('hidden'); }
         
         function openEditProspectModal() {
@@ -785,18 +767,6 @@
             document.getElementById('modal-date').value = p.proximo_seguimiento || ''; 
             toggleModalProfileLayout(p.nicho === 'Asesoría Fitness' ? 'Atleta' : 'Comercial');
             document.getElementById('add-prospect-modal').classList.remove('hidden');
-        }
-
-        function getStatusClass(status) { 
-            switch(status) { 
-                case 'Nuevo': case 'Prospecto': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20'; 
-                case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20'; 
-                case 'Demo Enviada': case 'Maquetación Lovable (Demo)': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'; 
-                case 'Cliente Activo': case 'Activo': case 'Vigente / Activo': case 'Desarrollo Activo': case 'Entregado / Producción': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20'; 
-                case 'Pausado': case 'Renovación Pendiente': case 'Revisión con Cliente': return 'bg-amber-500/10 text-amber-500 border border-amber-500/20'; 
-                case 'Perdido': case 'Vencido / Congelado': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20'; 
-                default: return 'bg-slate-500/10 text-slate-400'; 
-            } 
         }
 
         function renderQuickActions(p) {
@@ -840,24 +810,6 @@
                 }
             }
             loadInitialData(); closeAddProspectModal();
-        }
-
-        async function addService() {
-            if (!selectedProspectId || !dbClient) return;
-            const servicio = document.getElementById('new-service-name').value;
-            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
-            const enlace_demo = document.getElementById('new-service-url').value.trim();
-            let detalles = {};
-            if (servicio.includes('Web')) {
-                detalles = { dominio: document.getElementById('web-dominio').value.trim(), hosting: document.getElementById('web-hosting').value.trim(), entrega: document.getElementById('web-entrega').value, url: document.getElementById('web-url').value.trim() };
-            } else if (servicio.includes('Fitness')) {
-                detalles = { peso: document.getElementById('fit-peso').value, objetivo: document.getElementById('fit-objetivo').value.trim(), plan: document.getElementById('fit-plan').value.trim(), nutricion: document.getElementById('fit-nutricion').value.trim() };
-            } else if (servicio.includes('Aplicación') || servicio.includes('SaaS')) {
-                detalles = { modulos: document.getElementById('saas-modulos').value.trim(), fase: document.getElementById('saas-fase').value.trim() };
-            }
-            const defaultEstado = servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado";
-            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
-            loadInitialData(); closeAddServiceModal();
         }
 
         window.addEventListener('resize', () => {
