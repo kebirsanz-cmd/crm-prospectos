@@ -6,7 +6,6 @@
     <title>Vertex CRM — Clientes • Servicios • Seguimiento</title>
     <link rel="icon" type="image/png" href="favicon.png">
     
-    <!-- CONFIGURACIÓN PARA APLICACIÓN NATIVA EN MÓVIL -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Vertex CRM">
@@ -35,7 +34,7 @@
 </head>
 <body class="bg-vertexDark text-slate-50 font-sans min-h-screen flex flex-col">
 
-    <!-- HEADER PREMIUM -->
+    <!-- HEADER -->
     <header class="bg-vertexCard/50 border-b border-slate-800/80 px-4 md:px-8 py-4 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shrink-0 backdrop-blur-md">
         <div class="flex items-center justify-between w-full lg:w-auto">
             <div>
@@ -50,12 +49,12 @@
         <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto items-stretch sm:items-center flex-1 lg:justify-end max-w-3xl">
             <div class="relative flex-1 max-w-md">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">🔍</span>
-                <input type="text" id="vertex-search-filter" oninput="filterProspects()" placeholder="Buscar por nombre, ciudad o nicho..." autocomplete="new-password" class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
+                <input type="text" id="vertex-search-filter" oninput="filterProspects()" placeholder="Buscar por nombre, ciudad o nicho..." autocomplete="off" class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue">
             </div>
             
             <div class="flex gap-2 shrink-0">
                 <button onclick="toggleSettings()" class="hidden lg:flex p-2.5 bg-slate-800/50 border border-slate-800 hover:border-vertexBlue text-slate-300 rounded-xl transition-all">⚙️</button>
-                <button onclick="openAddProspectModal()" class="flex-1 sm:flex-none px-4 py-2 bg-vertexBlue text-slate-950 font-bold rounded-xl text-sm hover:bg-[#00B8E0] transition-all shadow-sm">+ Cliente</button>
+                <button onclick="openAddProspectModal()" class="flex-1 sm:flex-none px-4 py-2 bg-vertexBlue text-slate-950 font-bold rounded-xl text-sm hover:bg-[#00B8E0] shadow-sm">+ Cliente</button>
             </div>
         </div>
     </header>
@@ -63,20 +62,20 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v2.0.2</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v2.1.0</span>
     </div>
 
     <!-- PANEL CONFIGURACIÓN -->
     <div id="settings-panel" class="hidden bg-vertexCard border-b border-slate-800 p-4 md:p-6 shrink-0">
         <div class="max-w-4xl mx-auto">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Configuración Supabase Cloud</h3>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Configuración Supabase</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div><label class="block text-xs font-semibold text-slate-400 mb-1">Project URL</label><input type="text" id="supabase-url" autocomplete="off" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label><input type="password" id="supabase-key" autocomplete="new-password" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label><input type="password" id="supabase-key" autocomplete="off" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
             </div>
             <div class="mt-4 flex justify-end gap-2">
                 <button type="button" onclick="toggleSettings()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button type="button" onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0]">Guardar Configuración</button>
+                <button type="button" onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0]">Guardar</button>
             </div>
         </div>
     </div>
@@ -84,7 +83,7 @@
     <!-- CONTENEDOR PRINCIPAL -->
     <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
         
-        <!-- SECCIÓN IZQUIERDA -->
+        <!-- SECCIÓN IZQUIERDA: PIPELINE -->
         <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl overflow-hidden flex flex-col h-[calc(100vh-165px)] lg:h-[680px]">
             <div class="px-4 py-3 border-b border-slate-800/60 flex justify-between items-center bg-vertexCard/50 shrink-0">
                 <div class="flex items-center gap-2">
@@ -103,15 +102,15 @@
             <div id="prospects-list" class="divide-y divide-slate-800/40 overflow-y-auto flex-1 no-scrollbar p-2 space-y-2"></div>
         </section>
 
-        <!-- SECCIÓN DERECHA -->
+        <!-- SECCIÓN DERECHA: CONTROL -->
         <section id="details-section" class="hidden lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
             
-            <!-- VIEW 1: DASHBOARD GENERAL -->
+            <!-- DASHBOARD VIEW -->
             <div id="dashboard-view" class="flex flex-col gap-6 h-full w-full">
                 <div class="flex justify-between items-start">
                     <div>
                         <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
-                        <p class="text-xs text-slate-400">Rendimiento comercial y control de atletas</p>
+                        <p class="text-xs text-slate-400">Rendimiento financiero y alertas</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4 shrink-0">
@@ -125,23 +124,23 @@
                     </div>
                 </div>
                 <div class="grid grid-cols-3 gap-3 shrink-0">
-                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Total Cuentas</span><span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
-                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cerrados Activos</span><span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span></div>
-                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Servicios/Planes</span><span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cuentas</span><span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cierres Activos</span><span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Servicios</span><span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
                 </div>
                 <div class="flex-1 flex flex-col min-h-[200px]">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">🎯 Fichas y Controles con Alerta para Hoy</h3>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">🔔 Alertas y Controles Agendados</h3>
                     <div id="dash-followups-list" class="space-y-2 overflow-y-auto no-scrollbar flex-1 bg-slate-950/20 border border-slate-900 rounded-xl p-3"></div>
                 </div>
             </div>
 
-            <!-- VIEW 2: DETALLES DEL CLIENTE / ATLETA -->
+            <!-- FICHA DETALLADA -->
             <div id="active-prospect-details" class="hidden flex-col h-full space-y-5">
                 <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 shrink-0 relative overflow-hidden">
                     <div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-vertexBlue to-vertexTurquoise"></div>
                     <div class="flex flex-col sm:flex-row justify-between items-start gap-4 pb-4 border-b border-slate-800/60">
                         <div>
-                            <button onclick="showDashboardView()" class="mb-2.5 text-xs font-bold text-vertexBlue flex items-center gap-1">🎒 Volver al Dashboard</button>
+                            <button onclick="showDashboardView()" class="mb-2.5 text-xs font-bold text-vertexBlue flex items-center gap-1">🎒 Dashboard</button>
                             <div class="flex items-center gap-2 flex-wrap">
                                 <h2 id="detail-name" class="text-xl md:text-2xl font-bold tracking-tight text-slate-50"></h2>
                                 <span id="detail-city" class="bg-vertexBlue/10 text-vertexBlue border border-vertexBlue/20 text-[9px] uppercase font-black px-2 py-0.5 rounded-md"></span>
@@ -153,10 +152,10 @@
                         <div id="status-select-container" class="w-full sm:w-auto shrink-0"></div>
                     </div>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-4 text-center">
-                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Valor Cuenta</span><span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span></div>
-                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Planes Vinculados</span><span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span></div>
+                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Total Acordado</span><span id="summary-value" class="text-base font-extrabold text-vertexTurquoise mt-0.5 block">$0.00</span></div>
+                        <div><span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Servicios</span><span id="summary-services-count" class="text-base font-extrabold text-slate-100 mt-0.5 block">0</span></div>
                         <div>
-                            <span id="summary-date-label" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Seguimiento</span>
+                            <span id="summary-date-label" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Fecha Control</span>
                             <span id="summary-next-date" class="text-xs font-semibold text-slate-300 mt-1 block">-</span>
                         </div>
                         <div>
@@ -172,20 +171,10 @@
                 
                 <div class="shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
 
-                <!-- BITÁCORA DE SEGUIMIENTO -->
-                <div class="bg-slate-950/30 border border-slate-800/60 rounded-xl p-4 shrink-0 space-y-3">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">📝 Bitácora de Historial</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="interaction-note-input" placeholder="Escribe una anotación rápido sobre este cliente..." class="flex-1 px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-vertexBlue">
-                        <button onclick="addInteractionNote()" class="px-3 py-1.5 bg-vertexBlue text-slate-950 font-bold text-xs rounded-lg hover:bg-[#00B8E0]">Guardar</button>
-                    </div>
-                    <div id="interaction-history-container" class="max-h-[100px] overflow-y-auto no-scrollbar space-y-1.5 divide-y divide-slate-800/30 text-[11px]"></div>
-                </div>
-
                 <div class="flex-1 overflow-y-auto no-scrollbar min-h-[160px]">
                     <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Portafolio Asignado</h3>
-                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue transition-all">+ Vincular Servicio</button>
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Portafolio / Planes Asignados</h3>
+                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue">+ Vincular Servicio</button>
                     </div>
                     <div id="services-list" class="space-y-2"></div>
                 </div>
@@ -193,50 +182,40 @@
         </section>
     </main>
 
-    <!-- MODALS DE CONTROL -->
+    <!-- MODAL 1: CLIENTES HÍBRIDOS (REGISTRO/EDICIÓN) -->
     <div id="add-prospect-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
-                <h3 id="modal-title" class="font-bold tracking-tight text-slate-100">Registrar Cuenta</h3>
+                <h3 id="modal-title" class="font-bold tracking-tight text-slate-100">Ficha de Cliente</h3>
                 <button onclick="closeAddProspectModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
             </div>
             <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto no-scrollbar">
                 <input type="hidden" id="modal-id">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-vertexBlue mb-1.5">🎯 Perfil Comercial</label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-vertexBlue mb-1.5">🎯 Tipo de Cliente</label>
                     <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:outline-none">
-                        <option value="Comercial">🏢 Local Comercial / Cliente de Software Web</option>
-                        <option value="Atleta">🏋️ Atleta / Cliente de Asesoramiento Fitness</option>
+                        <option value="Comercial">🏢 Desarrollo Web / SaaS / Aplicación Móvil</option>
+                        <option value="Atleta">🏋️ Atleta / Asesoramiento Fitness</option>
                     </select>
                 </div>
                 <div>
-                    <label id="label-modal-name" class="block text-xs font-semibold text-slate-400 mb-1">Nombre</label>
-                    <input type="text" id="modal-name" placeholder="Ej. Bryan Gomez" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre Completo / Empresa</label>
+                    <input type="text" id="modal-name" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
-                <div id="modal-section-comercial" class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Nicho / Categoría</label>
-                            <select id="modal-niche" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
-                                <option value="Gimnasio">Gimnasio / Box</option>
-                                <option value="Restaurante">Restaurante / Comida</option>
-                                <option value="Otro">Otro sector</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-1">Ciudad</label>
-                            <input type="text" id="modal-city" placeholder="Ej. Guayaquil" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
-                        </div>
+                <div id="modal-section-comercial" class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Categoría</label>
+                        <select id="modal-niche" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                            <option value="Gimnasio">Gimnasio</option>
+                            <option value="Restaurante">Restaurante</option>
+                            <option value="SaaS">SaaS / App</option>
+                            <option value="Otro">Otro</option>
+                        </select>
                     </div>
-                </div>
-                <div id="modal-section-fitness" class="space-y-4 hidden border-t border-slate-800/80 pt-3">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Peso Inicial (kg)</label><input type="number" step="0.1" id="modal-fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Objetivo Deportivo</label><input type="text" id="modal-fit-objetivo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Ciudad</label>
+                        <input type="text" id="modal-city" placeholder="Guayaquil" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                     </div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Plan / Rutina</label><input type="text" id="modal-fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Guía Nutricional Inicial</label><input type="text" id="modal-fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio Asesoría ($)</label><input type="number" id="modal-fit-precio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexTurquoise"></div>
                 </div>
                 <div class="grid grid-cols-3 gap-3">
                     <div>
@@ -247,18 +226,30 @@
                         </select>
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Contacto Directo</label>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Contacto Directo (Celular / User)</label>
                         <input type="text" id="modal-contact" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                     </div>
                 </div>
-                <div>
-                    <label id="modal-date-label" class="block text-xs font-semibold text-slate-400 mb-1">Fecha Próximo Seguimiento</label>
-                    <input type="date" id="modal-date" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                
+                <!-- CAMPOS CONDICIONALES EXCLUSIVOS -->
+                <div id="date-block-comercial">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">📆 Próxima Fecha de Seguimiento</label>
+                    <input type="date" id="modal-date-comercial" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                </div>
+                <div id="date-block-fitness" class="hidden grid grid-cols-2 gap-4 border-t border-slate-800 pt-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-vertexTurquoise mb-1">🚀 Fecha de Comienzo</label>
+                        <input type="date" id="modal-date-fit-start" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-rose-400 mb-1">🏁 Fecha de Finalización</label>
+                        <input type="date" id="modal-date-fit-end" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    </div>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
                 <button onclick="closeAddProspectModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl">Guardar Cuenta</button>
+                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl">Guardar</button>
             </div>
         </div>
     </div>
@@ -272,28 +263,16 @@
             </div>
             <div class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Tipo de Servicio</label>
-                    <select id="new-service-name" onchange="toggleDynamicServiceFields(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
-                        <option value="Propuesta de Aplicación Móvil / SaaS">📱 Propuesta de Aplicación Móvil / SaaS</option>
-                        <option value="Página Web / Landing">🌐 Desarrollo de Página Web o Landing</option>
-                        <option value="Asesoramiento Fitness Emprendedor">🏋️ Asesoramiento Fitness / Coaching</option>
-                    </select>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Plan / Entrega</label>
+                    <input type="text" id="new-service-name" placeholder="Ej: Landing Page o Asesoría VIP" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Acordado ($)</label>
                     <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
-                <div id="fields-software" class="space-y-3">
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Notas / Alcance Técnico</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Link de Demo (Opcional)</label><input type="url" id="new-service-url" placeholder="https://lovable.dev/..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                </div>
-                <div id="fields-fitness-add" class="space-y-3 hidden">
-                    <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block text-[11px] text-slate-400">Peso Inicial</label><input type="number" step="0.1" id="fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                        <div><label class="block text-[11px] text-slate-400">Objetivo</label><input type="text" id="fit-objetivo" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    </div>
-                    <div><label class="block text-[11px] text-slate-400">Rutina Asignada</label><input type="text" id="fit-plan" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
-                    <div><label class="block text-[11px] text-slate-400">Nutrición Asignada</label><input type="text" id="fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Detalles Técnicos / Notas Cortas</label>
+                    <textarea id="new-service-desc" rows="2" placeholder="Notas de alcance, peso, rutina, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea>
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
@@ -303,204 +282,92 @@
         </div>
     </div>
 
-    <!-- MODAL 3: EDITAR DETALLES DEL PORTAFOLIO -->
-    <div id="edit-software-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <!-- MODAL 3: EDITAR DETALLES SERVICIO -->
+    <div id="edit-service-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
-                <h3 class="font-bold tracking-tight text-slate-100">Editar Software / Web</h3>
-                <button onclick="closeEditSoftwareModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
+                <h3 class="font-bold tracking-tight text-slate-100">Modificar Servicio Asignado</h3>
+                <button onclick="closeEditServiceModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
             </div>
             <div class="p-6 space-y-4">
-                <input type="hidden" id="edit-soft-id">
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nombre Entregable</label><input type="text" id="edit-soft-name" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Precio ($)</label><input type="number" id="edit-soft-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Enlace Proyecto / Demo</label><input type="url" id="edit-soft-url" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Notas de Alcance</label><textarea id="edit-soft-modules" rows="2" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
-            </div>
-            <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
-                <button onclick="closeEditSoftwareModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="updateSoftwareData()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl">Actualizar Software</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 4: EDITAR DETALLES FITNESS -->
-    <div id="edit-fitness-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-        <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
-            <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
-                <h3 class="font-bold tracking-tight text-slate-100">Ficha de Control Antropométrico</h3>
-                <button onclick="closeEditFitnessModal()" class="text-slate-400 text-xl font-bold px-2">×</button>
-            </div>
-            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto no-scrollbar">
-                <input type="hidden" id="edit-fit-id">
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Plan</label><input type="text" id="edit-fit-name" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Precio Renovación ($)</label><input type="number" id="edit-fit-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-xs text-slate-400 font-medium mb-1">Peso Registrado (kg)</label><input type="number" step="0.1" id="edit-fit-peso-val" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
-                    <div><label class="block text-xs text-slate-400 font-medium mb-1">Objetivo Físico</label><input type="text" id="edit-fit-obj-val" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
+                <input type="hidden" id="edit-service-id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Nombre Plan / Servicio</label>
+                    <input type="text" id="edit-service-name-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
-                <div><label class="block text-xs text-slate-400 font-medium mb-1">Plan de Entrenamiento / Rutina</label><input type="text" id="edit-fit-plan-val" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
-                <div><label class="block text-xs text-slate-400 font-medium mb-1">Estructura Nutricional</label><input type="text" id="edit-fit-nut-val" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-sm text-slate-100 focus:outline-none"></div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio ($)</label>
+                    <input type="number" id="edit-service-price-input" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Especificaciones / Notas</label>
+                    <textarea id="edit-service-desc-input" rows="2" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea>
+                </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
-                <button onclick="closeEditFitnessModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="updateFitnessData()" class="px-4 py-2 bg-vertexTurquoise text-slate-950 text-xs font-bold rounded-xl">Actualizar Atleta</button>
+                <button onclick="closeEditServiceModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
+                <button onclick="updateServiceData()" class="px-4 py-2 bg-vertexTurquoise text-slate-950 text-xs font-bold rounded-xl">Actualizar Cambios</button>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT DE LÓGICA CON JERARQUÍA ESTRICTA PARA ARRANQUE LIMPIO -->
+    <!-- SCRIPT ARQUITECTÓNICO SIN ERRORES DE REFERENCIA -->
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
         let currentNicheFilter = 'Todos';
 
-        // 1. UTILIDADES CRÍTICAS PUESTAS ARRIBA DE TODO PARA EVITAR EL REFERENCEERROR
         function cleanUrl(rawUrl) { if (!rawUrl) return ''; let url = rawUrl.trim(); if (url.endsWith('/')) url = url.slice(0, -1); return url; }
         function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
         function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
-        
-        function getStatusClass(status) { 
-            switch(status) { 
-                case 'Nuevo': case 'Prospecto': return 'bg-slate-500/10 text-slate-400 border border-slate-500/20'; 
-                case 'Contacto Inicial': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20'; 
-                case 'Demo Enviada': case 'Maquetación Lovable (Demo)': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20'; 
-                case 'Cliente Activo': case 'Activo': case 'Vigente / Activo': case 'Desarrollo Activo': case 'Entregado / Producción': return 'bg-vertexTurquoise/10 text-vertexTurquoise border border-vertexTurquoise/20'; 
-                case 'Pausado': case 'Renovación Pendiente': case 'Revisión con Cliente': return 'bg-amber-500/10 text-amber-500 border border-amber-500/20'; 
-                case 'Perdido': case 'Vencido / Congelado': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20'; 
-                default: return 'bg-slate-500/10 text-slate-400'; 
-            } 
-        }
 
         function renderQuickActions(p) {
             const container = document.getElementById('quick-actions-container');
             if (!container) return;
             const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
             container.innerHTML = `
-                <a href="https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}" target="_blank" class="bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-emerald-600 hover:text-white transition-all">💬 WhatsApp</a>
-                <a href="https://instagram.com/${p.contacto}" target="_blank" class="bg-purple-600/10 border border-purple-500/30 text-purple-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-purple-600 hover:text-white transition-all">📸 Instagram</a>
-                <a href="tel:${num}" class="bg-cyan-600/10 border border-cyan-500/30 text-cyan-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-cyan-600 hover:text-white transition-all">📞 Llamar</a>
+                <a href="https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}" target="_blank" class="bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-emerald-600 transition-all">💬 WhatsApp</a>
+                <a href="https://instagram.com/${p.contacto}" target="_blank" class="bg-purple-600/10 border border-purple-500/30 text-purple-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-purple-600 transition-all">📸 Instagram</a>
+                <a href="tel:${num}" class="bg-cyan-600/10 border border-cyan-500/30 text-cyan-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-cyan-600 transition-all">📞 Llamar</a>
             `;
         }
 
-        function renderInteractionHistory(prospect) {
-            const container = document.getElementById('interaction-history-container');
-            if (!container) return;
-            const notes = prospect.notas_historial || [];
-            if (notes.length === 0) {
-                container.innerHTML = `<div class="text-slate-500 italic text-center py-2">No hay notas registradas.</div>`;
-                return;
-            }
-            container.innerHTML = [...notes].reverse().map(n => `
-                <div class="pt-1.5 pb-0.5">
-                    <span class="text-vertexBlue font-bold">${n.fecha}:</span>
-                    <span class="text-slate-200">${n.nota}</span>
-                </div>
-            `).join('');
+        function openEditServiceModal(id, name, price, desc) {
+            document.getElementById('edit-service-id').value = id;
+            document.getElementById('edit-service-name-input').value = name;
+            document.getElementById('edit-service-price-input').value = price;
+            document.getElementById('edit-service-desc-input').value = desc !== 'null' ? desc : '';
+            document.getElementById('edit-service-modal').classList.remove('hidden');
         }
 
-        function triggerSmartEditModal(id, name, price, url, isFitness, jsonStr) {
-            let extra = {};
-            try { extra = JSON.parse(decodeURIComponent(jsonStr)) || {}; } catch(e){}
-
-            if (isFitness) {
-                document.getElementById('edit-fit-id').value = id;
-                document.getElementById('edit-fit-name').value = name;
-                document.getElementById('edit-fit-price').value = price;
-                document.getElementById('edit-fit-peso-val').value = extra.peso || '';
-                document.getElementById('edit-fit-obj-val').value = extra.objetivo || '';
-                document.getElementById('edit-fit-plan-val').value = extra.plan || '';
-                document.getElementById('edit-fit-nut-val').value = extra.nutricion || '';
-                document.getElementById('edit-fitness-modal').classList.remove('hidden');
-            } else {
-                document.getElementById('edit-soft-id').value = id;
-                document.getElementById('edit-soft-name').value = name;
-                document.getElementById('edit-soft-price').value = price;
-                document.getElementById('edit-soft-url').value = url !== 'null' ? url : '';
-                document.getElementById('edit-soft-modules').value = extra.modulos || '';
-                document.getElementById('edit-software-modal').classList.remove('hidden');
-            }
-        }
-
-        function closeEditSoftwareModal() { document.getElementById('edit-software-modal').classList.add('hidden'); }
-        function closeEditFitnessModal() { document.getElementById('edit-fitness-modal').classList.add('hidden'); }
-
-        async function updateSoftwareData() {
-            if (!dbClient) return;
-            const id = document.getElementById('edit-soft-id').value;
-            const servicio = document.getElementById('edit-soft-name').value.trim();
-            const precio = parseFloat(document.getElementById('edit-soft-price').value) || 0;
-            const enlace_demo = document.getElementById('edit-soft-url').value.trim();
-            const modulos = document.getElementById('edit-soft-modules').value.trim();
-
-            if (!servicio) return;
-            const { error } = await dbClient.from('servicios').update({ servicio, precio, enlace_demo, detalles_inteligentes: { modulos } }).eq('id', id);
-            if (!error) { closeEditSoftwareModal(); loadInitialData(); }
-        }
-
-        async function updateFitnessData() {
-            if (!dbClient) return;
-            const id = document.getElementById('edit-fit-id').value;
-            const servicio = document.getElementById('edit-fit-name').value.trim();
-            const precio = parseFloat(document.getElementById('edit-fit-price').value) || 0;
-            
-            const payloadDetails = {
-                peso: document.getElementById('edit-fit-peso-val').value,
-                objetivo: document.getElementById('edit-fit-obj-val').value.trim(),
-                plan: document.getElementById('edit-fit-plan-val').value.trim(),
-                nutricion: document.getElementById('edit-fit-nut-val').value.trim()
-            };
-
-            if (!servicio) return;
-            const { error } = await dbClient.from('servicios').update({ servicio, precio, detalles_inteligentes: payloadDetails }).eq('id', id);
-            if (!error) { closeEditFitnessModal(); loadInitialData(); }
-        }
+        function closeEditServiceModal() { document.getElementById('edit-service-modal').classList.add('hidden'); }
 
         function renderServices(prospectId) {
             const container = document.getElementById('services-list');
             if (!container) return;
             const services = localServices.filter(s => s.prospecto_id === prospectId);
-            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios vinculados.</div>`; return; }
+            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios asignados.</div>`; return; }
 
             container.innerHTML = services.map(s => {
-                const extra = s.detalles_inteligentes || {};
-                let infoExtraHTML = ''; let selectorHTML = '';
                 const currentServiceStatus = s.estado || 'Cotizado';
-                const isFitnessService = s.servicio.includes('Fitness') || s.servicio.includes('Asesoramiento');
-                
-                const safeJson = encodeURIComponent(JSON.stringify(extra));
-
-                if (isFitnessService) {
-                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5"><p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso || '-'} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p><p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p><p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p></div>`;
-                    selectorHTML = `<select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
-                } else {
-                    const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2.5 py-0.5 rounded-lg hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Proyecto</a></p>` : '';
-                    infoExtraHTML = `${extra.modulos ? `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] text-slate-400"><strong>Alcance:</strong> ${extra.modulos}</div>` : ''}${demoHTML}`;
-                    
-                    selectorHTML = `
-                        <select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none">
-                            <option value="Cotizado / Propuesta" ${currentServiceStatus === 'Cotizado / Propuesta' || currentServiceStatus === 'Cotizado' ? 'selected' : ''}>📋 Propuesta</option>
-                            <option value="Maquetación Lovable (Demo)" ${currentServiceStatus === 'Maquetación Lovable (Demo)' ? 'selected' : ''}>⚡ Maqueta Lovable</option>
-                            <option value="Desarrollo Activo" ${currentServiceStatus === 'Desarrollo Activo' || currentServiceStatus === 'En Progreso' ? 'selected' : ''}>🛠️ Desarrollo Activo</option>
-                            <option value="Revisión con Cliente" ${currentServiceStatus === 'Revisión con Cliente' ? 'selected' : ''}>👀 En Revisión</option>
-                            <option value="Entregado / Producción" ${currentServiceStatus === 'Entregado / Producción' || currentServiceStatus === 'Entregado' ? 'selected' : ''}>🚀 Entregado</option>
-                        </select>
-                    `;
-                }
-
+                const sDesc = s.detalles_inteligentes && s.detalles_inteligentes.modulos ? s.detalles_inteligentes.modulos : '';
                 return `
-                    <div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between hover:border-slate-700 transition-all">
+                    <div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3 flex flex-col justify-between hover:border-slate-700 transition-all">
                         <div class="flex justify-between items-center w-full gap-2">
                             <div class="min-w-0 flex-1">
                                 <h4 class="font-bold text-slate-200 text-xs sm:text-sm truncate">${s.servicio}</h4>
                                 <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
                             </div>
                             <div class="flex items-center gap-1.5 shrink-0">
-                                ${selectorHTML}
-                                <button onclick="triggerSmartEditModal('${s.id}', '${s.servicio}', '${s.precio}', '${s.enlace_demo}', ${isFitnessService}, '${safeJson}')" class="text-[11px] bg-slate-800 border border-slate-700 hover:border-vertexBlue text-slate-300 px-2 py-1 rounded font-bold transition-all">✏️</button>
+                                <select onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-[11px] rounded px-2 py-1 text-slate-300 focus:outline-none">
+                                    <option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado</option>
+                                    <option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Progreso</option>
+                                    <option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>Entregado / Vigente</option>
+                                </select>
+                                <button onclick="openEditServiceModal('${s.id}', '${s.servicio}', '${s.precio}', '${sDesc}')" class="text-[11px] bg-slate-800 border border-slate-700 hover:border-vertexBlue text-slate-300 px-2 py-1 rounded font-bold transition-all">✏️</button>
                                 <button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-1.5">✕</button>
                             </div>
                         </div>
-                        ${infoExtraHTML}
+                        ${sDesc ? `<p class="text-[11px] text-slate-400 mt-2 bg-slate-950/40 p-2 rounded border border-slate-800/40">${sDesc}</p>` : ''}
                     </div>
                 `;
             }).join('');
@@ -511,7 +378,7 @@
             if (!listContainer) return;
             document.getElementById('prospects-count').innerText = filteredProspectsList.length;
             if (filteredProspectsList.length === 0 && dbClient) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Ningún cliente coincide.</div>'; return; }
-            if (!dbClient) return;
+            
             const todayStr = getTodayString();
             listContainer.innerHTML = filteredProspectsList.map(p => {
                 const isActive = p.id === selectedProspectId;
@@ -520,16 +387,23 @@
                 const estadoText = p.estado || 'Nuevo';
                 const isFitness = (p.nicho === 'Asesoría Fitness');
                 
-                const hasValidDate = p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null" && p.proximo_seguimiento !== null;
-                const isExpired = hasValidDate && p.proximo_seguimiento <= todayStr && estadoText !== 'Perdido';
-                
+                // CONTROL DE FECHAS SEPARADO
+                let dateVal = 'Sin fecha';
                 let tagAlertHTML = '';
-                if (isExpired) {
-                    tagAlertHTML = isFitness ? '<span class="bg-rose-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ VENCIDO</span>' : '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>';
-                }
 
-                const subtextLabel = isFitness ? `🏁 Expira:` : `🌐 Planes:`;
-                const dateVal = hasValidDate ? formatDate(p.proximo_seguimiento) : 'Sin fecha';
+                if (isFitness) {
+                    const hasEnd = p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null";
+                    dateVal = hasEnd ? formatDate(p.proximo_seguimiento) : 'Sin expiración';
+                    if (hasEnd && p.proximo_seguimiento <= todayStr && estadoText !== 'Perdido') {
+                        tagAlertHTML = '<span class="bg-rose-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ VENCIDO</span>';
+                    }
+                } else {
+                    const hasFollow = p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null";
+                    dateVal = hasFollow ? formatDate(p.proximo_seguimiento) : 'Sin control';
+                    if (hasFollow && p.proximo_seguimiento <= todayStr && estadoText !== 'Perdido') {
+                        tagAlertHTML = '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>';
+                    }
+                }
 
                 return `
                     <div onclick="selectProspect('${p.id}')" class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-3.5 cursor-pointer ${isActive ? 'bg-vertexCard/70 border-vertexBlue/70 shadow-md ring-1 ring-vertexBlue/20' : ''}">
@@ -540,7 +414,7 @@
                                     <span class="bg-slate-800 text-slate-400 text-[8px] font-bold px-1.5 py-0.5 rounded">${p.ciudad || 'GYE'}</span>
                                     ${tagAlertHTML}
                                 </div>
-                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>${subtextLabel} ${isFitness ? dateVal : matchServices.length}</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
+                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>${isFitness ? '🏁 Expira:' : '📅 Agendado:'} ${dateVal}</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
                             </div>
                             <span class="${getStatusClass(estadoText)} text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${estadoText}</span>
                         </div>
@@ -570,10 +444,10 @@
 
             if (p.nicho === 'Asesoría Fitness') {
                 dateLabelContainer.innerText = "Fin del Programa";
-                selectorContainer.innerHTML = `<select onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option><option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option><option value="Pausado" ${currentStatus === 'Pausado' ? 'selected' : ''}>⏳ Membresía Pausada</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado</option></select>`;
+                selectorContainer.innerHTML = `<select onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexTurquoise text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>Prospecto</option><option value="Activo" ${currentStatus === 'Activo' || currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏃 Atleta Activo</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Cancelado</option></select>`;
             } else {
-                dateLabelContainer.innerText = "Seguimiento";
-                selectorContainer.innerHTML = `<select onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Nuevo" ${currentStatus === 'Nuevo' ? 'selected' : ''}>Nuevo Lead</option><option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>Contacto Inicial</option><option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>Demo Enviada</option><option value="Cliente Activo" ${currentStatus === 'Cliente Activo' || currentStatus === 'Activo' ? 'selected' : ''}>🏢 Cliente Cerrado</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Perdido</option></select>`;
+                dateLabelContainer.innerText = "Próximo Seguimiento";
+                selectorContainer.innerHTML = `<select onchange="updateProspectStatus(this.value)" class="w-full sm:w-auto bg-slate-950 border border-slate-800 text-vertexBlue text-xs md:text-sm font-bold rounded-lg px-3 py-2"><option value="Nuevo" ${currentStatus === 'Nuevo' ? 'selected' : ''}>Nuevo Lead</option><option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>Contacto Inicial</option><option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>Demo Enviada</option><option value="Cliente Activo" ${currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏢 Cliente Cerrado</option><option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>Perdido</option></select>`;
             }
 
             const clientServices = localServices.filter(s => s.prospecto_id === id);
@@ -582,7 +456,7 @@
             document.getElementById('summary-services-count').innerText = clientServices.length;
             
             const hasValidDate = p.proximo_seguimiento && p.proximo_seguimiento !== "" && p.proximo_seguimiento !== "null" && p.proximo_seguimiento !== null;
-            document.getElementById('summary-next-date').innerText = hasValidDate ? formatDate(p.proximo_seguimiento) : 'Sin programar';
+            document.getElementById('summary-next-date').innerText = hasValidDate ? formatDate(p.proximo_seguimiento) : 'Sin agendar';
             
             renderQuickActions(p); 
             renderServices(id);
@@ -591,15 +465,7 @@
 
         function applyNicheAndSearchFilters() {
             const filterBar = document.getElementById('vertex-search-filter');
-            let query = '';
-
-            if (filterBar) {
-                query = filterBar.value.toLowerCase().trim();
-                if (query.includes('supabase.co') || query.includes('http')) {
-                    filterBar.value = '';
-                    query = '';
-                }
-            }
+            let query = filterBar ? filterBar.value.toLowerCase().trim() : '';
 
             filteredProspectsList = localProspects.filter(p => {
                 let matchNiche = true;
@@ -607,9 +473,7 @@
                 else if (currentNicheFilter === 'Software') { matchNiche = (p.nicho !== 'Asesoría Fitness'); }
                 
                 let matchQuery = true;
-                if (query) {
-                    matchQuery = p.nombre.toLowerCase().includes(query) || (p.city && p.city.toLowerCase().includes(query));
-                }
+                if (query) { matchQuery = p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)); }
                 return matchNiche && matchQuery;
             });
             renderProspects();
@@ -624,7 +488,7 @@
             let activos = 0, pendientes = 0;
             localServices.forEach(s => {
                 const price = parseFloat(s.precio) || 0;
-                if (s.estado === 'Desarrollo Activo' || s.estado === 'Revisión con Cliente' || s.estado === 'Entregado / Producción' || s.estado === 'Vigente / Activo' || s.estado === 'En Progreso' || s.estado === 'Entregado') activos += price;
+                if (s.estado === 'Entregado' || s.estado === 'En Progreso') activos += price;
                 else pendientes += price;
             });
             document.getElementById('dash-active-money').innerText = `$${activos.toFixed(2)}`;
@@ -635,7 +499,7 @@
             
             if (container) {
                 if (pendings.length === 0) {
-                    container.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8">✨ Ningún control pendiente.</div>';
+                    container.innerHTML = '<div class="text-center text-vertexTurquoise text-xs py-8">✨ Ningún control o seguimiento atrasado hoy.</div>';
                     return;
                 }
                 container.innerHTML = pendings.map(p => {
@@ -647,7 +511,7 @@
                                 <p class="text-[10px] text-amber-400 mt-0.5">${isFitness ? '🚨 MEMBRESÍA EXPIRADA' : '⏳ SEGUIMIENTO'} • ${formatDate(p.proximo_seguimiento)}</p>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-bold">Ficha</button>
+                                <button onclick="selectProspect('${p.id}')" class="bg-slate-800 text-slate-300 text-xs px-2 py-1 rounded font-bold">Ver Ficha</button>
                             </div>
                         </div>
                     `;
@@ -697,19 +561,10 @@
             }
         }
 
-        window.addEventListener('load', () => { 
-            const filterBar = document.getElementById('vertex-search-filter');
-            if (filterBar) filterBar.value = ''; 
-            initDatabase(); 
-        });
+        window.addEventListener('load', () => { initDatabase(); });
 
         function setNicheFilter(filter) {
             currentNicheFilter = filter;
-            setNicheFilterButtonsVisuals(filter);
-            applyNicheAndSearchFilters();
-        }
-
-        function setNicheFilterButtonsVisuals(filter) {
             const btnAll = document.getElementById('btn-filter-all');
             const btnFit = document.getElementById('btn-filter-fit');
             const btnSoft = document.getElementById('btn-filter-soft');
@@ -718,6 +573,124 @@
             if (filter === 'Todos') btnAll.className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950";
             else if (filter === 'Asesoría Fitness') btnFit.className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexTurquoise text-slate-950";
             else btnSoft.className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950";
+            applyNicheAndSearchFilters();
+        }
+
+        function toggleModalProfileLayout(type) {
+            const secComercial = document.getElementById('modal-section-comercial');
+            const secFitness = document.getElementById('modal-section-fitness');
+            const blockComercial = document.getElementById('date-block-comercial');
+            const blockFitness = document.getElementById('date-block-fitness');
+
+            if (type === 'Atleta') {
+                secComercial.classList.add('hidden'); secFitness.classList.remove('hidden');
+                blockComercial.classList.add('hidden'); blockFitness.classList.remove('hidden');
+            } else {
+                secFitness.classList.add('hidden'); secComercial.classList.remove('hidden');
+                blockFitness.classList.add('hidden'); blockComercial.classList.remove('hidden');
+            }
+        }
+
+        function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; toggleModalProfileLayout("Comercial"); }
+        function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
+        function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
+        function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
+        function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
+        function showDashboardView() { selectedProspectId = null; applyNicheAndSearchFilters(); document.getElementById('active-prospect-details').classList.add('hidden'); document.getElementById('dashboard-view').classList.remove('hidden'); }
+
+        function openEditProspectModal() {
+            if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return;
+            document.getElementById('modal-id').value = p.id; document.getElementById('modal-name').value = p.nombre || '';
+            document.getElementById('modal-city').value = p.ciudad || ''; document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp';
+            document.getElementById('modal-contact').value = p.contacto || '';
+            
+            const isFit = p.nicho === 'Asesoría Fitness';
+            document.getElementById('modal-profile-type').value = isFit ? 'Atleta' : 'Comercial';
+            toggleModalProfileLayout(isFit ? 'Atleta' : 'Comercial');
+            
+            if (isFit) {
+                document.getElementById('modal-date-fit-end').value = p.proximo_seguimiento || '';
+                // Intentar extraer fecha inicio de los detalles del servicio vinculados
+                const sMatch = localServices.find(s => s.prospecto_id === p.id);
+                if (sMatch && sMatch.detalles_inteligentes) {
+                    document.getElementById('modal-date-fit-start').value = sMatch.detalles_inteligentes.fecha_inicio || '';
+                }
+            } else {
+                document.getElementById('modal-date-comercial').value = p.proximo_seguimiento || '';
+                document.getElementById('modal-niche').value = p.nicho || 'Gimnasio';
+            }
+            document.getElementById('add-prospect-modal').classList.remove('hidden');
+        }
+
+        async function saveProspect() {
+            const id = document.getElementById('modal-id').value;
+            const profileType = document.getElementById('modal-profile-type').value;
+            const nombre = document.getElementById('modal-name').value.trim();
+            const contacto = document.getElementById('modal-contact').value.trim();
+            const metodo_contacto = document.getElementById('modal-contact-method').value;
+            
+            let proximo_seguimiento = null;
+            let nicho = document.getElementById('modal-niche').value;
+            let ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
+
+            if (profileType === 'Atleta') {
+                nicho = 'Asesoría Fitness';
+                ciudad = 'Guayaquil';
+                proximo_seguimiento = document.getElementById('modal-date-fit-end').value || null;
+            } else {
+                proximo_seguimiento = document.getElementById('modal-date-comercial').value || null;
+            }
+
+            if (!nombre || !contacto) return;
+            const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
+
+            if (dbClient) {
+                if (id) { 
+                    await dbClient.from('prospectos').update(payload).eq('id', id); 
+                    if (profileType === 'Atleta') {
+                        const sMatch = localServices.find(s => s.prospecto_id === id);
+                        if (sMatch) {
+                            const fStart = document.getElementById('modal-date-fit-start').value;
+                            await dbClient.from('servicios').update({ detalles_inteligentes: { fecha_inicio: fStart } }).eq('id', sMatch.id);
+                        }
+                    }
+                } 
+                else {
+                    payload.estado = "Nuevo"; payload.notas_historial = [];
+                    const { data: newProspect } = await dbClient.from('prospectos').insert([payload]).select();
+                    if (newProspect && profileType === 'Atleta') {
+                        const pid = newProspect[0].id;
+                        const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
+                        const fStart = document.getElementById('modal-date-fit-start').value;
+                        const fitDetails = { fecha_inicio: fStart, modulos: `Rutina: ${document.getElementById('modal-fit-plan').value} | Nutrición: ${document.getElementById('modal-fit-nutricion').value} | Obj: ${document.getElementById('modal-fit-objetivo').value}` };
+                        await dbClient.from('servicios').insert([{ prospecto_id: pid, servicio: "Asesoramiento Fitness", precio: fitPrecio, estado: "En Progreso", detalles_inteligentes: fitDetails }]);
+                    }
+                }
+            }
+            loadInitialData(); closeAddProspectModal();
+        }
+
+        async function addService() {
+            if (!selectedProspectId || !dbClient) return;
+            const servicio = document.getElementById('new-service-name').value.trim();
+            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
+            const notes = document.getElementById('new-service-desc').value.trim();
+            if (!servicio) return;
+
+            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: "En Progreso", detalles_inteligentes: { modulos: notes } }]);
+            loadInitialData(); closeAddServiceModal();
+        }
+
+        async function updateServiceData() {
+            if (!dbClient) return;
+            const id = document.getElementById('edit-service-id').value;
+            const servicio = document.getElementById('edit-service-name-input').value.trim();
+            const precio = parseFloat(document.getElementById('edit-service-price-input').value) || 0;
+            const notes = document.getElementById('edit-service-desc-input').value.trim();
+
+            if (!servicio) return;
+            const { error } = await dbClient.from('servicios').update({ servicio, precio, detalles_inteligentes: { modulos: notes } }).eq('id', id);
+            if (!error) { closeEditServiceModal(); loadInitialData(); }
         }
 
         async function addInteractionNote() {
@@ -735,95 +708,10 @@
             if (!error) { p.notas_historial = updatedNotes; input.value = ''; renderInteractionHistory(p); }
         }
 
-        function showDashboardView() {
-            selectedProspectId = null; applyNicheAndSearchFilters();
-            document.getElementById('active-prospect-details').classList.add('hidden');
-            document.getElementById('dashboard-view').classList.remove('hidden');
-            if (window.innerWidth < 1024) {
-                document.getElementById('list-section').classList.add('hidden');
-                document.getElementById('details-section').classList.remove('hidden');
-            }
-        }
-
-        function backToClientList() {
-            selectedProspectId = null;
-            document.getElementById('details-section').classList.add('hidden');
-            document.getElementById('list-section').classList.remove('hidden');
-            applyNicheAndSearchFilters();
-        }
-
-        function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
-        function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; document.getElementById('modal-profile-type').value = "Comercial"; toggleModalProfileLayout("Comercial"); }
-        function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
-        function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
-        function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
-        function filterProspects() { applyNicheAndSearchFilters(); }
-
-        function openEditProspectModal() {
-            if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return;
-            document.getElementById('modal-id').value = p.id; document.getElementById('modal-name').value = p.nombre || '';
-            document.getElementById('modal-niche').value = p.nicho || 'Gimnasio'; document.getElementById('modal-city').value = p.ciudad || '';
-            document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp'; document.getElementById('modal-contact').value = p.contacto || '';
-            document.getElementById('modal-date').value = p.proximo_seguimiento || ''; 
-            toggleModalProfileLayout(p.nicho === 'Asesoría Fitness' ? 'Atleta' : 'Comercial');
-            document.getElementById('add-prospect-modal').classList.remove('hidden');
-        }
-
         async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); }
         async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
-        async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); }
-        async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
-
-        async function saveProspect() {
-            const id = document.getElementById('modal-id').value;
-            const profileType = document.getElementById('modal-profile-type').value;
-            const nombre = document.getElementById('modal-name').value.trim();
-            const contacto = document.getElementById('modal-contact').value.trim();
-            const metodo_contacto = document.getElementById('modal-contact-method').value;
-            const proximo_seguimiento = document.getElementById('modal-date').value || null;
-            if (!nombre || !contacto) return;
-            let nicho = (profileType === 'Atleta') ? 'Asesoría Fitness' : document.getElementById('modal-niche').value;
-            let ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
-            const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
-            if (dbClient) {
-                if (id) { await dbClient.from('prospectos').update(payload).eq('id', id); } 
-                else {
-                    payload.estado = "Nuevo"; payload.notas_historial = [];
-                    const { data: newProspect } = await dbClient.from('prospectos').insert([payload]).select();
-                    if (newProspect) {
-                        const pid = newProspect[0].id;
-                        if (profileType === 'Atleta') {
-                            const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
-                            const fitDetails = { peso: document.getElementById('modal-fit-peso').value, objetivo: document.getElementById('modal-fit-objetivo').value.trim(), plan: document.getElementById('modal-fit-plan').value.trim(), nutricion: document.getElementById('modal-fit-nutricion').value.trim() };
-                            await dbClient.from('servicios').insert([{ prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "Vigente / Activo", detalles_inteligentes: fitDetails }]);
-                        }
-                    }
-                }
-            }
-            loadInitialData(); closeAddProspectModal();
-        }
-
-        async function addService() {
-            if (!selectedProspectId || !dbClient) return;
-            const servicio = document.getElementById('new-service-name').value;
-            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
-            const enlace_demo = document.getElementById('new-service-url').value.trim();
-            let detalles = {};
-            if (servicio.includes('Fitness')) {
-                detalles = { peso: document.getElementById('fit-peso').value, objetivo: document.getElementById('fit-objetivo').value.trim(), plan: document.getElementById('fit-plan').value.trim(), nutricion: document.getElementById('fit-nutricion').value.trim() };
-            } else {
-                detalles = { modulos: document.getElementById('saas-modulos').value.trim() };
-            }
-            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado", enlace_demo, detalles_inteligentes: detalles }]);
-            loadInitialData(); closeAddServiceModal();
-        }
-
-        function toggleDynamicServiceFields(nicho) {
-            document.getElementById('fields-software').classList.add('hidden');
-            document.getElementById('fields-fitness-add').classList.add('hidden');
-            if (nicho.includes('Fitness')) document.getElementById('fields-fitness-add').classList.remove('hidden');
-            else document.getElementById('fields-software').classList.remove('hidden');
-        }
+        async function deleteService(serviceId) { if (!confirm("¿Eliminar servicio asignado? Max: Modificaciones de contrato.") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); }
+        async function deleteProspect(id) { if (!id || !confirm("¿Eliminar cliente por completo del Vertex?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
     </script>
 </body>
 </html>
