@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vertex CRM — Clientes • Servicios • Seguimiento</title>
-    <link class="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <script>
@@ -56,7 +56,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2.4</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2.5</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES -->
@@ -96,13 +96,19 @@
         </section>
 
         <!-- SECCIÓN DERECHA -->
-        <section id="details-section" class="lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
+        <section id="details-section" class="hidden lg:col-span-7 bg-vertexCard/30 border border-slate-800/60 rounded-2xl shadow-xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
             
-            <!-- DASHBOARD GENERAL -->
+            <!-- VIEW 1: DASHBOARD GENERAL -->
             <div id="dashboard-view" class="flex flex-col gap-6 h-full w-full">
-                <div>
-                    <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
-                    <p class="text-xs text-slate-400">Rendimiento integral de tus asesorías fitness y desarrollo de software</p>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
+                        <p class="text-xs text-slate-400">Rendimiento de tus asesorías y desarrollo software</p>
+                    </div>
+                    <!-- BOTÓN DE RETORNO EXCLUSIVO PARA DISPOSITIVOS MÓVILES -->
+                    <button onclick="backToClientList()" class="lg:hidden text-xs bg-slate-800 border border-slate-700 hover:border-vertexBlue text-vertexBlue font-bold px-3 py-1.5 rounded-xl transition-all">
+                        ⬅️ Ver Lista
+                    </button>
                 </div>
                 <div class="grid grid-cols-2 gap-4 shrink-0">
                     <div class="bg-gradient-to-br from-vertexCard to-slate-900 border border-slate-800 p-4 rounded-xl">
@@ -126,7 +132,7 @@
                 </div>
             </div>
 
-            <!-- FICHA DETALLES -->
+            <!-- VIEW 2: DETALLES DEL CLIENTE / ATLETA -->
             <div id="active-prospect-details" class="hidden flex-col h-full">
                 <div class="bg-vertexCard/80 border border-slate-800/80 rounded-xl p-5 mb-6 shrink-0 relative overflow-hidden">
                     <div class="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-vertexBlue to-vertexTurquoise"></div>
@@ -182,7 +188,7 @@
                 <input type="hidden" id="modal-id">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-vertexBlue mb-1.5">🎯 Tipo de Perfil Comercial</label>
-                    <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:border-vertexBlue focus:outline-none">
+                    <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:outline-none">
                         <option value="Comercial">🏢 Local Comercial / Cliente de Software Web</option>
                         <option value="Atleta">🏋️ Atleta / Cliente de Asesoramiento Fitness</option>
                         <option value="SaaS Tecnicos">🛠️ Validación de App / Propuesta SaaS a Medida</option>
@@ -190,7 +196,7 @@
                 </div>
                 <div>
                     <label id="label-modal-name" class="block text-xs font-semibold text-slate-400 mb-1">Nombre del Cliente / Empresa</label>
-                    <input type="text" id="modal-name" placeholder="Ej. Bryan Gomez o Cairo Gym" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    <input type="text" id="modal-name" placeholder="Ej. Bryan Gomez" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
                 <div id="modal-section-comercial" class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
@@ -219,25 +225,20 @@
                     <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Guía de Nutrición Inicial</label><input type="text" id="modal-fit-nutricion" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio de Asesoría ($)</label><input type="number" id="modal-fit-precio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexTurquoise"></div>
                 </div>
-
-                <!-- SECCIÓN DINÁMICA C: PROPUESAS DE APP / VALIDACIÓN SAAS (FLEXIBLE) -->
                 <div id="modal-section-saas-tecnicos" class="space-y-4 hidden border-t border-slate-800/80 pt-3">
                     <h4 class="text-[11px] font-bold uppercase text-vertexBlue tracking-widest">Alcance de la App (Lovable)</h4>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Módulos Propuestos / Funciones a Validar</label><textarea id="modal-saas-modulos" rows="2" placeholder="Ej: Control de clientes de línea blanca, visitas técnicas, órdenes de trabajo..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-vertexBlue"></textarea></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Módulos Propuestos / Funciones a Validar</label><textarea id="modal-saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo para técnicos..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[11px] text-slate-400 font-medium mb-0.5">Fase de Validación</label>
                             <select id="modal-saas-fase" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100">
                                 <option value="Idea / Propuesta">Idea / Propuesta Comercial</option>
                                 <option value="Prototipo Lovable">Prototipo en Lovable (Demo)</option>
-                                <option value="Pruebas Beta">Pruebas con Clientes Reales</option>
-                                <option value="SaaS Cerrado">SaaS Cerrado / Producción</option>
                             </select>
                         </div>
-                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio Estimado (Opcional $)</label><input type="number" id="modal-saas-precio" placeholder="Por definir" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs font-bold text-vertexBlue"></div>
+                        <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Precio Estimado ($)</label><input type="number" id="modal-saas-precio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1">Medio</label>
@@ -253,13 +254,13 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Fecha Próximo Seguimiento / Control</label>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Fecha Próximo Seguimiento</label>
                     <input type="date" id="modal-date" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
             </div>
             <div class="px-6 py-4 bg-slate-950/20 border-t border-slate-800/60 flex justify-end gap-2">
                 <button onclick="closeAddProspectModal()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl hover:bg-[#00B8E0]">Registrar Cuenta</button>
+                <button onclick="saveProspect()" class="px-4 py-2 bg-vertexBlue text-slate-950 text-xs font-bold rounded-xl">Registrar Cuenta</button>
             </div>
         </div>
     </div>
@@ -281,17 +282,14 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Estimado o Acordado ($ — Opcional)</label>
-                    <input type="number" id="new-service-price" placeholder="Dejar vacío si no se ha definido" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">Precio Acordado / Estimado ($)</label>
+                    <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
-                
-                <!-- CAMPOS SAAS ADAPTADOS A LOVABLE -->
                 <div id="fields-saas-tecnicos" class="space-y-3">
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Módulos Requeridos / Notas de Alcance</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo para técnicos, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Módulos Requeridos / Notas de Alcance</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
                     <div><label class="block text-[11px] text-slate-400 font-medium">Fase de la Propuesta</label><input type="text" id="saas-fase" placeholder="Ej: Idea / Validación / Prototipo Lovable" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     <div><label class="block text-[11px] text-slate-400 font-medium">Enlace Demo de Lovable (Opcional)</label><input type="url" id="new-service-url" placeholder="https://lovable.dev/..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
-
                 <div id="fields-web" class="space-y-3 hidden">
                     <div class="grid grid-cols-2 gap-2">
                         <div><label class="block text-[11px] text-slate-400">Dominio</label><input type="text" id="web-dominio" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
@@ -300,7 +298,6 @@
                     <div><label class="block text-[11px] text-slate-400">Fecha de Entrega</label><input type="date" id="web-entrega" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     <div><label class="block text-[11px] text-slate-400">URL Proyecto</label><input type="url" id="web-url" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
-                
                 <div id="fields-fitness" class="space-y-3 hidden">
                     <div class="grid grid-cols-2 gap-2">
                         <div><label class="block text-[11px] text-slate-400">Peso Inicial (kg)</label><input type="number" step="0.1" id="fit-peso" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
@@ -351,6 +348,16 @@
                     localProspects = prospects || []; localServices = services || [];
                     localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
                     filteredProspectsList = [...localProspects];
+                    
+                    // MANEJO ADAPTATIVO DEL RESPONSIVE MÓVIL AL ENTRAR
+                    if (window.innerWidth < 1024) {
+                        document.getElementById('list-section').classList.remove('hidden');
+                        document.getElementById('details-section').classList.add('hidden');
+                    } else {
+                        document.getElementById('list-section').classList.remove('hidden');
+                        document.getElementById('details-section').classList.remove('hidden');
+                    }
+                    
                     renderProspects(); calculateDashboardMetrics();
                     if (selectedProspectId) selectProspect(selectedProspectId);
                 }
@@ -362,18 +369,14 @@
             const secComercial = document.getElementById('modal-section-comercial');
             const secFitness = document.getElementById('modal-section-fitness');
             const secSaas = document.getElementById('modal-section-saas-tecnicos');
-
             secComercial.classList.add('hidden'); secFitness.classList.add('hidden'); secSaas.classList.add('hidden');
 
             if (type === 'Atleta') {
-                lblName.innerText = "Nombre Completo del Atleta / Cliente";
-                secFitness.classList.remove('hidden');
+                lblName.innerText = "Nombre Completo del Atleta / Cliente"; secFitness.classList.remove('hidden');
             } else if (type === 'SaaS Tecnicos') {
-                lblName.innerText = "Nombre del Prospecto / Técnico Especialista";
-                secSaas.classList.remove('hidden');
+                lblName.innerText = "Nombre del Prospecto / Técnico Especialista"; secSaas.classList.remove('hidden');
             } else {
-                lblName.innerText = "Nombre de la Empresa / Negocio";
-                secComercial.classList.remove('hidden');
+                lblName.innerText = "Nombre de la Empresa / Negocio"; secComercial.classList.remove('hidden');
             }
         }
 
@@ -381,7 +384,6 @@
             document.getElementById('fields-web').classList.add('hidden');
             document.getElementById('fields-fitness').classList.add('hidden');
             document.getElementById('fields-saas-tecnicos').classList.add('hidden');
-
             if (nicho.includes('Web')) document.getElementById('fields-web').classList.remove('hidden');
             else if (nicho.includes('Fitness')) document.getElementById('fields-fitness').classList.remove('hidden');
             else if (nicho.includes('Aplicación') || nicho.includes('SaaS')) document.getElementById('fields-saas-tecnicos').classList.remove('hidden');
@@ -428,146 +430,24 @@
             }).join('');
         }
 
-        async function saveProspect() {
-            const id = document.getElementById('modal-id').value;
-            const profileType = document.getElementById('modal-profile-type').value;
-            const nombre = document.getElementById('modal-name').value.trim();
-            const contacto = document.getElementById('modal-contact').value.trim();
-            const metodo_contacto = document.getElementById('modal-contact-method').value;
-            const proximo_seguimiento = document.getElementById('modal-date').value || null;
-
-            if (!nombre || !contacto) { alert("Nombre y Contacto son obligatorios."); return; }
-
-            let nicho = (profileType === 'SaaS Tecnicos') ? 'Técnico Especialista' : document.getElementById('modal-niche').value;
-            let ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
-
-            if (profileType === 'Atleta') { nicho = 'Asesoría Fitness'; ciudad = 'Guayaquil'; }
-
-            const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
-
-            if (dbClient) {
-                if (id) {
-                    await dbClient.from('prospectos').update(payload).eq('id', id);
-                } else {
-                    payload.estado = (profileType === 'Atleta') ? "Activo" : "Nuevo";
-                    const { data: newProspect, error } = await dbClient.from('prospectos').insert([payload]).select();
-                    
-                    if (!error && newProspect) {
-                        const pid = newProspect[0].id;
-                        if (profileType === 'Atleta') {
-                            const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
-                            const fitDetails = {
-                                peso: document.getElementById('modal-fit-peso').value,
-                                objetivo: document.getElementById('modal-fit-objetivo').value.trim(),
-                                plan: document.getElementById('modal-fit-plan').value.trim(),
-                                nutricion: document.getElementById('modal-fit-nutricion').value.trim()
-                            };
-                            await dbClient.from('servicios').insert([{
-                                prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "Vigente / Activo", detalles_inteligentes: fitDetails
-                            }]);
-                        } else if (profileType === 'SaaS Tecnicos') {
-                            const saasPrecio = parseFloat(document.getElementById('modal-saas-precio').value) || 0;
-                            const saasDetails = {
-                                modulos: document.getElementById('modal-saas-modulos').value.trim(),
-                                fase: document.getElementById('modal-saas-fase').value
-                            };
-                            await dbClient.from('servicios').insert([{
-                                prospecto_id: pid, servicio: "Propuesta de Aplicación Móvil / SaaS", precio: saasPrecio, estado: "Demo Enviada", detalles_inteligentes: saasDetails
-                            }]);
-                        }
-                    }
-                }
-            }
-            loadInitialData(); closeAddProspectModal();
-        }
-
-        async function addService() {
-            if (!selectedProspectId || !dbClient) return;
-            const servicio = document.getElementById('new-service-name').value;
-            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
-            const enlace_demo = document.getElementById('new-service-url').value.trim();
-
-            let detalles = {};
-            if (servicio.includes('Web')) {
-                detalles = {
-                    dominio: document.getElementById('web-dominio').value.trim(),
-                    hosting: document.getElementById('web-hosting').value.trim(),
-                    entrega: document.getElementById('web-entrega').value,
-                    url: document.getElementById('web-url').value.trim()
-                };
-            } else if (servicio.includes('Fitness')) {
-                detalles = {
-                    peso: document.getElementById('fit-peso').value,
-                    objetivo: document.getElementById('fit-objetivo').value.trim(),
-                    plan: document.getElementById('fit-plan').value.trim(),
-                    nutricion: document.getElementById('fit-nutricion').value.trim()
-                };
-            } else if (servicio.includes('Aplicación') || servicio.includes('SaaS')) {
-                detalles = {
-                    modulos: document.getElementById('saas-modulos').value.trim(),
-                    fase: document.getElementById('saas-fase').value.trim()
-                };
-            }
-
-            const defaultEstado = servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado";
-            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
-            loadInitialData(); closeAddServiceModal();
-        }
-
-        function renderServices(prospectId) {
-            const container = document.getElementById('services-list');
-            const services = localServices.filter(s => s.prospecto_id === prospectId);
-            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios asociados.</div>`; return; }
-
-            container.innerHTML = services.map(s => {
-                const extra = s.detalles_inteligentes || {};
-                let infoExtraHTML = ''; let selectorHTML = '';
-                const currentServiceStatus = s.estado || 'Cotizado';
-
-                if (s.servicio.includes('Fitness') || s.servicio.includes('Asesoramiento')) {
-                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5">
-                                        <p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso || '-'} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p>
-                                        <p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p>
-                                        <p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p>
-                                     </div>`;
-                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
-                } else if (s.servicio.includes('Aplicación') || s.servicio.includes('SaaS')) {
-                    // DISEÑO ATÓMICO LIMPIO Y SIMPLIFICADO PARA TUS APPS DE LOVABLE
-                    const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2 py-0.5 rounded hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Demo Lovable</a></p>` : '';
-                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5">
-                                        <p class="text-slate-300">🛠️ <strong>Módulos Propuestos:</strong> ${extra.modulos || 'Pendiente de definir por el cliente'}</p>
-                                        <p class="text-slate-400">⚙️ <strong>Fase Comercial:</strong> <span class="text-vertexBlue font-medium">${extra.fase || 'Idea'}</span></p>
-                                        ${demoHTML}
-                                     </div>`;
-                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none"><option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado / En Validación</option><option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Construcción</option><option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>SaaS Activo / Cobro Mensual</option></select>`;
-                } else {
-                    if (s.servicio.includes('Web') && extra.dominio) {
-                        infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🌐 Dom: <span class="text-vertexBlue">${extra.dominio}</span> • Host: ${extra.hosting || '-'} • Entrega: ${extra.entrega ? formatDate(extra.entrega) : '-'}</p>`;
-                    }
-                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 text-[11px] rounded px-2 py-1 focus:outline-none"><option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado</option><option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Progreso</option><option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>Entregado</option></select>`;
-                }
-
-                return `
-                    <div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between hover:border-slate-700 transition-all">
-                        <div class="flex justify-between items-center w-full">
-                            <div class="min-w-0 flex-1">
-                                <h4 class="font-bold text-slate-200 text-xs sm:text-sm truncate">${s.servicio}</h4>
-                                <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
-                            </div>
-                            <div class="flex items-center gap-2">${selectorHTML}<button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-2">✕</button></div>
-                        </div>
-                        ${infoExtraHTML}
-                    </div>
-                `;
-            }).join('');
-        }
-
         function showDashboardView() {
             selectedProspectId = null; renderProspects();
             document.getElementById('active-prospect-details').classList.add('hidden');
             document.getElementById('dashboard-view').classList.remove('hidden'); document.getElementById('dashboard-view').classList.add('flex');
-            if (window.innerWidth < 1024) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
+            
+            // CONMUTADOR VISUAL DE SECCIONES RESPONSIVE EN MÓVIL
+            document.getElementById('list-section').classList.add('hidden');
+            document.getElementById('details-section').classList.remove('hidden');
+            
             calculateDashboardMetrics();
+        }
+
+        // FUNCIÓN CRÍTICA PARA VOLVER A LA LISTA DE CLIENTES EN SMARTPHONES
+        function backToClientList() {
+            selectedProspectId = null;
+            document.getElementById('details-section').classList.add('hidden');
+            document.getElementById('list-section').classList.remove('hidden');
+            renderProspects();
         }
 
         function selectProspect(id) {
@@ -575,7 +455,12 @@
             const p = localProspects.find(item => item.id === id); if (!p) return;
             document.getElementById('dashboard-view').classList.add('hidden');
             document.getElementById('active-prospect-details').classList.remove('hidden'); document.getElementById('active-prospect-details').classList.add('flex');
-            if (window.innerWidth < 1024) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
+            
+            if (window.innerWidth < 1024) { 
+                document.getElementById('list-section').classList.add('hidden'); 
+                document.getElementById('details-section').classList.remove('hidden'); 
+            }
+
             document.getElementById('detail-name').innerText = p.nombre;
             document.getElementById('detail-city').innerText = p.ciudad || 'Guayaquil';
             document.getElementById('detail-niche').innerText = p.nicho || 'General';
@@ -599,7 +484,7 @@
 
         function renderProspects() {
             const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
-            if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Pipeline vacío.</div>'; return; }
+            if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Pipeline vacío.</div>'; return; }
             const todayStr = getTodayString();
             listContainer.innerHTML = filteredProspectsList.map(p => {
                 const isActive = p.id === selectedProspectId;
@@ -616,7 +501,7 @@
                                     <span class="bg-slate-800 text-slate-400 text-[8px] font-bold px-1.5 py-0.5 rounded">${p.ciudad || 'GYE'}</span>
                                     ${isPendingFollowUp ? '<span class="bg-amber-500 text-slate-950 text-[8px] font-black px-1 rounded animate-pulse">⚠️ ALERTA</span>' : ''}
                                 </div>
-                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>🌐 ${matchServices.length} planes</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
+                                <div class="flex items-center gap-3 text-xs text-slate-400"><span>🌐 ${matchServices.length} serv/plan</span><span class="text-vertexTurquoise font-bold">$${valorEstimado.toFixed(2)}</span></div>
                             </div>
                             <span class="${getStatusClass(estadoText)} text-[9px] px-2 py-0.5 rounded-full font-bold shrink-0">${estadoText}</span>
                         </div>
@@ -635,17 +520,92 @@
             `;
         }
 
+        async function saveProspect() {
+            const id = document.getElementById('modal-id').value;
+            const profileType = document.getElementById('modal-profile-type').value;
+            const nombre = document.getElementById('modal-name').value.trim();
+            const contacto = document.getElementById('modal-contact').value.trim();
+            const metodo_contacto = document.getElementById('modal-contact-method').value;
+            const proximo_seguimiento = document.getElementById('modal-date').value || null;
+            if (!nombre || !contacto) { alert("Nombre y Contacto son obligatorios."); return; }
+            let nicho = (profileType === 'SaaS Tecnicos') ? 'Técnico Especialista' : document.getElementById('modal-niche').value;
+            let ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
+            if (profileType === 'Atleta') { nicho = 'Asesoría Fitness'; ciudad = 'Guayaquil'; }
+            const payload = { nombre, nicho, ciudad, metodo_contacto, contacto, proximo_seguimiento };
+            if (dbClient) {
+                if (id) { await dbClient.from('prospectos').update(payload).eq('id', id); } else {
+                    payload.estado = "Nuevo"; const { data: newProspect, error } = await dbClient.from('prospectos').insert([payload]).select();
+                    if (!error && newProspect) {
+                        const pid = newProspect[0].id;
+                        if (profileType === 'Atleta') {
+                            const fitPrecio = parseFloat(document.getElementById('modal-fit-precio').value) || 0;
+                            const fitDetails = { peso: document.getElementById('modal-fit-peso').value, objetivo: document.getElementById('modal-fit-objetivo').value.trim(), plan: document.getElementById('modal-fit-plan').value.trim(), nutricion: document.getElementById('modal-fit-nutricion').value.trim() };
+                            await dbClient.from('servicios').insert([{ prospecto_id: pid, servicio: "Asesoramiento Fitness Emprendedor", precio: fitPrecio, estado: "Vigente / Activo", detalles_inteligentes: fitDetails }]);
+                        } else if (profileType === 'SaaS Tecnicos') {
+                            const saasPrecio = parseFloat(document.getElementById('modal-saas-precio').value) || 0;
+                            const saasDetails = { modulos: document.getElementById('modal-saas-modulos').value.trim(), fase: document.getElementById('modal-saas-fase').value };
+                            await dbClient.from('servicios').insert([{ prospecto_id: pid, servicio: "Propuesta de Aplicación Móvil / SaaS", precio: saasPrecio, estado: "Demo Enviada", detalles_inteligentes: saasDetails }]);
+                        }
+                    }
+                }
+            }
+            loadInitialData(); closeAddProspectModal();
+        }
+
+        async function addService() {
+            if (!selectedProspectId || !dbClient) return;
+            const servicio = document.getElementById('new-service-name').value;
+            const precio = parseFloat(document.getElementById('new-service-price').value) || 0;
+            const enlace_demo = document.getElementById('new-service-url').value.trim();
+            let detalles = {};
+            if (servicio.includes('Web')) {
+                detalles = { dominio: document.getElementById('web-dominio').value.trim(), hosting: document.getElementById('web-hosting').value.trim(), entrega: document.getElementById('web-entrega').value, url: document.getElementById('web-url').value.trim() };
+            } else if (servicio.includes('Fitness')) {
+                detalles = { peso: document.getElementById('fit-peso').value, objetivo: document.getElementById('fit-objetivo').value.trim(), plan: document.getElementById('fit-plan').value.trim(), nutricion: document.getElementById('fit-nutricion').value.trim() };
+            } else if (servicio.includes('Aplicación') || servicio.includes('SaaS')) {
+                detalles = { modulos: document.getElementById('saas-modulos').value.trim(), fase: document.getElementById('saas-fase').value.trim() };
+            }
+            const defaultEstado = servicio.includes('Fitness') ? "Vigente / Activo" : "Cotizado";
+            await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
+            loadInitialData(); closeAddServiceModal();
+        }
+
+        function renderServices(prospectId) {
+            const container = document.getElementById('services-list');
+            const services = localServices.filter(s => s.prospecto_id === prospectId);
+            if (services.length === 0) { container.innerHTML = `<div class="border border-dashed border-slate-800 rounded-xl p-4 text-center text-slate-500 text-xs">⚠️ Sin servicios asociados.</div>`; return; }
+
+            container.innerHTML = services.map(s => {
+                const extra = s.detalles_inteligentes || {};
+                let infoExtraHTML = ''; let selectorHTML = '';
+                const currentServiceStatus = s.estado || 'Cotizado';
+
+                if (s.servicio.includes('Fitness') || s.servicio.includes('Asesoramiento')) {
+                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5"><p class="text-slate-300">🏋️ <strong>Peso Actual:</strong> <span class="text-vertexTurquoise font-bold">${extra.peso || '-'} kg</span> | <strong>Objetivo:</strong> ${extra.objetivo || '-'}</p><p class="text-slate-400">📋 <strong>Rutina:</strong> ${extra.plan || '-'}</p><p class="text-slate-400">🥗 <strong>Nutrición:</strong> ${extra.nutricion || '-'}</p></div>`;
+                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexTurquoise text-[11px] rounded px-2 py-1 font-semibold focus:outline-none"><option value="Vigente / Activo" ${currentServiceStatus === 'Vigente / Activo' ? 'selected' : ''}>Vigente / Activo</option><option value="Renovación Pendiente" ${currentServiceStatus === 'Renovación Pendiente' ? 'selected' : ''}>⏳ Por Renovar</option><option value="Vencido / Congelado" ${currentServiceStatus === 'Vencido / Congelado' ? 'selected' : ''}>❌ Inactivo</option></select>`;
+                } else if (s.servicio.includes('Aplicación') || s.servicio.includes('SaaS')) {
+                    const demoHTML = s.enlace_demo ? `<p class="mt-2"><a href="${s.enlace_demo}" target="_blank" class="inline-flex text-[11px] text-vertexBlue font-bold bg-vertexBlue/10 border border-vertexBlue/20 px-2 py-0.5 rounded hover:bg-vertexBlue hover:text-slate-950 transition-all">🔗 Abrir Demo Lovable</a></p>` : '';
+                    infoExtraHTML = `<div class="mt-2 bg-slate-950/40 p-2 border border-slate-800/40 rounded-lg text-[11px] space-y-0.5"><p class="text-slate-300">🛠️ <strong>Módulos Propuestos:</strong> ${extra.modulos || '-'}</p><p class="text-slate-400">⚙️ <strong>Fase Comercial:</strong> <span class="text-vertexBlue font-medium">${extra.fase || 'Idea'}</span></p>${demoHTML}</div>`;
+                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-vertexBlue text-[11px] rounded px-2 py-1 focus:outline-none"><option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado / En Validación</option><option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Construcción</option><option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>SaaS Activo</option></select>`;
+                } else {
+                    if (s.servicio.includes('Web') && extra.dominio) { infoExtraHTML = `<p class="text-[10px] text-slate-400 mt-1">🌐 Dom: <span class="text-vertexBlue">${extra.dominio}</span></p>`; }
+                    selectorHTML = `<select id="service-status-select" onchange="updateServiceStatus('${s.id}', this.value)" class="bg-slate-950 border border-slate-800 text-slate-300 text-[11px] rounded px-2 py-1 focus:outline-none"><option value="Cotizado" ${currentServiceStatus === 'Cotizado' ? 'selected' : ''}>Cotizado</option><option value="En Progreso" ${currentServiceStatus === 'En Progreso' ? 'selected' : ''}>En Progreso</option><option value="Entregado" ${currentServiceStatus === 'Entregado' ? 'selected' : ''}>Entregado</option></select>`;
+                }
+
+                return `<div class="bg-vertexCard/60 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between hover:border-slate-700 transition-all"><div class="flex justify-between items-center w-full"><div class="min-w-0 flex-1"><h4 class="font-bold text-slate-200 text-xs sm:text-sm truncate">${s.servicio}</h4><span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span></div><div class="flex items-center gap-2">${selectorHTML}<button onclick="deleteService('${s.id}')" class="text-xs text-rose-500 font-bold px-2">✕</button></div></div>${infoExtraHTML}</div>`;
+            }).join('');
+        }
+
         async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
         async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
         async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); }
         async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); }
         function saveSupabaseConfig() { const rawUrl = document.getElementById('supabase-url').value; const key = document.getElementById('supabase-key').value.trim(); const url = cleanUrl(rawUrl); if (url && key) { localStorage.setItem('supabase_url', url); localStorage.setItem('supabase_key', key); initDatabase(); toggleSettings(); } }
         function filterProspects() { const query = document.getElementById('search-bar').value.toLowerCase().trim(); filteredProspectsList = query ? localProspects.filter(p => p.nombre.toLowerCase().includes(query) || (p.ciudad && p.ciudad.toLowerCase().includes(query)) || (p.nicho && p.nicho.toLowerCase().includes(query))) : [...localProspects]; renderProspects(); }
-        function backToList() { document.getElementById('details-section').classList.add('hidden'); document.getElementById('list-section').classList.remove('hidden'); }
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
         function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; document.getElementById('modal-profile-type').value = "Comercial"; toggleModalProfileLayout("Comercial"); }
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
-        function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); document.getElementById('new-service-name').value = "Propuesta de Aplicación Móvil / SaaS"; toggleDynamicServiceFields("Propuesta de Aplicación Móvil / SaaS"); }
+        function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
         function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
         function getTodayString() { const today = new Date(); return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`; }
         function formatDate(dateStr) { if (!dateStr) return ''; const parts = dateStr.split('-'); return `${parts[2]}/${parts[1]}/${parts[0]}`; }
@@ -655,15 +615,17 @@
         function openEditProspectModal() {
             if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return;
             document.getElementById('modal-title').innerText = "Editar Ficha de Control";
-            document.getElementById('modal-id').value = p.id;
-            document.getElementById('modal-name').value = p.nombre || '';
-            document.getElementById('modal-niche').value = p.nicho || 'Gimnasio';
-            document.getElementById('modal-city').value = p.ciudad || '';
-            document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp';
-            document.getElementById('modal-contact').value = p.contacto || '';
-            document.getElementById('modal-date').value = p.proximo_seguimiento || '';
-            document.getElementById('add-prospect-modal').classList.remove('hidden');
+            document.getElementById('modal-id').value = p.id; document.getElementById('modal-name').value = p.nombre || '';
+            document.getElementById('modal-niche').value = p.nicho || 'Gimnasio'; document.getElementById('modal-city').value = p.ciudad || '';
+            document.getElementById('modal-contact-method').value = p.metodo_contacto || 'WhatsApp'; document.getElementById('modal-contact').value = p.contacto || '';
+            document.getElementById('modal-date').value = p.proximo_seguimiento || ''; document.getElementById('add-prospect-modal').classList.remove('hidden');
         }
+
+        window.addEventListener('resize', () => {
+            const isMobile = window.innerWidth < 1024;
+            if (!isMobile) { document.getElementById('list-section').classList.remove('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
+            else { if (selectedProspectId) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); } else { document.getElementById('list-section').classList.remove('hidden'); document.getElementById('details-section').classList.add('hidden'); } }
+        });
     </script>
 </body>
 </html>
