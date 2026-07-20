@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vertex CRM — Clientes • Servicios • Seguimiento</title>
     <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- CONFIGURACIÓN PARA APLICACIÓN NATIVA EN MÓVIL -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vertex CRM">
+    <link rel="apple-touch-icon" href="favicon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <script>
@@ -56,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2.5</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.2.6</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES -->
@@ -105,7 +112,6 @@
                         <h2 class="text-lg font-bold tracking-tight text-slate-100">Panel de Control General</h2>
                         <p class="text-xs text-slate-400">Rendimiento de tus asesorías y desarrollo software</p>
                     </div>
-                    <!-- BOTÓN DE RETORNO EXCLUSIVO PARA DISPOSITIVOS MÓVILES -->
                     <button onclick="backToClientList()" class="lg:hidden text-xs bg-slate-800 border border-slate-700 hover:border-vertexBlue text-vertexBlue font-bold px-3 py-1.5 rounded-xl transition-all">
                         ⬅️ Ver Lista
                     </button>
@@ -349,7 +355,6 @@
                     localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
                     filteredProspectsList = [...localProspects];
                     
-                    // MANEJO ADAPTATIVO DEL RESPONSIVE MÓVIL AL ENTRAR
                     if (window.innerWidth < 1024) {
                         document.getElementById('list-section').classList.remove('hidden');
                         document.getElementById('details-section').classList.add('hidden');
@@ -373,7 +378,7 @@
 
             if (type === 'Atleta') {
                 lblName.innerText = "Nombre Completo del Atleta / Cliente"; secFitness.classList.remove('hidden');
-            } else if (type === 'SaaS Tecnicos') {
+            } else if (type === 'SaaS Maceda' || type === 'SaaS Tecnicos') {
                 lblName.innerText = "Nombre del Prospecto / Técnico Especialista"; secSaas.classList.remove('hidden');
             } else {
                 lblName.innerText = "Nombre de la Empresa / Negocio"; secComercial.classList.remove('hidden');
@@ -435,14 +440,11 @@
             document.getElementById('active-prospect-details').classList.add('hidden');
             document.getElementById('dashboard-view').classList.remove('hidden'); document.getElementById('dashboard-view').classList.add('flex');
             
-            // CONMUTADOR VISUAL DE SECCIONES RESPONSIVE EN MÓVIL
             document.getElementById('list-section').classList.add('hidden');
             document.getElementById('details-section').classList.remove('hidden');
-            
             calculateDashboardMetrics();
         }
 
-        // FUNCIÓN CRÍTICA PARA VOLVER A LA LISTA DE CLIENTES EN SMARTPHONES
         function backToClientList() {
             selectedProspectId = null;
             document.getElementById('details-section').classList.add('hidden');
@@ -484,7 +486,7 @@
 
         function renderProspects() {
             const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
-            if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-sm">Pipeline vacío.</div>'; return; }
+            if (filteredProspectsList.length === 0) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Pipeline vacío.</div>'; return; }
             const todayStr = getTodayString();
             listContainer.innerHTML = filteredProspectsList.map(p => {
                 const isActive = p.id === selectedProspectId;
