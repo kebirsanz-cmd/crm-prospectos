@@ -63,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.7</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.8</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES DINÁMICAS -->
@@ -137,7 +137,7 @@
                     <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Contactos</span><span id="dash-count-total" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
                     <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Cierres Activos</span><span id="dash-count-active" class="text-lg font-extrabold text-vertexTurquoise mt-0.5 block">0</span></div>
                     <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center"><span class="block text-[9px] font-bold text-slate-400 uppercase tracking-wider">Suscripciones</span><span id="dash-count-services" class="text-lg font-extrabold text-slate-100 mt-0.5 block">0</span></div>
-                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center border-amber-500/20 bg-amber-500/5"><span class="block text-[9px] font-bold text-amber-400 uppercase tracking-wider">Alertas Hoy</span><span id="dash-count-alerts" class="text-lg font-extrabold text-amber-500 mt-0.5 block animate-pulse">0</span></div>
+                    <div class="bg-vertexCard/60 border border-slate-800 p-3 rounded-xl text-center border-amber-500/20 bg-amber-500/5"><span class="block text-[9px] font-bold text-amber-400 uppercase tracking-wider">Alertas Hoy</span><span id="dash-count-alerts" class="text-lg font-extrabold text-amber-500 mt-0.5 block">0</span></div>
                 </div>
                 <div class="flex-1 flex flex-col min-h-[200px]">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5">🎯 Alertas Prioritarias de Hoy</h3>
@@ -214,7 +214,7 @@
                 <input type="hidden" id="modal-id">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-vertexBlue mb-1.5">🎯 Tipo de Perfil Comercial</label>
-                    <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:border-vertexBlue focus:outline-none">
+                    <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-xs font-bold focus:outline-none">
                         <option value="Comercial">🏢 Local Comercial / Cliente de Software Web</option>
                         <option value="Atleta">🏋️ Atleta / Cliente de Asesoramiento Fitness</option>
                         <option value="SaaS Tecnicos">🛠️ Validación de App / Propuesta SaaS a Medida</option>
@@ -253,7 +253,7 @@
                 </div>
                 <div id="modal-section-saas-tecnicos" class="space-y-4 hidden border-t border-slate-800/80 pt-3">
                     <h4 class="text-[11px] font-bold uppercase text-vertexBlue tracking-widest">Alcance de la App (Lovable)</h4>
-                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Módulos Propuestos / Funciones a Validar</label><textarea id="modal-saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo para técnicos..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-vertexBlue"></textarea></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium mb-0.5">Módulos Propuestos / Funciones a Validar</label><textarea id="modal-saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo para técnicos..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[11px] text-slate-400 font-medium mb-0.5">Fase de Validación</label>
@@ -267,7 +267,7 @@
                 </div>
                 <div class="grid grid-cols-3 gap-3">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1">Medio</label>
+                        <label class="block text-xs font-semibold text-slate-400 mb-1">Medium</label>
                         <select id="modal-contact-method" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                             <option value="WhatsApp">WhatsApp</option>
                             <option value="Instagram">Instagram</option>
@@ -382,7 +382,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT BLINDADO CONTRA FALLOS DE CARGA -->
+    <!-- SCRIPT DE INICIALIZACIÓN COMPLETAMENTE REDISEÑADO CON SAFE GATES -->
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
         let currentNicheFilter = 'Todos';
@@ -590,7 +590,7 @@
         }
 
         function applyNicheAndSearchFilters() {
-            const query = document.getElementById('search-bar').value.toLowerCase().trim();
+            const query = document.getElementById('search-bar') ? document.getElementById('search-bar').value.toLowerCase().trim() : '';
             filteredProspectsList = localProspects.filter(p => {
                 let matchNiche = true;
                 if (currentNicheFilter === 'Asesoría Fitness') {
@@ -608,83 +608,6 @@
                 return matchNiche && matchQuery;
             });
             renderProspects();
-        }
-
-        async function loadInitialData() {
-            if (!dbClient) return;
-            try {
-                const { data: prospects, error: err1 } = await dbClient.from('prospectos').select('*');
-                const { data: services, error: err2 } = await dbClient.from('servicios').select('*');
-                if (!err1) {
-                    localProspects = prospects || []; localServices = services || [];
-                    localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-                    applyNicheAndSearchFilters();
-                    
-                    if (window.innerWidth < 1024) {
-                        document.getElementById('list-section').classList.remove('hidden');
-                        document.getElementById('details-section').classList.add('hidden');
-                    } else {
-                        document.getElementById('list-section').classList.remove('hidden');
-                        document.getElementById('details-section').classList.remove('hidden');
-                    }
-                    
-                    calculateDashboardMetrics();
-                    if (selectedProspectId) selectProspect(selectedProspectId);
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        function setNicheFilter(filter) {
-            currentNicheFilter = filter;
-            const buttons = {
-                'Todos': document.getElementById('btn-filter-all'),
-                'Asesoría Fitness': document.getElementById('btn-filter-fit'),
-                'Software': document.getElementById('btn-filter-soft')
-            };
-            
-            Object.keys(buttons).forEach(key => {
-                if (buttons[key]) {
-                    buttons[key].className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-slate-800 text-slate-400 border border-slate-700/50";
-                }
-            });
-            
-            if (filter === 'Todos') buttons['Todos'].className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950";
-            else if (filter === 'Asesoría Fitness') buttons['Asesoría Fitness'].className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexTurquoise text-slate-950";
-            else buttons['Software'].className = "flex-1 py-1 px-2 text-[11px] font-bold rounded-lg bg-vertexBlue text-slate-950";
-            
-            applyNicheAndSearchFilters();
-        }
-
-        function toggleModalProfileLayout(type) {
-            const lblName = document.getElementById('label-modal-name');
-            const lblDate = document.getElementById('modal-date-label');
-            const secComercial = document.getElementById('modal-section-comercial');
-            const secFitness = document.getElementById('modal-section-fitness');
-            const secSaas = document.getElementById('modal-section-saas-tecnicos');
-            secComercial.classList.add('hidden'); secFitness.classList.add('hidden'); secSaas.classList.add('hidden');
-
-            if (type === 'Atleta') {
-                lblName.innerText = "Nombre Completo del Atleta / Cliente"; 
-                lblDate.innerText = "🏁 Fin del Programa (Fecha de Vencimiento)";
-                secFitness.classList.remove('hidden');
-            } else if (type === 'SaaS Tecnicos') {
-                lblName.innerText = "Nombre del Prospecto / Técnico Especialista"; 
-                lblDate.innerText = "Fecha Próximo Seguimiento";
-                secSaas.classList.remove('hidden');
-            } else {
-                lblName.innerText = "Nombre de la Empresa / Negocio"; 
-                lblDate.innerText = "Fecha Próximo Seguimiento";
-                secComercial.classList.remove('hidden');
-            }
-        }
-
-        function toggleDynamicServiceFields(nicho) {
-            document.getElementById('fields-web').classList.add('hidden');
-            document.getElementById('fields-fitness').classList.add('hidden');
-            document.getElementById('fields-saas-tecnicos').classList.add('hidden');
-            if (nicho.includes('Web')) document.getElementById('fields-web').classList.remove('hidden');
-            else if (nicho.includes('Fitness')) document.getElementById('fields-fitness').classList.remove('hidden');
-            else if (nicho.includes('Aplicación') || nicho.includes('SaaS')) document.getElementById('fields-saas-tecnicos').classList.remove('hidden');
         }
 
         function calculateDashboardMetrics() {
@@ -737,6 +660,79 @@
             }).join('');
         }
 
+        async function loadInitialData() {
+            if (!dbClient) return;
+            try {
+                const { data: prospects, error: err1 } = await dbClient.from('prospectos').select('*');
+                const { data: services, error: err2 } = await dbClient.from('servicios').select('*');
+                if (!err1) {
+                    localProspects = prospects || []; localServices = services || [];
+                    localProspects.sort((a,b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+                    applyNicheAndSearchFilters();
+                    
+                    if (window.innerWidth < 1024) {
+                        if (document.getElementById('list-section')) document.getElementById('list-section').classList.remove('hidden');
+                        if (document.getElementById('details-section')) document.getElementById('details-section').classList.add('hidden');
+                    } else {
+                        if (document.getElementById('list-section')) document.getElementById('list-section').classList.remove('hidden');
+                        if (document.getElementById('details-section')) document.getElementById('details-section').classList.remove('hidden');
+                    }
+                    
+                    calculateDashboardMetrics();
+                    if (selectedProspectId) selectProspect(selectedProspectId);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function cleanUrl(rawUrl) { if (!rawUrl) return ''; let url = rawUrl.trim(); if (url.endsWith('/')) url = url.slice(0, -1); return url; }
+
+        // INICIALIZADOR PROTEGIDO DE BAJA ENTRADA
+        function initDatabase() {
+            const rawUrl = localStorage.getItem('supabase_url');
+            const key = localStorage.getItem('supabase_key') ? localStorage.getItem('supabase_key').trim() : null;
+            const url = cleanUrl(rawUrl); const supabaseLib = window.supabase?.supabase || window.supabase;
+            
+            if (document.getElementById('supabase-url')) document.getElementById('supabase-url').value = url || '';
+            if (document.getElementById('supabase-key')) document.getElementById('supabase-key').value = key || '';
+
+            if (url && key && supabaseLib) {
+                try {
+                    dbClient = supabaseLib.createClient(url, key);
+                    document.getElementById('connection-status').innerText = "🟢 Conectado de forma segura a Supabase Cloud";
+                    document.getElementById('connection-status').className = "text-vertexTurquoise font-semibold";
+                    loadInitialData();
+                } catch (e) { console.error(e); }
+            } else {
+                document.getElementById('connection-status').innerText = "⚠️ Configuración pendiente (⚙️)";
+                document.getElementById('prospects-list').innerHTML = '<div class="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800/60 rounded-xl m-2">⚠️ Configuración pendiente. Toca la tuerca (⚙️) para ingresar las credenciales de Supabase en esta nueva ventana de la app.</div>';
+            }
+        }
+
+        function saveSupabaseConfig() { 
+            const rawUrl = document.getElementById('supabase-url').value; 
+            const key = document.getElementById('supabase-key').value.trim(); 
+            let url = cleanUrl(rawUrl); 
+            
+            // FILTRO ESTRICTO DE PROTECCIÓN CONTRA EL ERROR DE CARGA EXPUESTO
+            if (url.includes('/rest/v1')) {
+                url = url.split('/rest/v1')[0];
+            }
+
+            if (url && key) { 
+                localStorage.setItem('supabase_url', url); 
+                localStorage.setItem('supabase_key', key); 
+                initDatabase(); 
+                toggleSettings(); 
+            } else {
+                alert("Ambas credenciales son completamente obligatorias.");
+            }
+        }
+
+        // DISPARADOR RETARDADO AL FINAL DE LA CARGA DEL DOM
+        window.addEventListener('load', () => { 
+            initDatabase(); 
+        });
+
         function showDashboardView() {
             selectedProspectId = null; applyNicheAndSearchFilters();
             document.getElementById('active-prospect-details').classList.add('hidden');
@@ -753,77 +749,14 @@
             applyNicheAndSearchFilters();
         }
 
-        async function addInteractionNote() {
-            if (!selectedProspectId || !dbClient) return;
-            const input = document.getElementById('interaction-note-input');
-            const text = input.value.trim();
-            if (!text) return;
-            const p = localProspects.find(item => item.id === selectedProspectId);
-            if (!p) return;
-            const currentNotes = p.notas_historial || [];
-            const now = new Date();
-            const dateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-            const updatedNotes = [...currentNotes, { fecha: dateStr, nota: text }];
-
-            const { error } = await dbClient.from('prospectos').update({ notas_historial: updatedNotes }).eq('id', selectedProspectId);
-            if (!error) {
-                p.notas_historial = updatedNotes;
-                input.value = '';
-                renderInteractionHistory(p);
-            }
-        }
-
-        function closeEditServiceModal() { document.getElementById('edit-service-modal').classList.add('hidden'); }
-
-        async function updateServiceData() {
-            if (!dbClient) return;
-            const id = document.getElementById('edit-service-id').value;
-            const servicio = document.getElementById('edit-service-name-input').value.trim();
-            const precio = parseFloat(document.getElementById('edit-service-price-input').value) || 0;
-            const type = document.getElementById('edit-service-type').value;
-
-            if (!servicio) { alert("El nombre es obligatorio"); return; }
-            let payload = { servicio, precio };
-
-            if (type === "fitness") {
-                payload.detalles_inteligentes = {
-                    peso: document.getElementById('edit-fit-peso').value,
-                    objetivo: document.getElementById('edit-fit-objetivo').value.trim(),
-                    plan: document.getElementById('edit-fit-plan').value.trim(),
-                    nutricion: document.getElementById('edit-fit-nutricion').value.trim()
-                };
-            } else {
-                payload.enlace_demo = document.getElementById('edit-service-url-input').value.trim();
-            }
-
-            const { error } = await dbClient.from('servicios').update(payload).eq('id', id);
-            if (!error) { closeEditServiceModal(); loadInitialData(); }
-        }
-
-        async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
-        async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
-        async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); }
-        async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); }
-        
-        function saveSupabaseConfig() { 
-            const rawUrl = document.getElementById('supabase-url').value; 
-            const key = document.getElementById('supabase-key').value.trim(); 
-            const url = cleanUrl(rawUrl); 
-            if (url && key) { 
-                localStorage.setItem('supabase_url', url); 
-                localStorage.setItem('supabase_key', key); 
-                initDatabase(); 
-                toggleSettings(); 
-            } 
-        }
-        
-        function filterProspects() { applyNicheAndSearchFilters(); }
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
         function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); document.getElementById('modal-id').value = ""; document.getElementById('modal-profile-type').value = "Comercial"; toggleModalProfileLayout("Comercial"); }
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
         function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
         function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
-        
+        function closeFollowupBanner() { document.getElementById('followup-banner').classList.add('hidden'); }
+        function filterProspects() { applyNicheAndSearchFilters(); }
+
         function openEditProspectModal() {
             if (!selectedProspectId) return; const p = localProspects.find(item => item.id === selectedProspectId); if (!p) return;
             document.getElementById('modal-title').innerText = "Editar Ficha de Control";
@@ -834,6 +767,11 @@
             toggleModalProfileLayout(p.nicho === 'Asesoría Fitness' ? 'Atleta' : 'Comercial');
             document.getElementById('add-prospect-modal').classList.remove('hidden');
         }
+
+        async function updateServiceStatus(serviceId, nuevoEstado) { if (!dbClient) return; await dbClient.from('servicios').update({ estado: nuevoEstado }).eq('id', serviceId); loadInitialData(); }
+        async function updateProspectStatus(nuevoEstado) { if (!selectedProspectId || !dbClient) return; await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', selectedProspectId); loadInitialData(); }
+        async function deleteService(serviceId) { if (!confirm("¿Eliminar?") || !dbClient) return; await dbClient.from('servicios').delete().eq('id', serviceId); loadInitialData(); }
+        async function deleteProspect(id) { if (!id || !confirm("¿Eliminar?")) return; if (dbClient) { await dbClient.from('servicios').delete().eq('prospecto_id', id); await dbClient.from('prospectos').delete().eq('id', id); } showDashboardView(); loadInitialData(); }
 
         async function saveProspect() {
             const id = document.getElementById('modal-id').value;
@@ -885,12 +823,6 @@
             await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
             loadInitialData(); closeAddServiceModal();
         }
-
-        window.addEventListener('resize', () => {
-            const isMobile = window.innerWidth < 1024;
-            if (!isMobile) { document.getElementById('list-section').classList.remove('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
-            else { if (selectedProspectId) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); } else { document.getElementById('list-section').classList.remove('hidden'); document.getElementById('details-section').classList.add('hidden'); } }
-        });
     </script>
 </body>
 </html>
