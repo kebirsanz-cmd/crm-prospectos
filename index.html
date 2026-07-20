@@ -63,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.6</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v1.3.7</span>
     </div>
 
     <!-- BANNER DE NOTIFICACIONES DINÁMICAS -->
@@ -81,8 +81,8 @@
                 <div><label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label><input type="password" id="supabase-key" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
             </div>
             <div class="mt-4 flex justify-end gap-2">
-                <button onclick="toggleSettings()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
-                <button onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0]">Guardar</button>
+                <button type="button" onclick="toggleSettings()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
+                <button type="button" onclick="saveSupabaseConfig()" class="px-4 py-2 bg-vertexBlue text-slate-950 rounded-lg text-xs font-bold hover:bg-[#00B8E0]">Guardar</button>
             </div>
         </div>
     </div>
@@ -312,7 +312,7 @@
                     <input type="number" id="new-service-price" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none">
                 </div>
                 <div id="fields-saas-tecnicos" class="space-y-3">
-                    <div><label class="block text-[11px] text-slate-400 font-medium">Módulos Requeridos / Notas de Alcance</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none shadow-sm"></textarea></div>
+                    <div><label class="block text-[11px] text-slate-400 font-medium">Módulos Requeridos / Notas de Alcance</label><textarea id="saas-modulos" rows="2" placeholder="Ej: Control de órdenes de trabajo, agenda, etc." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-100 focus:outline-none"></textarea></div>
                     <div><label class="block text-[11px] text-slate-400 font-medium">Fase de la Propuesta</label><input type="text" id="saas-fase" placeholder="Ej: Idea / Validación / Prototipo Lovable" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                     <div><label class="block text-[11px] text-slate-400 font-medium">Enlace Demo de Lovable (Opcional)</label><input type="url" id="new-service-url" placeholder="https://lovable.dev/..." class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs"></div>
                 </div>
@@ -382,7 +382,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT CORREGIDO Y SEPARADO STRICTAMENTE -->
+    <!-- SCRIPT BLINDADO CONTRA FALLOS DE CARGA -->
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
         let currentNicheFilter = 'Todos';
@@ -507,7 +507,9 @@
         }
 
         function renderProspects() {
-            const listContainer = document.getElementById('prospects-list'); document.getElementById('prospects-count').innerText = filteredProspectsList.length;
+            const listContainer = document.getElementById('prospects-list'); 
+            if (!listContainer) return;
+            document.getElementById('prospects-count').innerText = filteredProspectsList.length;
             if (filteredProspectsList.length === 0 && dbClient) { listContainer.innerHTML = '<div class="p-8 text-center text-slate-500 text-xs">Ningún cliente coincide.</div>'; return; }
             if (!dbClient) return;
             const todayStr = getTodayString();
@@ -883,6 +885,12 @@
             await dbClient.from('servicios').insert([{ prospecto_id: selectedProspectId, servicio, precio, estado: defaultEstado, enlace_demo, detalles_inteligentes: detalles }]);
             loadInitialData(); closeAddServiceModal();
         }
+
+        window.addEventListener('resize', () => {
+            const isMobile = window.innerWidth < 1024;
+            if (!isMobile) { document.getElementById('list-section').classList.remove('hidden'); document.getElementById('details-section').classList.remove('hidden'); }
+            else { if (selectedProspectId) { document.getElementById('list-section').classList.add('hidden'); document.getElementById('details-section').classList.remove('hidden'); } else { document.getElementById('list-section').classList.remove('hidden'); document.getElementById('details-section').classList.add('hidden'); } }
+        });
     </script>
 </body>
 </html>
