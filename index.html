@@ -50,7 +50,7 @@
         <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto items-stretch sm:items-center flex-1 lg:justify-end max-w-3xl">
             <div class="relative flex-1 max-w-md">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500 text-sm">🔍</span>
-                <input type="text" id="vertex-search-filter" oninput="filterProspects()" placeholder="Buscar por nombre, ciudad o nicho..." autocomplete="off" class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
+                <input type="text" id="vertex-search-filter" oninput="filterProspects()" placeholder="Buscar por nombre, ciudad o nicho..." autocomplete="new-password" class="w-full pl-9 pr-4 py-2 bg-vertexDark/80 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:border-vertexBlue focus:ring-1 focus:ring-vertexBlue transition-all">
             </div>
             
             <div class="flex gap-2 shrink-0">
@@ -63,7 +63,7 @@
     <!-- SUBHEADER -->
     <div class="bg-slate-950/40 border-b border-slate-900 px-4 md:px-8 py-1.5 text-[11px] font-medium flex justify-between items-center shrink-0">
         <span id="connection-status" class="text-amber-500/90">⚠️ Sin conectar...</span>
-        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v2.0.0</span>
+        <span class="text-slate-600 hidden sm:inline">Vertex Web Systems v2.0.1</span>
     </div>
 
     <!-- PANEL CONFIGURACIÓN -->
@@ -71,8 +71,8 @@
         <div class="max-w-4xl mx-auto">
             <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Configuración Supabase Cloud</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Project URL</label><input type="text" id="supabase-url" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
-                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label><input type="password" id="supabase-key" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Project URL</label><input type="text" id="supabase-url" autocomplete="off" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
+                <div><label class="block text-xs font-semibold text-slate-400 mb-1">Anon API Key</label><input type="password" id="supabase-key" autocomplete="new-password" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-slate-100 text-sm focus:outline-none"></div>
             </div>
             <div class="mt-4 flex justify-end gap-2">
                 <button type="button" onclick="toggleSettings()" class="px-4 py-2 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">Cancelar</button>
@@ -303,7 +303,7 @@
         </div>
     </div>
 
-    <!-- REFACTORIZACIÓN COMPLETA: MODAL EXCLUSIVO DE SOFTWARE -->
+    <!-- MODAL 3: EDITAR DETALLES DEL PORTAFOLIO -->
     <div id="edit-software-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
@@ -324,7 +324,7 @@
         </div>
     </div>
 
-    <!-- REFACTORIZACIÓN COMPLETA: MODAL EXCLUSIVO DE REVISIONES FITNESS -->
+    <!-- MODAL 4: EDITAR DETALLES FITNESS -->
     <div id="edit-fitness-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
             <div class="px-6 py-4 border-b border-slate-800/60 flex justify-between items-center bg-slate-950/20">
@@ -349,7 +349,7 @@
         </div>
     </div>
 
-    <!-- CODIGO LÓGICO BLINDADO V2.0.0 -->
+    <!-- SCRIPT DE LÓGICA AISLADA -->
     <script>
         let dbClient = null; let localProspects = []; let localServices = []; let filteredProspectsList = []; let selectedProspectId = null;
         let currentNicheFilter = 'Todos';
@@ -369,7 +369,6 @@
             } 
         }
 
-        // COMIENZO DE ARQUITECTURA DE RENDERS AISLADOS
         function renderQuickActions(p) {
             const container = document.getElementById('quick-actions-container');
             if (!container) return;
@@ -397,7 +396,6 @@
             `).join('');
         }
 
-        // FILTRADO INTELIGENTE DE MODALS (FITNESS SEPARADO DE SOFTWARE COMPLETAMENTE)
         function triggerSmartEditModal(id, name, price, url, isFitness, jsonStr) {
             let extra = {};
             try { extra = JSON.parse(decodeURIComponent(jsonStr)) || {}; } catch(e){}
@@ -589,9 +587,19 @@
             renderInteractionHistory(p);
         }
 
+        // CONTROL INTEGRADO CONTRA INTERFERENCIAS DE NAVEGADOR
         function applyNicheAndSearchFilters() {
             const filterBar = document.getElementById('vertex-search-filter');
-            let query = filterBar ? filterBar.value.toLowerCase().trim() : '';
+            let query = '';
+
+            if (filterBar) {
+                query = filterBar.value.toLowerCase().trim();
+                // Si el valor ingresado es un enlace, forzamos el vaciado del campo
+                if (query.includes('supabase.co') || query.includes('http')) {
+                    filterBar.value = '';
+                    query = '';
+                }
+            }
 
             filteredProspectsList = localProspects.filter(p => {
                 let matchNiche = true;
@@ -630,7 +638,6 @@
                 return;
             }
             container.innerHTML = pendings.map(p => {
-                const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
                 const isFitness = (p.nicho === 'Asesoría Fitness');
                 return `
                     <div class="bg-slate-900/60 border border-slate-800 p-3 rounded-xl flex justify-between items-center">
@@ -688,7 +695,14 @@
             }
         }
 
-        window.addEventListener('load', () => { initDatabase(); });
+        // CONTROL AGRESIVO DE LIMPIEZA DE EVENTOS AL CARGAR LA PÁGINA
+        window.addEventListener('load', () => { 
+            const filterBar = document.getElementById('vertex-search-filter');
+            if (filterBar) {
+                filterBar.value = ''; 
+            }
+            initDatabase(); 
+        });
 
         function setNicheFilter(filter) {
             currentNicheFilter = filter;
