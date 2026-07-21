@@ -66,82 +66,82 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL: Grid de 2 columnas en PC, 1 en móvil -->
-<main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
+    <!-- CONTENEDOR PRINCIPAL RESPONSIVO -->
+    <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
         
-    <!-- SECCIÓN IZQUIERDA: LISTA (Ocupa 5 columnas en PC) -->
-    <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 flex flex-col h-[680px]">
-        <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3 shrink-0">
-            <h2 class="text-xs font-bold text-slate-400 uppercase">Clientes Registrados</h2>
-            <span id="prospects-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">0</span>
-        </div>
-        <div id="prospects-list" class="overflow-y-auto flex-1 space-y-2 no-scrollbar"></div>
-    </section>
-
-    <!-- SECCIÓN DERECHA: DETALLE / DASHBOARD (Ocupa 7 columnas en PC, al lado derecho) -->
-    <section id="details-section" class="lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col justify-between h-[680px] overflow-y-auto no-scrollbar">
-        
-        <!-- VISTA DASHBOARD -->
-        <div id="dashboard-view" class="space-y-6">
-            <h2 class="text-lg font-bold text-slate-100">Panel General</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-vertexCard border border-slate-800 p-4 rounded-xl">
-                    <span class="text-xs text-slate-400">Ingresos Totales Activos</span>
-                    <span id="dash-money" class="text-2xl font-black text-vertexTurquoise mt-1 block">$0.00</span>
-                </div>
-                <div class="bg-vertexCard border border-slate-800 p-4 rounded-xl">
-                    <span class="text-xs text-slate-400">Total Clientes</span>
-                    <span id="dash-clients" class="text-2xl font-black text-vertexBlue mt-1 block">0</span>
-                </div>
+        <!-- SECCIÓN IZQUIERDA: LISTA -->
+        <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 flex flex-col h-[calc(100vh-165px)] lg:h-[680px]">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3 shrink-0">
+                <h2 class="text-xs font-bold text-slate-400 uppercase">Clientes Registrados</h2>
+                <span id="prospects-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">0</span>
             </div>
-            <!-- ALERTAS DE SEGUIMIENTO HOY -->
-            <div class="space-y-3">
-                <h3 class="text-xs font-bold text-slate-400 uppercase">🔔 Alertas y Controles Pendientes</h3>
-                <div id="dash-alerts-list" class="space-y-2"></div>
-            </div>
-        </div>
+            <div id="prospects-list" class="overflow-y-auto flex-1 space-y-2 no-scrollbar"></div>
+        </section>
 
-        <!-- VISTA DETALLE CLIENTE -->
-        <div id="client-detail-view" class="hidden space-y-5 flex-col h-full">
-            <button onclick="showDashboard()" class="text-xs text-vertexBlue font-bold flex items-center gap-1">⬅ Volver al Dashboard</button>
-            <div class="bg-vertexCard border border-slate-800 p-5 rounded-xl space-y-4 relative shrink-0">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h2 id="detail-name" class="text-xl font-bold text-slate-50"></h2>
-                        <p id="detail-niche" class="text-xs text-slate-400 mt-0.5"></p>
+        <!-- SECCIÓN DERECHA: DETALLE / DASHBOARD -->
+        <section id="details-section" class="hidden lg:flex lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 md:p-6 flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
+            
+            <!-- VISTA DASHBOARD -->
+            <div id="dashboard-view" class="space-y-6">
+                <h2 class="text-lg font-bold text-slate-100">Panel General</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-vertexCard border border-slate-800 p-4 rounded-xl">
+                        <span class="text-xs text-slate-400">Ingresos Totales Activos</span>
+                        <span id="dash-money" class="text-2xl font-black text-vertexTurquoise mt-1 block">$0.00</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue font-bold">✏️ Editar</button>
-                        <button onclick="deleteProspect()" class="text-xs text-rose-500 font-bold">🗑 Eliminar</button>
+                    <div class="bg-vertexCard border border-slate-800 p-4 rounded-xl">
+                        <span class="text-xs text-slate-400">Total Clientes</span>
+                        <span id="dash-clients" class="text-2xl font-black text-vertexBlue mt-1 block">0</span>
                     </div>
                 </div>
-                
-                <!-- SELECTOR DE ESTADO COMERCIAL DINÁMICO -->
-                <div class="flex items-center justify-between bg-vertexDark p-3 rounded-lg border border-slate-800">
-                    <span class="text-xs text-slate-400 font-medium">Estado Comercial / Embudo:</span>
-                    <div id="status-select-container"></div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800 text-xs">
-                    <div><span class="text-slate-500 block">Contacto:</span> <span id="detail-contact" class="font-semibold text-slate-200"></span></div>
-                    <div><span class="text-slate-500 block" id="label-date-type">Próximo Seguimiento:</span> <span id="detail-date" class="font-semibold text-vertexTurquoise"></span></div>
+                <!-- ALERTAS DE SEGUIMIENTO HOY -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase">🔔 Alertas y Controles Pendientes</h3>
+                    <div id="dash-alerts-list" class="space-y-2"></div>
                 </div>
             </div>
 
-            <!-- ACCIONES RÁPIDAS -->
-            <div class="shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
+            <!-- VISTA DETALLE CLIENTE -->
+            <div id="client-detail-view" class="hidden space-y-5 flex-col h-full">
+                <button onclick="showDashboard()" class="text-xs text-vertexBlue font-bold flex items-center gap-1">⬅ Volver al Dashboard</button>
+                <div class="bg-vertexCard border border-slate-800 p-5 rounded-xl space-y-4 relative shrink-0">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 id="detail-name" class="text-xl font-bold text-slate-50"></h2>
+                            <p id="detail-niche" class="text-xs text-slate-400 mt-0.5"></p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue font-bold">✏️ Editar</button>
+                            <button onclick="deleteProspect()" class="text-xs text-rose-500 font-bold">🗑 Eliminar</button>
+                        </div>
+                    </div>
+                    
+                    <!-- SELECTOR DE ESTADO COMERCIAL DINÁMICO -->
+                    <div class="flex items-center justify-between bg-vertexDark p-3 rounded-lg border border-slate-800">
+                        <span class="text-xs text-slate-400 font-medium">Estado Comercial / Embudo:</span>
+                        <div id="status-select-container"></div>
+                    </div>
 
-            <!-- SERVICIOS ASIGNADOS -->
-            <div class="flex-1 overflow-y-auto no-scrollbar min-h-[160px]">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase">Servicios / Portafolio</h3>
-                    <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue">+ Vincular Servicio</button>
+                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800 text-xs">
+                        <div><span class="text-slate-500 block">Contacto:</span> <span id="detail-contact" class="font-semibold text-slate-200"></span></div>
+                        <div><span class="text-slate-500 block" id="label-date-type">Próximo Seguimiento:</span> <span id="detail-date" class="font-semibold text-vertexTurquoise"></span></div>
+                    </div>
                 </div>
-                <div id="client-services-list" class="space-y-2"></div>
+
+                <!-- ACCIONES RÁPIDAS MÓVIL/PC -->
+                <div class="shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
+
+                <!-- SERVICIOS ASIGNADOS -->
+                <div class="flex-1 overflow-y-auto no-scrollbar min-h-[160px]">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase">Servicios / Portafolio</h3>
+                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue">+ Vincular Servicio</button>
+                    </div>
+                    <div id="client-services-list" class="space-y-2"></div>
+                </div>
             </div>
-        </div>
-    </section>
-</main>
+        </section>
+    </main>
 
     <!-- MODAL NUEVO / EDITAR CLIENTE -->
     <div id="add-prospect-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
@@ -154,16 +154,16 @@
                     <option value="Comercial">Desarrollo Web / SaaS</option>
                     <option value="Atleta">Asesoría Fitness</option>
                 </select>
-               <select id="modal-niche" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
-                   <option value="Gimnasio">Gimnasio / Box</option>
-                   <option value="Barbería">Barbería / Salón de Belleza</option>
-                   <option value="Restaurante">Restaurante / Comida</option>
-                   <option value="Clínica / Salud">Clínica / Consultorio / Salud</option>
-                   <option value="Entrenador Personal">Entrenador Personal</option>
-                   <option value="Asesoría Fitness">Asesoría Fitness</option>
-                   <option value="App / SaaS">App / SaaS</option>
-                   <option value="Otro">Otro sector</option>
-               </select>
+                <select id="modal-niche" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+                    <option value="Gimnasio">Gimnasio / Box</option>
+                    <option value="Barbería">Barbería / Salón</option>
+                    <option value="Restaurante">Restaurante / Comida</option>
+                    <option value="Clínica / Salud">Clínica / Salud</option>
+                    <option value="Entrenador Personal">Entrenador Personal</option>
+                    <option value="Asesoría Fitness">Asesoría Fitness</option>
+                    <option value="App / SaaS">App / SaaS</option>
+                    <option value="Otro">Otro sector</option>
+                </select>
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <input type="text" id="modal-city" placeholder="Ciudad (Guayaquil)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
@@ -220,18 +220,16 @@
             }
         }
 
-        function showDashboard() {
-    activeClientId = null;
-    document.getElementById('client-detail-view').classList.add('hidden');
-    document.getElementById('dashboard-view').classList.remove('hidden');
-
-    // RESPONSIVO MÓVIL: En celular muestra la lista y oculta los detalles
-    if (window.innerWidth < 1024) {
-        document.getElementById('list-section').classList.remove('hidden');
-        document.getElementById('details-section').classList.add('hidden');
-    }
-    updateDashboard();
-}
+        function saveSupabaseConfig() {
+            const url = document.getElementById('supabase-url').value.trim();
+            const key = document.getElementById('supabase-key').value.trim();
+            if (url && key) {
+                localStorage.setItem('vertex_url', url);
+                localStorage.setItem('vertex_key', key);
+                toggleSettings();
+                initApp();
+            }
+        }
 
         async function loadData() {
             if (!dbClient) return;
@@ -283,7 +281,7 @@
             }).join('');
         }
 
- function selectClient(id) { 
+        function selectClient(id) { 
             activeClientId = id; 
             const client = prospects.find(p => p.id === id); 
             if (!client) return; 
@@ -292,9 +290,11 @@
             document.getElementById('client-detail-view').classList.remove('hidden'); 
             document.getElementById('client-detail-view').classList.add('flex'); 
 
+            // Comportamiento móvil: ocultar lista y mostrar detalle a pantalla completa
             if (window.innerWidth < 1024) {
                 document.getElementById('list-section').classList.add('hidden');
                 document.getElementById('details-section').classList.remove('hidden');
+                document.getElementById('details-section').classList.add('flex');
             }
 
             const nameEl = document.getElementById('detail-name'); 
@@ -350,18 +350,49 @@
                 </div>
             `).join('');
         }
-function showDashboard() {
-    activeClientId = null;
-    document.getElementById('client-detail-view').classList.add('hidden');
-    document.getElementById('dashboard-view').classList.remove('hidden');
 
-    // COMPORTAMIENTO MÓVIL: Al volver, muestra la lista de nuevo y oculta el panel derecho
-    if (window.innerWidth < 1024) {
-        document.getElementById('list-section').classList.remove('hidden');
-        document.getElementById('details-section').classList.add('hidden');
-    }
-    updateDashboard();
-}
+        function updateDashboard() {
+            const dashClients = document.getElementById('dash-clients');
+            if (dashClients) dashClients.innerText = prospects.length;
+
+            const totalMoney = services.reduce((acc, s) => acc + (parseFloat(s.precio) || 0), 0);
+            const dashMoney = document.getElementById('dash-money');
+            if (dashMoney) dashMoney.innerText = `$${totalMoney.toFixed(2)}`;
+
+            const today = getTodayString();
+            const alertsContainer = document.getElementById('dash-alerts-list');
+            if (!alertsContainer) return;
+
+            const pendingAlerts = prospects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento <= today);
+
+            if (pendingAlerts.length === 0) {
+                alertsContainer.innerHTML = `<div class="text-xs text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl">✨ No hay seguimientos pendientes para hoy.</div>`;
+                return;
+            }
+
+            alertsContainer.innerHTML = pendingAlerts.map(p => `
+                <div onclick="selectClient('${p.id}')" class="bg-vertexCard border border-amber-500/30 p-3 rounded-xl cursor-pointer flex justify-between items-center hover:border-amber-500 transition-all">
+                    <div>
+                        <h4 class="font-bold text-xs text-slate-200">${p.nombre} (${p.nicho})</h4>
+                        <p class="text-[10px] text-amber-400 mt-0.5">⚠️ Fecha clave cumplida: ${p.proximo_seguimiento}</p>
+                    </div>
+                    <span class="text-xs text-vertexBlue font-bold">Ver Ficha ➔</span>
+                </div>
+            `).join('');
+        }
+
+        function showDashboard() {
+            activeClientId = null;
+            document.getElementById('client-detail-view').classList.add('hidden');
+            document.getElementById('dashboard-view').classList.remove('hidden');
+
+            // Comportamiento móvil: volver a mostrar la lista y ocultar detalles
+            if (window.innerWidth < 1024) {
+                document.getElementById('list-section').classList.remove('hidden');
+                document.getElementById('details-section').classList.add('hidden');
+            }
+            updateDashboard();
+        }
 
         function openAddProspectModal() {
             document.getElementById('modal-id').value = "";
@@ -382,7 +413,7 @@ function showDashboard() {
             document.getElementById('modal-title').innerText = "Editar Cliente";
             document.getElementById('modal-name').value = client.nombre || "";
             document.getElementById('modal-profile-type').value = client.nicho === 'Asesoría Fitness' ? 'Atleta' : 'Comercial';
-            document.getElementById('modal-niche').value = client.nicho || "Restaurante";
+            document.getElementById('modal-niche').value = client.nicho || "Gimnasio";
             document.getElementById('modal-city').value = client.ciudad || "";
             document.getElementById('modal-contact').value = client.contacto || "";
             document.getElementById('modal-date').value = client.proximo_seguimiento || "";
