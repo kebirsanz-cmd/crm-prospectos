@@ -79,7 +79,7 @@
         </section>
 
         <!-- SECCIÓN DERECHA: DETALLE / DASHBOARD -->
-        <section id="details-section" class="hidden lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
+        <<section id="details-section" class="col-span-12 lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
             
             <!-- VISTA DASHBOARD -->
             <div id="dashboard-view" class="space-y-6">
@@ -218,16 +218,18 @@
             }
         }
 
-        function saveSupabaseConfig() {
-            const url = document.getElementById('supabase-url').value.trim();
-            const key = document.getElementById('supabase-key').value.trim();
-            if (url && key) {
-                localStorage.setItem('vertex_url', url);
-                localStorage.setItem('vertex_key', key);
-                toggleSettings();
-                initApp();
-            }
-        }
+        function showDashboard() {
+    activeClientId = null;
+    document.getElementById('client-detail-view').classList.add('hidden');
+    document.getElementById('dashboard-view').classList.remove('hidden');
+
+    // RESPONSIVO MÓVIL: En celular muestra la lista y oculta los detalles
+    if (window.innerWidth < 1024) {
+        document.getElementById('list-section').classList.remove('hidden');
+        document.getElementById('details-section').classList.add('hidden');
+    }
+    updateDashboard();
+}
 
         async function loadData() {
             if (!dbClient) return;
