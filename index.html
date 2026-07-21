@@ -154,14 +154,16 @@
                     <option value="Comercial">Desarrollo Web / SaaS</option>
                     <option value="Atleta">Asesoría Fitness</option>
                 </select>
-                <select id="modal-niche" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
-                    <option value="Restaurante">Restaurante</option>
-                    <option value="Gimnasio">Gimnasio</option>
-                    <option value="Entrenador Personal">Entrenador Personal</option>
-                    <option value="Servicio Fitness">Servicio Fitness</option>
-                    <option value="App / SaaS">App / SaaS</option>
-                    <option value="Otro">Otro</option>
-                </select>
+               <select id="modal-niche" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+                   <option value="Gimnasio">Gimnasio / Box</option>
+                   <option value="Barbería">Barbería / Salón de Belleza</option>
+                   <option value="Restaurante">Restaurante / Comida</option>
+                   <option value="Clínica / Salud">Clínica / Consultorio / Salud</option>
+                   <option value="Entrenador Personal">Entrenador Personal</option>
+                   <option value="Asesoría Fitness">Asesoría Fitness</option>
+                   <option value="App / SaaS">App / SaaS</option>
+                   <option value="Otro">Otro sector</option>
+               </select>
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <input type="text" id="modal-city" placeholder="Ciudad (Guayaquil)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
@@ -291,12 +293,9 @@
             document.getElementById('client-detail-view').classList.add('flex'); 
 
             // RESPONSIVO MÓVIL
-            if (window.innerWidth < 1024) {
-                document.getElementById('list-section').classList.add('hidden');
-                document.getElementById('details-section').classList.remove('hidden');
-            } else {
-                document.getElementById('details-section').classList.remove('hidden');
-            }
+            // Vista de escritorio y móvil limpia sin forzar ocultamientos
+            document.getElementById('list-section').classList.remove('hidden');
+            document.getElementById('details-section').classList.remove('hidden');
 
             const nameEl = document.getElementById('detail-name'); 
             if (nameEl) nameEl.innerText = client.nombre; 
