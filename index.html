@@ -66,82 +66,82 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL RESPONSIVO -->
-    <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
+    <!-- CONTENEDOR PRINCIPAL: Grid de 2 columnas en PC, 1 en móvil -->
+<main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
         
-        <!-- SECCIÓN IZQUIERDA: LISTA -->
-        <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 flex flex-col h-[calc(100vh-165px)] lg:h-[680px]">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3 shrink-0">
-                <h2 class="text-xs font-bold text-slate-400 uppercase">Clientes Registrados</h2>
-                <span id="prospects-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">0</span>
-            </div>
-            <div id="prospects-list" class="overflow-y-auto flex-1 space-y-2 no-scrollbar"></div>
-        </section>
+    <!-- SECCIÓN IZQUIERDA: LISTA (Ocupa 5 columnas en PC) -->
+    <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 flex flex-col h-[680px]">
+        <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3 shrink-0">
+            <h2 class="text-xs font-bold text-slate-400 uppercase">Clientes Registrados</h2>
+            <span id="prospects-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">0</span>
+        </div>
+        <div id="prospects-list" class="overflow-y-auto flex-1 space-y-2 no-scrollbar"></div>
+    </section>
 
-        <!-- SECCIÓN DERECHA: DETALLE / DASHBOARD -->
-        <<section id="details-section" class="col-span-12 lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
-            
-            <!-- VISTA DASHBOARD -->
-            <div id="dashboard-view" class="space-y-6">
-                <h2 class="text-lg font-bold text-slate-100">Panel General</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-vertexCard border border-slate-800 p-4 rounded-xl">
-                        <span class="text-xs text-slate-400">Ingresos Totales Activos</span>
-                        <span id="dash-money" class="text-2xl font-black text-vertexTurquoise mt-1 block">$0.00</span>
-                    </div>
-                    <div class="bg-vertexCard border border-slate-800 p-4 rounded-xl">
-                        <span class="text-xs text-slate-400">Total Clientes</span>
-                        <span id="dash-clients" class="text-2xl font-black text-vertexBlue mt-1 block">0</span>
-                    </div>
+    <!-- SECCIÓN DERECHA: DETALLE / DASHBOARD (Ocupa 7 columnas en PC, al lado derecho) -->
+    <section id="details-section" class="lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col justify-between h-[680px] overflow-y-auto no-scrollbar">
+        
+        <!-- VISTA DASHBOARD -->
+        <div id="dashboard-view" class="space-y-6">
+            <h2 class="text-lg font-bold text-slate-100">Panel General</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-vertexCard border border-slate-800 p-4 rounded-xl">
+                    <span class="text-xs text-slate-400">Ingresos Totales Activos</span>
+                    <span id="dash-money" class="text-2xl font-black text-vertexTurquoise mt-1 block">$0.00</span>
                 </div>
-                <!-- ALERTAS DE SEGUIMIENTO HOY -->
-                <div class="space-y-3">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase">🔔 Alertas y Controles Pendientes</h3>
-                    <div id="dash-alerts-list" class="space-y-2"></div>
+                <div class="bg-vertexCard border border-slate-800 p-4 rounded-xl">
+                    <span class="text-xs text-slate-400">Total Clientes</span>
+                    <span id="dash-clients" class="text-2xl font-black text-vertexBlue mt-1 block">0</span>
                 </div>
             </div>
+            <!-- ALERTAS DE SEGUIMIENTO HOY -->
+            <div class="space-y-3">
+                <h3 class="text-xs font-bold text-slate-400 uppercase">🔔 Alertas y Controles Pendientes</h3>
+                <div id="dash-alerts-list" class="space-y-2"></div>
+            </div>
+        </div>
 
-            <!-- VISTA DETALLE CLIENTE -->
-            <div id="client-detail-view" class="hidden space-y-5 flex-col h-full">
-                <button onclick="showDashboard()" class="text-xs text-vertexBlue font-bold flex items-center gap-1">⬅ Volver al Dashboard</button>
-                <div class="bg-vertexCard border border-slate-800 p-5 rounded-xl space-y-4 relative shrink-0">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h2 id="detail-name" class="text-xl font-bold text-slate-50"></h2>
-                            <p id="detail-niche" class="text-xs text-slate-400 mt-0.5"></p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue font-bold">✏️ Editar</button>
-                            <button onclick="deleteProspect()" class="text-xs text-rose-500 font-bold">🗑 Eliminar</button>
-                        </div>
+        <!-- VISTA DETALLE CLIENTE -->
+        <div id="client-detail-view" class="hidden space-y-5 flex-col h-full">
+            <button onclick="showDashboard()" class="text-xs text-vertexBlue font-bold flex items-center gap-1">⬅ Volver al Dashboard</button>
+            <div class="bg-vertexCard border border-slate-800 p-5 rounded-xl space-y-4 relative shrink-0">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 id="detail-name" class="text-xl font-bold text-slate-50"></h2>
+                        <p id="detail-niche" class="text-xs text-slate-400 mt-0.5"></p>
                     </div>
-                    
-                    <!-- SELECTOR DE ESTADO COMERCIAL DINÁMICO -->
-                    <div class="flex items-center justify-between bg-vertexDark p-3 rounded-lg border border-slate-800">
-                        <span class="text-xs text-slate-400 font-medium">Estado Comercial / Embudo:</span>
-                        <div id="status-select-container"></div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800 text-xs">
-                        <div><span class="text-slate-500 block">Contacto:</span> <span id="detail-contact" class="font-semibold text-slate-200"></span></div>
-                        <div><span class="text-slate-500 block" id="label-date-type">Próximo Seguimiento:</span> <span id="detail-date" class="font-semibold text-vertexTurquoise"></span></div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue font-bold">✏️ Editar</button>
+                        <button onclick="deleteProspect()" class="text-xs text-rose-500 font-bold">🗑 Eliminar</button>
                     </div>
                 </div>
+                
+                <!-- SELECTOR DE ESTADO COMERCIAL DINÁMICO -->
+                <div class="flex items-center justify-between bg-vertexDark p-3 rounded-lg border border-slate-800">
+                    <span class="text-xs text-slate-400 font-medium">Estado Comercial / Embudo:</span>
+                    <div id="status-select-container"></div>
+                </div>
 
-                <!-- ACCIONES RÁPIDAS MÓVIL/PC -->
-                <div class="shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
-
-                <!-- SERVICIOS ASIGNADOS -->
-                <div class="flex-1 overflow-y-auto no-scrollbar min-h-[160px]">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase">Servicios / Portafolio</h3>
-                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue">+ Vincular Servicio</button>
-                    </div>
-                    <div id="client-services-list" class="space-y-2"></div>
+                <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800 text-xs">
+                    <div><span class="text-slate-500 block">Contacto:</span> <span id="detail-contact" class="font-semibold text-slate-200"></span></div>
+                    <div><span class="text-slate-500 block" id="label-date-type">Próximo Seguimiento:</span> <span id="detail-date" class="font-semibold text-vertexTurquoise"></span></div>
                 </div>
             </div>
-        </section>
-    </main>
+
+            <!-- ACCIONES RÁPIDAS -->
+            <div class="shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
+
+            <!-- SERVICIOS ASIGNADOS -->
+            <div class="flex-1 overflow-y-auto no-scrollbar min-h-[160px]">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase">Servicios / Portafolio</h3>
+                    <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue">+ Vincular Servicio</button>
+                </div>
+                <div id="client-services-list" class="space-y-2"></div>
+            </div>
+        </div>
+    </section>
+</main>
 
     <!-- MODAL NUEVO / EDITAR CLIENTE -->
     <div id="add-prospect-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
