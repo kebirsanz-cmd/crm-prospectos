@@ -284,123 +284,65 @@
         }
 
         function selectClient(id) { 
-            activeClientId = id; 
-            const client = prospects.find(p => p.id === id); 
-            if (!client) return; 
+    activeClientId = id; 
+    const client = prospects.find(p => p.id === id); 
+    if (!client) return; 
 
-            document.getElementById('dashboard-view').classList.add('hidden'); 
-            document.getElementById('client-detail-view').classList.remove('hidden'); 
-            document.getElementById('client-detail-view').classList.add('flex'); 
+    document.getElementById('dashboard-view').classList.add('hidden'); 
+    document.getElementById('client-detail-view').classList.remove('hidden'); 
+    document.getElementById('client-detail-view').classList.add('flex'); 
 
-            // RESPONSIVO MÓVIL
-            // Vista de escritorio y móvil limpia sin forzar ocultamientos
-            document.getElementById('list-section').classList.remove('hidden');
-            document.getElementById('details-section').classList.remove('hidden');
+    // COMPORTAMIENTO MÓVIL: Si es pantalla chica, oculta la lista y muestra solo el detalle
+    if (window.innerWidth < 1024) {
+        document.getElementById('list-section').classList.add('hidden');
+        document.getElementById('details-section').classList.remove('hidden');
+    }
 
-            const nameEl = document.getElementById('detail-name'); 
-            if (nameEl) nameEl.innerText = client.nombre; 
+    const nameEl = document.getElementById('detail-name'); 
+    if (nameEl) nameEl.innerText = client.nombre; 
 
-            const nicheEl = document.getElementById('detail-niche'); 
-            if (nicheEl) nicheEl.innerText = `${client.nicho} • ${client.ciudad || 'Guayaquil'}`; 
+    const nicheEl = document.getElementById('detail-niche'); 
+    if (nicheEl) nicheEl.innerText = `${client.nicho} • ${client.ciudad || 'Guayaquil'}`; 
 
-            const contactEl = document.getElementById('detail-contact'); 
-            if (contactEl) contactEl.innerText = client.contacto || 'Sin registrar'; 
+    const contactEl = document.getElementById('detail-contact'); 
+    if (contactEl) contactEl.innerText = client.contacto || 'Sin registrar'; 
 
-            const dateEl = document.getElementById('detail-date'); 
-            if (dateEl) dateEl.innerText = client.proximo_seguimiento ? client.proximo_seguimiento : 'No especificada'; 
+    const dateEl = document.getElementById('detail-date'); 
+    if (dateEl) dateEl.innerText = client.proximo_seguimiento ? client.proximo_seguimiento : 'No especificada'; 
 
-            const statusContainer = document.getElementById('status-select-container'); 
-            const currentStatus = client.estado || 'Prospecto'; 
-            if (statusContainer) { 
-                statusContainer.innerHTML = `
-                    <select onchange="updateProspectStatus(this.value)" class="bg-vertexDark border border-slate-700 text-vertexBlue text-xs font-bold rounded-lg px-3 py-1.5 focus:outline-none">
-                        <option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>📌 Prospecto</option>
-                        <option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>📞 Contacto Inicial</option>
-                        <option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>⚡ Demo Enviada</option>
-                        <option value="Atleta / Cliente Activo" ${currentStatus === 'Atleta / Cliente Activo' ? 'selected' : ''}>🏢 Atleta / Cliente Activo</option>
-                        <option value="Plan por Vencer" ${currentStatus === 'Plan por Vencer' ? 'selected' : ''}>⚠️ Plan por Vencer</option>
-                        <option value="Membresía Vencida" ${currentStatus === 'Membresía Vencida' ? 'selected' : ''}>❌ Membresía Vencida</option>
-                        <option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>❌ Perdido</option>
-                    </select>
-                `; 
-            } 
+    const statusContainer = document.getElementById('status-select-container'); 
+    const currentStatus = client.estado || 'Prospecto'; 
+    if (statusContainer) { 
+        statusContainer.innerHTML = `
+            <select onchange="updateProspectStatus(this.value)" class="bg-vertexDark border border-slate-700 text-vertexBlue text-xs font-bold rounded-lg px-3 py-1.5 focus:outline-none">
+                <option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>📌 Prospecto</option>
+                <option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>📞 Contacto Inicial</option>
+                <option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>⚡ Demo Enviada</option>
+                <option value="Atleta / Cliente Activo" ${currentStatus === 'Atleta / Cliente Activo' ? 'selected' : ''}>🏢 Atleta / Cliente Activo</option>
+                <option value="Plan por Vencer" ${currentStatus === 'Plan por Vencer' ? 'selected' : ''}>⚠️ Plan por Vencer</option>
+                <option value="Membresía Vencida" ${currentStatus === 'Membresía Vencida' ? 'selected' : ''}>❌ Membresía Vencida</option>
+                <option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>❌ Perdido</option>
+            </select>
+        `; 
+    } 
 
-            const clientServices = services.filter(s => s.prospecto_id === id); 
-            const totalVal = clientServices.reduce((acc, s) => acc + (parseFloat(s.precio) || 0), 0);
-            
-            const sumValEl = document.getElementById('summary-value');
-            if (sumValEl) sumValEl.innerText = `$${totalVal.toFixed(2)}`;
-            
-            const sumServEl = document.getElementById('summary-services-count');
-            if (sumServEl) sumServEl.innerText = clientServices.length;
+    const clientServices = services.filter(s => s.prospecto_id === id); 
+    renderQuickActions(client);
+    renderClientServices(clientServices); 
+}
 
-            renderQuickActions(client);
-            renderClientServices(clientServices); 
-        }
+function showDashboard() {
+    activeClientId = null;
+    document.getElementById('client-detail-view').classList.add('hidden');
+    document.getElementById('dashboard-view').classList.remove('hidden');
 
-        function renderClientServices(clientServices) {
-            const container = document.getElementById('client-services-list');
-            if (!container) return;
-            if (clientServices.length === 0) {
-                container.innerHTML = `<div class="text-xs text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl">Sin servicios vinculados.</div>`;
-                return;
-            }
-            container.innerHTML = clientServices.map(s => `
-                <div class="bg-vertexCard border border-slate-800 p-3 rounded-xl flex justify-between items-center">
-                    <div>
-                        <h5 class="font-bold text-xs text-slate-200">${s.servicio}</h5>
-                        <p class="text-[10px] text-slate-400">${s.detalles_inteligentes?.modulos || ''}</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-black text-vertexTurquoise">$${parseFloat(s.precio || 0).toFixed(2)}</span>
-                        <button onclick="deleteService('${s.id}')" class="text-rose-500 font-bold text-xs">✕</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateDashboard() {
-            const dashClients = document.getElementById('dash-clients');
-            if (dashClients) dashClients.innerText = prospects.length;
-
-            const totalMoney = services.reduce((acc, s) => acc + (parseFloat(s.precio) || 0), 0);
-            const dashMoney = document.getElementById('dash-money');
-            if (dashMoney) dashMoney.innerText = `$${totalMoney.toFixed(2)}`;
-
-            const today = getTodayString();
-            const alertsContainer = document.getElementById('dash-alerts-list');
-            if (!alertsContainer) return;
-
-            const pendingAlerts = prospects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento <= today);
-
-            if (pendingAlerts.length === 0) {
-                alertsContainer.innerHTML = `<div class="text-xs text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl">✨ No hay seguimientos pendientes para hoy.</div>`;
-                return;
-            }
-
-            alertsContainer.innerHTML = pendingAlerts.map(p => `
-                <div onclick="selectClient('${p.id}')" class="bg-vertexCard border border-amber-500/30 p-3 rounded-xl cursor-pointer flex justify-between items-center hover:border-amber-500 transition-all">
-                    <div>
-                        <h4 class="font-bold text-xs text-slate-200">${p.nombre} (${p.nicho})</h4>
-                        <p class="text-[10px] text-amber-400 mt-0.5">⚠️ Fecha clave cumplida: ${p.proximo_seguimiento}</p>
-                    </div>
-                    <span class="text-xs text-vertexBlue font-bold">Ver Ficha ➔</span>
-                </div>
-            `).join('');
-        }
-
-        function showDashboard() {
-            activeClientId = null;
-            document.getElementById('client-detail-view').classList.add('hidden');
-            document.getElementById('dashboard-view').classList.remove('hidden');
-
-            // RESPONSIVO MÓVIL
-            if (window.innerWidth < 1024) {
-                document.getElementById('list-section').classList.remove('hidden');
-                document.getElementById('details-section').classList.add('hidden');
-            }
-            updateDashboard();
-        }
+    // COMPORTAMIENTO MÓVIL: Al volver, muestra la lista de nuevo y oculta el panel derecho
+    if (window.innerWidth < 1024) {
+        document.getElementById('list-section').classList.remove('hidden');
+        document.getElementById('details-section').classList.add('hidden');
+    }
+    updateDashboard();
+}
 
         function openAddProspectModal() {
             document.getElementById('modal-id').value = "";
