@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vertex CRM — Gestión Comercial</title>
+    <title>Vertex CRM — Pipeline & Ventas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <script>
@@ -87,6 +87,11 @@
                         <span id="dash-clients" class="text-2xl font-black text-vertexBlue mt-1 block">0</span>
                     </div>
                 </div>
+                <!-- ALERTAS DE SEGUIMIENTO HOY -->
+                <div class="space-y-3">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase">🔔 Alertas y Controles Pendientes</h3>
+                    <div id="dash-alerts-list" class="space-y-2"></div>
+                </div>
             </div>
 
             <!-- VISTA DETALLE CLIENTE -->
@@ -112,7 +117,7 @@
 
                     <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800 text-xs">
                         <div><span class="text-slate-500 block">Contacto:</span> <span id="detail-contact" class="font-semibold text-slate-200"></span></div>
-                        <div><span class="text-slate-500 block" id="label-date-type">Seguimiento / Vencimiento:</span> <span id="detail-date" class="font-semibold text-vertexTurquoise"></span></div>
+                        <div><span class="text-slate-500 block" id="label-date-type">Próximo Seguimiento:</span> <span id="detail-date" class="font-semibold text-vertexTurquoise"></span></div>
                     </div>
                 </div>
 
@@ -134,13 +139,26 @@
             <h3 id="modal-title" class="font-bold text-slate-100">Registrar Cliente</h3>
             <input type="hidden" id="modal-id">
             <input type="text" id="modal-name" placeholder="Nombre o Empresa" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
-            <select id="modal-niche" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
-                <option value="Desarrollo Web / SaaS">Desarrollo Web / SaaS / App</option>
-                <option value="Asesoría Fitness">Asesoría Fitness (Atleta)</option>
-            </select>
-            <input type="text" id="modal-contact" placeholder="WhatsApp / Teléfono / Instagram" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+            <div class="grid grid-cols-2 gap-3">
+                <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+                    <option value="Comercial">Desarrollo Web / SaaS</option>
+                    <option value="Atleta">Asesoría Fitness</option>
+                </select>
+                <select id="modal-niche" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+                    <option value="Restaurante">Restaurante</option>
+                    <option value="Gimnasio">Gimnasio</option>
+                    <option value="Entrenador Personal">Entrenador Personal</option>
+                    <option value="Servicio Fitness">Servicio Fitness</option>
+                    <option value="App / SaaS">App / SaaS</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <input type="text" id="modal-city" placeholder="Ciudad (Ej. Guayaquil)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+                <input type="text" id="modal-contact" placeholder="WhatsApp / Teléfono" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+            </div>
             <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Fecha clave (Próximo Seguimiento o Fin de Plan)</label>
+                <label id="modal-date-label" class="block text-[11px] text-slate-400 mb-1">Fecha de Seguimiento / Vencimiento</label>
                 <input type="date" id="modal-date" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
             </div>
             <div class="flex justify-end gap-2 pt-2">
@@ -154,9 +172,16 @@
     <div id="add-service-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4">
             <h3 class="font-bold text-slate-100">Vincular Servicio o Plan</h3>
-            <input type="text" id="service-name" placeholder="Nombre (Ej. Landing Page o Plan Mensual)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+            <select id="service-type-select" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+                <option value="Plan Básico">Plan Básico</option>
+                <option value="Plan Premium">Plan Premium</option>
+                <option value="Plan Élite">Plan Élite</option>
+                <option value="Asesoría Personalizada">Asesoría Personalizada</option>
+                <option value="Desarrollo Web / Landing">Desarrollo Web / Landing</option>
+                <option value="SaaS / Aplicación">SaaS / Aplicación</option>
+            </select>
             <input type="number" id="service-price" placeholder="Precio ($)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
-            <textarea id="service-notes" placeholder="Notas breves o detalles" rows="2" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100"></textarea>
+            <textarea id="service-notes" placeholder="Especificaciones, notas o detalles..." rows="2" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100"></textarea>
             <div class="flex justify-end gap-2 pt-2">
                 <button onclick="closeAddServiceModal()" class="px-3 py-1.5 border border-slate-800 text-xs rounded-lg">Cancelar</button>
                 <button onclick="saveService()" class="px-3 py-1.5 bg-vertexBlue text-slate-950 font-bold text-xs rounded-lg">Vincular</button>
@@ -203,6 +228,11 @@
             updateDashboard();
         }
 
+        function getTodayString() {
+            const today = new Date();
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        }
+
         function renderPipeline() {
             const list = document.getElementById('prospects-list');
             document.getElementById('prospects-count').innerText = prospects.length;
@@ -211,7 +241,7 @@
                 return;
             }
             list.innerHTML = prospects.map(p => {
-                const status = p.estado || (p.nicho === 'Asesoría Fitness' ? 'Atleta Activo' : 'Prospecto');
+                const status = p.estado || 'Prospecto';
                 return `
                     <div onclick="selectClient('${p.id}')" class="bg-slate-900/40 border border-slate-800 p-3 rounded-xl cursor-pointer hover:border-slate-700 transition-all">
                         <div class="flex justify-between items-center">
@@ -219,7 +249,7 @@
                             <span class="text-[10px] bg-vertexBlue/10 text-vertexBlue border border-vertexBlue/20 px-2 py-0.5 rounded font-bold">${status}</span>
                         </div>
                         <div class="flex justify-between items-center mt-2 text-xs text-slate-400">
-                            <span>${p.nicho}</span>
+                            <span>${p.nicho} • ${p.ciudad || 'Guayaquil'}</span>
                             <span class="text-vertexTurquoise font-semibold">${p.contacto || ''}</span>
                         </div>
                     </div>
@@ -239,31 +269,21 @@
             document.getElementById('detail-contact').innerText = client.contacto || 'Sin registrar';
             document.getElementById('detail-date').innerText = client.proximo_seguimiento ? client.proximo_seguimiento : 'No especificada';
 
-            // Selector dinámico de estado según el nicho
             const statusContainer = document.getElementById('status-select-container');
-            const currentStatus = client.estado || (client.nicho === 'Asesoría Fitness' ? 'Atleta Activo' : 'Prospecto');
+            const currentStatus = client.estado || 'Prospecto';
             
-            if (client.nicho === 'Asesoría Fitness') {
-                document.getElementById('label-date-type').innerText = "Fin del Programa / Vencimiento:";
-                statusContainer.innerHTML = `
-                    <select onchange="updateProspectStatus(this.value)" class="bg-vertexDark border border-slate-700 text-vertexTurquoise text-xs font-bold rounded-lg px-3 py-1.5 focus:outline-none">
-                        <option value="Atleta Activo" ${currentStatus === 'Atleta Activo' ? 'selected' : ''}>🏃 Atleta Activo</option>
-                        <option value="Plan por Vencer" ${currentStatus === 'Plan por Vencer' ? 'selected' : ''}>⚠️ Plan por Vencer</option>
-                        <option value="Membresía Vencida" ${currentStatus === 'Membresía Vencida' ? 'selected' : ''}>❌ Membresía Vencida</option>
-                    </select>
-                `;
-            } else {
-                document.getElementById('label-date-type').innerText = "Próximo Seguimiento:";
-                statusContainer.innerHTML = `
-                    <select onchange="updateProspectStatus(this.value)" class="bg-vertexDark border border-slate-700 text-vertexBlue text-xs font-bold rounded-lg px-3 py-1.5 focus:outline-none">
-                        <option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>📌 Prospecto</option>
-                        <option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>📞 Contacto Inicial</option>
-                        <option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>⚡ Demo Enviada</option>
-                        <option value="Cliente Activo" ${currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏢 Cliente Activo</option>
-                        <option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>❌ Perdido</option>
-                    </select>
-                `;
-            }
+            // Selector de estado unificado para web, SaaS y atletas (todos parten de prospecto hasta activo/vencido)
+            statusContainer.innerHTML = `
+                <select onchange="updateProspectStatus(this.value)" class="bg-vertexDark border border-slate-700 text-vertexBlue text-xs font-bold rounded-lg px-3 py-1.5 focus:outline-none">
+                    <option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>📌 Prospecto</option>
+                    <option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>📞 Contacto Inicial</option>
+                    <option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>⚡ Demo Enviada</option>
+                    <option value="Atleta / Cliente Activo" ${currentStatus === 'Atleta / Cliente Activo' ? 'selected' : ''}>🏢 Atleta / Cliente Activo</option>
+                    <option value="Plan por Vencer" ${currentStatus === 'Plan por Vencer' ? 'selected' : ''}>⚠️ Plan por Vencer</option>
+                    <option value="Membresía Vencida" ${currentStatus === 'Membresía Vencida' ? 'selected' : ''}>❌ Membresía Vencida</option>
+                    <option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>❌ Perdido</option>
+                </select>
+            `;
 
             const clientServices = services.filter(s => s.prospecto_id === id);
             const totalVal = clientServices.reduce((acc, s) => acc + (parseFloat(s.precio) || 0), 0);
@@ -297,6 +317,26 @@
             document.getElementById('dash-clients').innerText = prospects.length;
             const totalMoney = services.reduce((acc, s) => acc + (parseFloat(s.precio) || 0), 0);
             document.getElementById('dash-money').innerText = `$${totalMoney.toFixed(2)}`;
+
+            // Renderizar alertas de seguimiento para hoy o vencidas
+            const today = getTodayString();
+            const alertsContainer = document.getElementById('dash-alerts-list');
+            const pendingAlerts = prospects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento <= today);
+
+            if (pendingAlerts.length === 0) {
+                alertsContainer.innerHTML = `<div class="text-xs text-slate-500 italic p-3 border border-dashed border-slate-800 rounded-xl">✨ No hay seguimientos pendientes para hoy.</div>`;
+                return;
+            }
+
+            alertsContainer.innerHTML = pendingAlerts.map(p => `
+                <div onclick="selectClient('${p.id}')" class="bg-vertexCard border border-amber-500/30 p-3 rounded-xl cursor-pointer flex justify-between items-center hover:border-amber-500 transition-all">
+                    <div>
+                        <h4 class="font-bold text-xs text-slate-200">${p.nombre} (${p.nicho})</h4>
+                        <p class="text-[10px] text-amber-400 mt-0.5">⚠️ Fecha clave cumplida: ${p.proximo_seguimiento}</p>
+                    </div>
+                    <span class="text-xs text-vertexBlue font-bold">Ver Ficha ➔</span>
+                </div>
+            `).join('');
         }
 
         function showDashboard() {
@@ -306,11 +346,16 @@
             updateDashboard();
         }
 
+        function toggleModalProfileLayout(val) {
+            // Ajustar etiquetas o campos de ser necesario
+        }
+
         function openAddProspectModal() {
             document.getElementById('modal-id').value = "";
             document.getElementById('modal-title').innerText = "Registrar Cliente";
             document.getElementById('modal-name').value = "";
             document.getElementById('modal-contact').value = "";
+            document.getElementById('modal-city').value = "";
             document.getElementById('modal-date').value = "";
             document.getElementById('add-prospect-modal').classList.remove('hidden');
         }
@@ -323,7 +368,8 @@
             document.getElementById('modal-id').value = client.id;
             document.getElementById('modal-title').innerText = "Editar Cliente";
             document.getElementById('modal-name').value = client.nombre || "";
-            document.getElementById('modal-niche').value = client.nicho || "Desarrollo Web / SaaS";
+            document.getElementById('modal-niche').value = client.nicho || "Restaurante";
+            document.getElementById('modal-city').value = client.ciudad || "";
             document.getElementById('modal-contact').value = client.contacto || "";
             document.getElementById('modal-date').value = client.proximo_seguimiento || "";
             document.getElementById('add-prospect-modal').classList.remove('hidden');
@@ -333,15 +379,17 @@
             const id = document.getElementById('modal-id').value;
             const nombre = document.getElementById('modal-name').value.trim();
             const nicho = document.getElementById('modal-niche').value;
+            const ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
             const contacto = document.getElementById('modal-contact').value.trim();
             const fecha = document.getElementById('modal-date').value || null;
+            const perfil = document.getElementById('modal-profile-type').value;
             if (!nombre) return;
 
             if (id) {
-                await dbClient.from('prospectos').update({ nombre, nicho, contacto, proximo_seguimiento: fecha }).eq('id', id);
+                await dbClient.from('prospectos').update({ nombre, nicho, ciudad, contacto, proximo_seguimiento: fecha }).eq('id', id);
             } else {
-                const defaultEstado = (nicho === 'Asesoría Fitness') ? 'Atleta Activo' : 'Prospecto';
-                await dbClient.from('prospectos').insert([{ nombre, nicho, contacto, proximo_seguimiento: fecha, estado: defaultEstado, ciudad: 'Guayaquil' }]);
+                const defaultEstado = 'Prospecto';
+                await dbClient.from('prospectos').insert([{ nombre, nicho, ciudad, contacto, proximo_seguimiento: fecha, estado: defaultEstado }]);
             }
             closeAddProspectModal();
             loadData();
@@ -356,10 +404,9 @@
 
         async function saveService() {
             if (!activeClientId) return;
-            const servicio = document.getElementById('service-name').value.trim();
+            const servicio = document.getElementById('service-type-select').value;
             const precio = parseFloat(document.getElementById('service-price').value) || 0;
             const modulos = document.getElementById('service-notes').value.trim();
-            if (!servicio) return;
 
             await dbClient.from('servicios').insert([{ prospecto_id: activeClientId, servicio, precio, detalles_inteligentes: { modulos } }]);
             closeAddServiceModal();
