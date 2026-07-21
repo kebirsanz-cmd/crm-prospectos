@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vertex CRM — Esencial</title>
+    <title>Vertex CRM — Gestión Comercial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <script>
@@ -20,6 +20,10 @@
             }
         }
     </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
 <body class="bg-vertexDark text-slate-50 font-sans min-h-screen flex flex-col">
 
@@ -29,7 +33,7 @@
             <h1 class="text-xl font-bold text-slate-50 flex items-center gap-2">
                 <span class="text-vertexBlue">⚡</span> Vertex CRM
             </h1>
-            <p class="text-xs text-slate-400">Gestión Esencial</p>
+            <p class="text-xs text-slate-400">Pipeline & Ventas</p>
         </div>
         <div class="flex gap-2">
             <button onclick="toggleSettings()" class="p-2 bg-slate-800 text-slate-300 rounded-xl text-sm">⚙️ Config</button>
@@ -42,7 +46,7 @@
         <span id="connection-status" class="text-amber-500">⚠️ Sin conectar...</span>
     </div>
 
-    <!-- PANEL CONFIGURACIÓN SUPABASE -->
+    <!-- PANEL CONFIGURACIÓN -->
     <div id="settings-panel" class="hidden bg-vertexCard border-b border-slate-800 p-4 shrink-0">
         <div class="max-w-xl mx-auto space-y-3">
             <h3 class="text-sm font-bold text-slate-300">Credenciales de Supabase</h3>
@@ -64,11 +68,11 @@
                 <h2 class="text-xs font-bold text-slate-400 uppercase">Clientes Registrados</h2>
                 <span id="prospects-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">0</span>
             </div>
-            <div id="prospects-list" class="overflow-y-auto flex-1 space-y-2"></div>
+            <div id="prospects-list" class="overflow-y-auto flex-1 space-y-2 no-scrollbar"></div>
         </section>
 
         <!-- DETALLE / DASHBOARD -->
-        <section class="lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-6 flex flex-col h-[650px] overflow-y-auto">
+        <section class="lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-6 flex flex-col h-[650px] overflow-y-auto no-scrollbar">
             
             <!-- VISTA DASHBOARD -->
             <div id="dashboard-view" class="space-y-6">
@@ -88,17 +92,27 @@
             <!-- VISTA DETALLE CLIENTE -->
             <div id="client-detail-view" class="hidden space-y-6">
                 <button onclick="showDashboard()" class="text-xs text-vertexBlue font-bold">⬅ Volver al Dashboard</button>
-                <div class="bg-vertexCard border border-slate-800 p-5 rounded-xl space-y-4">
+                <div class="bg-vertexCard border border-slate-800 p-5 rounded-xl space-y-4 relative">
                     <div class="flex justify-between items-start">
                         <div>
                             <h2 id="detail-name" class="text-xl font-bold text-slate-50"></h2>
                             <p id="detail-niche" class="text-xs text-slate-400 mt-0.5"></p>
                         </div>
-                        <button onclick="deleteProspect()" class="text-xs text-rose-500 font-bold">Eliminar Cliente</button>
+                        <div class="flex items-center gap-3">
+                            <button onclick="openEditProspectModal()" class="text-xs text-vertexBlue font-bold">✏️ Editar</button>
+                            <button onclick="deleteProspect()" class="text-xs text-rose-500 font-bold">🗑 Eliminar</button>
+                        </div>
                     </div>
+                    
+                    <!-- SELECTOR DE ESTADO COMERCIAL DINÁMICO -->
+                    <div class="flex items-center justify-between bg-vertexDark p-3 rounded-lg border border-slate-800">
+                        <span class="text-xs text-slate-400 font-medium">Estado Comercial / Embudo:</span>
+                        <div id="status-select-container"></div>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-4 pt-2 border-t border-slate-800 text-xs">
                         <div><span class="text-slate-500 block">Contacto:</span> <span id="detail-contact" class="font-semibold text-slate-200"></span></div>
-                        <div><span class="text-slate-500 block">Seguimiento / Vencimiento:</span> <span id="detail-date" class="font-semibold text-vertexTurquoise"></span></div>
+                        <div><span class="text-slate-500 block" id="label-date-type">Seguimiento / Vencimiento:</span> <span id="detail-date" class="font-semibold text-vertexTurquoise"></span></div>
                     </div>
                 </div>
 
@@ -114,10 +128,11 @@
         </section>
     </main>
 
-    <!-- MODAL NUEVO CLIENTE -->
+    <!-- MODAL NUEVO / EDITAR CLIENTE -->
     <div id="add-prospect-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
         <div class="bg-vertexCard border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4">
-            <h3 class="font-bold text-slate-100">Registrar Cliente</h3>
+            <h3 id="modal-title" class="font-bold text-slate-100">Registrar Cliente</h3>
+            <input type="hidden" id="modal-id">
             <input type="text" id="modal-name" placeholder="Nombre o Empresa" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
             <select id="modal-niche" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
                 <option value="Desarrollo Web / SaaS">Desarrollo Web / SaaS / App</option>
@@ -125,7 +140,7 @@
             </select>
             <input type="text" id="modal-contact" placeholder="WhatsApp / Teléfono / Instagram" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
             <div>
-                <label class="block text-[11px] text-slate-400 mb-1">Fecha clave (Seguimiento Web o Fin de Programa Atleta)</label>
+                <label class="block text-[11px] text-slate-400 mb-1">Fecha clave (Próximo Seguimiento o Fin de Plan)</label>
                 <input type="date" id="modal-date" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
             </div>
             <div class="flex justify-end gap-2 pt-2">
@@ -195,18 +210,21 @@
                 list.innerHTML = `<div class="text-center text-slate-500 text-xs py-6">No hay clientes registrados.</div>`;
                 return;
             }
-            list.innerHTML = prospects.map(p => `
-                <div onclick="selectClient('${p.id}')" class="bg-slate-900/40 border border-slate-800 p-3 rounded-xl cursor-pointer hover:border-slate-700 transition-all">
-                    <div class="flex justify-between items-center">
-                        <h4 class="font-bold text-slate-200 text-sm">${p.nombre}</h4>
-                        <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">${p.nicho}</span>
+            list.innerHTML = prospects.map(p => {
+                const status = p.estado || (p.nicho === 'Asesoría Fitness' ? 'Atleta Activo' : 'Prospecto');
+                return `
+                    <div onclick="selectClient('${p.id}')" class="bg-slate-900/40 border border-slate-800 p-3 rounded-xl cursor-pointer hover:border-slate-700 transition-all">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-slate-200 text-sm">${p.nombre}</h4>
+                            <span class="text-[10px] bg-vertexBlue/10 text-vertexBlue border border-vertexBlue/20 px-2 py-0.5 rounded font-bold">${status}</span>
+                        </div>
+                        <div class="flex justify-between items-center mt-2 text-xs text-slate-400">
+                            <span>${p.nicho}</span>
+                            <span class="text-vertexTurquoise font-semibold">${p.contacto || ''}</span>
+                        </div>
                     </div>
-                    <div class="flex justify-between items-center mt-2 text-xs text-slate-400">
-                        <span>Ciudad: ${p.ciudad || 'Guayaquil'}</span>
-                        <span class="text-vertexTurquoise font-semibold">${p.contacto || ''}</span>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function selectClient(id) {
@@ -218,8 +236,34 @@
             document.getElementById('client-detail-view').classList.remove('hidden');
             document.getElementById('detail-name').innerText = client.nombre;
             document.getElementById('detail-niche').innerText = `${client.nicho} • ${client.ciudad || 'Guayaquil'}`;
-            document.getElementById('detail-contact').innerText = `${client.metodo_contacto || 'Contacto'}: ${client.contacto || 'Sin registrar'}`;
+            document.getElementById('detail-contact').innerText = client.contacto || 'Sin registrar';
             document.getElementById('detail-date').innerText = client.proximo_seguimiento ? client.proximo_seguimiento : 'No especificada';
+
+            // Selector dinámico de estado según el nicho
+            const statusContainer = document.getElementById('status-select-container');
+            const currentStatus = client.estado || (client.nicho === 'Asesoría Fitness' ? 'Atleta Activo' : 'Prospecto');
+            
+            if (client.nicho === 'Asesoría Fitness') {
+                document.getElementById('label-date-type').innerText = "Fin del Programa / Vencimiento:";
+                statusContainer.innerHTML = `
+                    <select onchange="updateProspectStatus(this.value)" class="bg-vertexDark border border-slate-700 text-vertexTurquoise text-xs font-bold rounded-lg px-3 py-1.5 focus:outline-none">
+                        <option value="Atleta Activo" ${currentStatus === 'Atleta Activo' ? 'selected' : ''}>🏃 Atleta Activo</option>
+                        <option value="Plan por Vencer" ${currentStatus === 'Plan por Vencer' ? 'selected' : ''}>⚠️ Plan por Vencer</option>
+                        <option value="Membresía Vencida" ${currentStatus === 'Membresía Vencida' ? 'selected' : ''}>❌ Membresía Vencida</option>
+                    </select>
+                `;
+            } else {
+                document.getElementById('label-date-type').innerText = "Próximo Seguimiento:";
+                statusContainer.innerHTML = `
+                    <select onchange="updateProspectStatus(this.value)" class="bg-vertexDark border border-slate-700 text-vertexBlue text-xs font-bold rounded-lg px-3 py-1.5 focus:outline-none">
+                        <option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>📌 Prospecto</option>
+                        <option value="Contacto Inicial" ${currentStatus === 'Contacto Inicial' ? 'selected' : ''}>📞 Contacto Inicial</option>
+                        <option value="Demo Enviada" ${currentStatus === 'Demo Enviada' ? 'selected' : ''}>⚡ Demo Enviada</option>
+                        <option value="Cliente Activo" ${currentStatus === 'Cliente Activo' ? 'selected' : ''}>🏢 Cliente Activo</option>
+                        <option value="Perdido" ${currentStatus === 'Perdido' ? 'selected' : ''}>❌ Perdido</option>
+                    </select>
+                `;
+            }
 
             const clientServices = services.filter(s => s.prospecto_id === id);
             const totalVal = clientServices.reduce((acc, s) => acc + (parseFloat(s.precio) || 0), 0);
@@ -251,13 +295,8 @@
 
         function updateDashboard() {
             document.getElementById('dash-clients').innerText = prospects.length;
-            document.getElementById('dash-count-total').innerText = prospects.length;
-            document.getElementById('dash-count-active').innerText = prospects.length;
-            document.getElementById('dash-count-services').innerText = services.length;
-
             const totalMoney = services.reduce((acc, s) => acc + (parseFloat(s.precio) || 0), 0);
             document.getElementById('dash-money').innerText = `$${totalMoney.toFixed(2)}`;
-            document.getElementById('dash-active-money').innerText = `$${totalMoney.toFixed(2)}`;
         }
 
         function showDashboard() {
@@ -267,15 +306,51 @@
             updateDashboard();
         }
 
+        function openAddProspectModal() {
+            document.getElementById('modal-id').value = "";
+            document.getElementById('modal-title').innerText = "Registrar Cliente";
+            document.getElementById('modal-name').value = "";
+            document.getElementById('modal-contact').value = "";
+            document.getElementById('modal-date').value = "";
+            document.getElementById('add-prospect-modal').classList.remove('hidden');
+        }
+
+        function openEditProspectModal() {
+            if (!activeClientId) return;
+            const client = prospects.find(p => p.id === activeClientId);
+            if (!client) return;
+
+            document.getElementById('modal-id').value = client.id;
+            document.getElementById('modal-title').innerText = "Editar Cliente";
+            document.getElementById('modal-name').value = client.nombre || "";
+            document.getElementById('modal-niche').value = client.nicho || "Desarrollo Web / SaaS";
+            document.getElementById('modal-contact').value = client.contacto || "";
+            document.getElementById('modal-date').value = client.proximo_seguimiento || "";
+            document.getElementById('add-prospect-modal').classList.remove('hidden');
+        }
+
         async function saveProspect() {
+            const id = document.getElementById('modal-id').value;
             const nombre = document.getElementById('modal-name').value.trim();
             const nicho = document.getElementById('modal-niche').value;
             const contacto = document.getElementById('modal-contact').value.trim();
             const fecha = document.getElementById('modal-date').value || null;
             if (!nombre) return;
 
-            await dbClient.from('prospectos').insert([{ nombre, nicho, contacto, proximo_seguimiento: fecha, ciudad: 'Guayaquil' }]);
+            if (id) {
+                await dbClient.from('prospectos').update({ nombre, nicho, contacto, proximo_seguimiento: fecha }).eq('id', id);
+            } else {
+                const defaultEstado = (nicho === 'Asesoría Fitness') ? 'Atleta Activo' : 'Prospecto';
+                await dbClient.from('prospectos').insert([{ nombre, nicho, contacto, proximo_seguimiento: fecha, estado: defaultEstado, ciudad: 'Guayaquil' }]);
+            }
             closeAddProspectModal();
+            loadData();
+            if (id) selectClient(id);
+        }
+
+        async function updateProspectStatus(nuevoEstado) {
+            if (!activeClientId || !dbClient) return;
+            await dbClient.from('prospectos').update({ estado: nuevoEstado }).eq('id', activeClientId);
             loadData();
         }
 
@@ -308,7 +383,6 @@
         }
 
         function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
-        function openAddProspectModal() { document.getElementById('add-prospect-modal').classList.remove('hidden'); }
         function closeAddProspectModal() { document.getElementById('add-prospect-modal').classList.add('hidden'); }
         function openAddServiceModal() { document.getElementById('add-service-modal').classList.remove('hidden'); }
         function closeAddServiceModal() { document.getElementById('add-service-modal').classList.add('hidden'); }
