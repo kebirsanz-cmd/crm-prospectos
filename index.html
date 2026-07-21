@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vertex CRM — Pipeline & Ventas</title>
     <link rel="icon" type="image/png" href="favicon.png">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Vertex CRM">
+    <link rel="apple-touch-icon" href="favicon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
     <script>
@@ -60,20 +66,20 @@
         </div>
     </div>
 
-    <!-- CONTENEDOR PRINCIPAL -->
-    <main class="flex-1 max-w-7xl mx-auto w-full p-4 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-hidden">
+    <!-- CONTENEDOR PRINCIPAL RESPONSIVO -->
+    <main class="flex-1 max-w-7xl mx-auto w-full p-3 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 overflow-hidden">
         
-        <!-- LISTA DE CLIENTES -->
-        <section class="lg:col-span-5 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 flex flex-col h-[650px]">
-            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3">
+        <!-- SECCIÓN IZQUIERDA: LISTA -->
+        <section id="list-section" class="lg:col-span-5 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 flex flex-col h-[calc(100vh-165px)] lg:h-[680px]">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3 shrink-0">
                 <h2 class="text-xs font-bold text-slate-400 uppercase">Clientes Registrados</h2>
                 <span id="prospects-count" class="text-xs bg-slate-800 px-2 py-0.5 rounded-full">0</span>
             </div>
             <div id="prospects-list" class="overflow-y-auto flex-1 space-y-2 no-scrollbar"></div>
         </section>
 
-        <!-- DETALLE / DASHBOARD -->
-        <section class="lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-6 flex flex-col h-[650px] overflow-y-auto no-scrollbar">
+        <!-- SECCIÓN DERECHA: DETALLE / DASHBOARD -->
+        <section id="details-section" class="hidden lg:col-span-7 bg-vertexCard/30 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col justify-between h-[calc(100vh-165px)] lg:h-[680px] overflow-y-auto no-scrollbar">
             
             <!-- VISTA DASHBOARD -->
             <div id="dashboard-view" class="space-y-6">
@@ -96,9 +102,9 @@
             </div>
 
             <!-- VISTA DETALLE CLIENTE -->
-            <div id="client-detail-view" class="hidden space-y-6">
-                <button onclick="showDashboard()" class="text-xs text-vertexBlue font-bold">⬅ Volver al Dashboard</button>
-                <div class="bg-vertexCard border border-slate-800 p-5 rounded-xl space-y-4 relative">
+            <div id="client-detail-view" class="hidden space-y-5 flex-col h-full">
+                <button onclick="showDashboard()" class="text-xs text-vertexBlue font-bold flex items-center gap-1">⬅ Volver al Dashboard</button>
+                <div class="bg-vertexCard border border-slate-800 p-5 rounded-xl space-y-4 relative shrink-0">
                     <div class="flex justify-between items-start">
                         <div>
                             <h2 id="detail-name" class="text-xl font-bold text-slate-50"></h2>
@@ -122,11 +128,14 @@
                     </div>
                 </div>
 
+                <!-- ACCIONES RÁPIDAS MÓVIL/PC -->
+                <div class="shrink-0"><div class="grid grid-cols-3 gap-2" id="quick-actions-container"></div></div>
+
                 <!-- SERVICIOS ASIGNADOS -->
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
+                <div class="flex-1 overflow-y-auto no-scrollbar min-h-[160px]">
+                    <div class="flex justify-between items-center mb-3">
                         <h3 class="text-xs font-bold text-slate-400 uppercase">Servicios / Portafolio</h3>
-                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold">+ Vincular Servicio</button>
+                        <button onclick="openAddServiceModal()" class="text-xs text-vertexBlue font-bold bg-slate-800/40 px-2.5 py-1 border border-slate-800 rounded-lg hover:border-vertexBlue">+ Vincular Servicio</button>
                     </div>
                     <div id="client-services-list" class="space-y-2"></div>
                 </div>
@@ -141,7 +150,7 @@
             <input type="hidden" id="modal-id">
             <input type="text" id="modal-name" placeholder="Nombre o Empresa" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
             <div class="grid grid-cols-2 gap-3">
-                <select id="modal-profile-type" onchange="toggleModalProfileLayout(this.value)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+                <select id="modal-profile-type" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
                     <option value="Comercial">Desarrollo Web / SaaS</option>
                     <option value="Atleta">Asesoría Fitness</option>
                 </select>
@@ -155,7 +164,7 @@
                 </select>
             </div>
             <div class="grid grid-cols-2 gap-3">
-                <input type="text" id="modal-city" placeholder="Ciudad (Ej. Guayaquil)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
+                <input type="text" id="modal-city" placeholder="Ciudad (Guayaquil)" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
                 <input type="text" id="modal-contact" placeholder="WhatsApp / Teléfono" class="w-full px-3 py-2 bg-vertexDark border border-slate-800 rounded-lg text-sm text-slate-100">
             </div>
             <div>
@@ -190,6 +199,7 @@
         </div>
     </div>
 
+    <!-- SCRIPT DE CONTROL Y RESPONSIVIDAD -->
     <script>
         let dbClient = null; let prospects = []; let services = []; let activeClientId = null;
 
@@ -234,6 +244,17 @@
             return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         }
 
+        function renderQuickActions(p) {
+            const container = document.getElementById('quick-actions-container');
+            if (!container) return;
+            const num = p.contacto ? String(p.contacto).trim().replace(/\s+/g, '').replace('+', '') : '';
+            container.innerHTML = `
+                <a href="https://wa.me/${num.startsWith('0') ? '593' + num.substring(1) : num}" target="_blank" class="bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-emerald-600 hover:text-white transition-all">💬 WhatsApp</a>
+                <a href="https://instagram.com/${p.contacto}" target="_blank" class="bg-purple-600/10 border border-purple-500/30 text-purple-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-purple-600 hover:text-white transition-all">📸 Instagram</a>
+                <a href="tel:${num}" class="bg-cyan-600/10 border border-cyan-500/30 text-cyan-400 font-bold p-2 rounded-xl text-center text-xs hover:bg-cyan-600 hover:text-white transition-all">📞 Llamar</a>
+            `;
+        }
+
         function renderPipeline() {
             const list = document.getElementById('prospects-list');
             document.getElementById('prospects-count').innerText = prospects.length;
@@ -265,6 +286,14 @@
 
             document.getElementById('dashboard-view').classList.add('hidden');
             document.getElementById('client-detail-view').classList.remove('hidden');
+            document.getElementById('client-detail-view').classList.add('flex');
+
+            // RESPONSIVO MÓVIL
+            if (window.innerWidth < 1024) {
+                document.getElementById('list-section').classList.add('hidden');
+                document.getElementById('details-section').classList.remove('hidden');
+            }
+
             document.getElementById('detail-name').innerText = client.nombre;
             document.getElementById('detail-niche').innerText = `${client.nicho} • ${client.ciudad || 'Guayaquil'}`;
             document.getElementById('detail-contact').innerText = client.contacto || 'Sin registrar';
@@ -273,7 +302,6 @@
             const statusContainer = document.getElementById('status-select-container');
             const currentStatus = client.estado || 'Prospecto';
             
-            // Selector de estado unificado para web, SaaS y atletas (todos parten de prospecto hasta activo/vencido)
             statusContainer.innerHTML = `
                 <select onchange="updateProspectStatus(this.value)" class="bg-vertexDark border border-slate-700 text-vertexBlue text-xs font-bold rounded-lg px-3 py-1.5 focus:outline-none">
                     <option value="Prospecto" ${currentStatus === 'Prospecto' ? 'selected' : ''}>📌 Prospecto</option>
@@ -291,6 +319,7 @@
             document.getElementById('summary-value').innerText = `$${totalVal.toFixed(2)}`;
             document.getElementById('summary-services-count').innerText = clientServices.length;
 
+            renderQuickActions(client);
             renderClientServices(clientServices);
         }
 
@@ -319,7 +348,6 @@
             const totalMoney = services.reduce((acc, s) => acc + (parseFloat(s.precio) || 0), 0);
             document.getElementById('dash-money').innerText = `$${totalMoney.toFixed(2)}`;
 
-            // Renderizar alertas de seguimiento para hoy o vencidas
             const today = getTodayString();
             const alertsContainer = document.getElementById('dash-alerts-list');
             const pendingAlerts = prospects.filter(p => p.proximo_seguimiento && p.proximo_seguimiento <= today);
@@ -344,11 +372,13 @@
             activeClientId = null;
             document.getElementById('client-detail-view').classList.add('hidden');
             document.getElementById('dashboard-view').classList.remove('hidden');
-            updateDashboard();
-        }
 
-        function toggleModalProfileLayout(val) {
-            // Ajustar etiquetas o campos de ser necesario
+            // RESPONSIVO MÓVIL
+            if (window.innerWidth < 1024) {
+                document.getElementById('list-section').classList.remove('hidden');
+                document.getElementById('details-section').classList.add('hidden');
+            }
+            updateDashboard();
         }
 
         function openAddProspectModal() {
@@ -369,6 +399,7 @@
             document.getElementById('modal-id').value = client.id;
             document.getElementById('modal-title').innerText = "Editar Cliente";
             document.getElementById('modal-name').value = client.nombre || "";
+            document.getElementById('modal-profile-type').value = client.nicho === 'Asesoría Fitness' ? 'Atleta' : 'Comercial';
             document.getElementById('modal-niche').value = client.nicho || "Restaurante";
             document.getElementById('modal-city').value = client.ciudad || "";
             document.getElementById('modal-contact').value = client.contacto || "";
@@ -383,7 +414,6 @@
             const ciudad = document.getElementById('modal-city').value.trim() || 'Guayaquil';
             const contacto = document.getElementById('modal-contact').value.trim();
             const fecha = document.getElementById('modal-date').value || null;
-            const perfil = document.getElementById('modal-profile-type').value;
             if (!nombre) return;
 
             if (id) {
